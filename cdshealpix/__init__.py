@@ -29,15 +29,6 @@ def find_dynamic_lib_file():
 
 ffi = FFI()
 ffi.cdef("""
-   // Returns the cell number (hash value) associated with the given position on the unit sphere
-   // in the HEALPix NESTED scheme.
-   // Inputs:
-   // - depth: HEALPix depth, must be in [0, 24?]
-   // - lon: longitude, in radians
-   // - lat: latitude, in radians, must be in [-pi/2, pi/2]
-   // Output:
-   // - the nested cell number if the given position a thte given depth
-   unsigned long int hpx_hash(unsigned char depth, double lon, double lat);
    // Returns the cell number (hash value) associated with the given positions on the unit sphere 
    // in the HEALPix NESTED scheme.
    // Inputs
@@ -49,12 +40,9 @@ ffi.cdef("""
    // - no output: the result is stored in the `result` array
    // We use the `result` array so that the memory is managed by Python and do not have to be free
    // by an explicit call to a specific free function.
-   void* hpx_hash_multi(unsigned short depth, int n_elems, double* coords, unsigned long int* result);   
    void hpx_hash_lonlat(uint8_t depth, uint32_t num_coords, double* lon, double* lat, uint64_t* ipixels);
-     
-   void* hpx_center(unsigned char depth, unsigned long int hash, double* lon, double* lat);
-     
-   void* hpx_center_multi(unsigned char depth, int n_elems, unsigned long int* hash_ptr, double* res_ptr);
+
+   void hpx_center_lonlat(uint8_t depth, uint32_t num_ipixels, uint64_t* ipixels, double* coords);
    
    void* hpx_vertices(unsigned char depth, unsigned long int hash, double* res_ptr);
      
@@ -84,9 +72,13 @@ ffi.cdef("""
 dyn_lib_path = find_dynamic_lib_file()
 C = ffi.dlopen(dyn_lib_path)
 
-from .healpix import healpix_from_lonlat
+from .healpix import healpix_from_lonlat, \
+ healpix_center_lonlat, \
+ healpix_center_skycoord
 from .version import __version__
 
 __all__ = [
     'healpix_from_lonlat',
+    'healpix_center_lonlat',
+    'healpix_center_skycoord'
 ]

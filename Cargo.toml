@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix_python"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 edition = "2018"
 license = "MIT/Apache-2.0"

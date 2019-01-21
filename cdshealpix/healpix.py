@@ -1,6 +1,7 @@
 from . import C, ffi
 
 import astropy.units as u
+from astropy.coordinates import SkyCoord
 import numpy as np
 
 def healpix_from_lonlat(lon, lat, depth):
@@ -29,3 +30,48 @@ def healpix_from_lonlat(lon, lat, depth):
     )
 
     return ipixels
+
+def healpix_center_lonlat(ipixels, depth):
+    ipixels = np.atleast_1d(ipixels).ravel()
+    
+    num_ipixels = ipixels.shape[0]
+    # Allocation of the array containing the resulting coordinates
+    lonlat = np.zeros(num_ipixels << 1, dtype=np.float64)
+
+    C.hpx_center_lonlat(
+        # depth
+        depth,
+        # num of ipixels
+        num_ipixels,
+        # ipixels data array
+        ffi.cast("uint64_t*", ipixels.ctypes.data),
+        # result
+        ffi.cast("double*", lonlat.ctypes.data)
+    )
+
+    lonlat = lonlat.reshape((-1, 2)) * u.rad
+    lon, lat = lonlat[:, 0], lonlat[:, 1]
+
+    return lon, lat
+
+def healpix_center_skycoord(ipixels, depth):
+    ipixels = np.atleast_1d(ipixels).ravel()
+    
+    num_ipixels = ipixels.shape[0]
+    # Allocation of the array containing the resulting coordinates
+    lonlat = np.zeros(num_ipixels << 1, dtype=np.float64)
+
+    C.hpx_center_lonlat(
+        # depth
+        depth,
+        # num of ipixels
+        num_ipixels,
+        # ipixels data array
+        ffi.cast("uint64_t*", ipixels.ctypes.data),
+        # result
+        ffi.cast("double*", lonlat.ctypes.data)
+    )
+
+    lonlat = lonlat.reshape((-1, 2)) * u.rad
+
+    return SkyCoord(lonlat, frame="icrs", unit="rad")

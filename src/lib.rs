@@ -2,7 +2,7 @@
 extern crate cdshealpix;
 
 // use cdshealpix::proj;
-use cdshealpix::nested::{get_or_create, hash, center, neighbours, vertices,
+use cdshealpix::nested::{get_or_create, neighbours, vertices,
                          cone_overlap_approx, cone_overlap_approx_custom, 
                          polygon_overlap_approx};
 use cdshealpix::nested::bmoc::*;
@@ -30,9 +30,7 @@ pub unsafe fn build_vec<T>(input: *mut T, len: usize) -> Vec<T> {
   Vec::from_raw_parts(input, len, len)
 }
 
-
-
-
+/*
 #[no_mangle]
 pub extern "C" fn hpx_hash(depth: u8, lon: f64, lat: f64) -> u64 {
   hash(depth, lon, lat)
@@ -53,7 +51,7 @@ pub extern "C" fn hpx_hash_multi(depth: u8, n_elems: u32, coords_ptr: *mut f64, 
   // Do this so that rust will not free the memory of the arrays (they are owned and will be free the caller)
   std::mem::forget(coords);
   std::mem::forget(res);
-}
+} */
 
 #[no_mangle]
 pub extern "C" fn hpx_hash_lonlat(depth: u8, num_coords: u32, lon: *mut f64, lat: *mut f64, ipixels: *mut u64) {
@@ -69,23 +67,7 @@ pub extern "C" fn hpx_hash_lonlat(depth: u8, num_coords: u32, lon: *mut f64, lat
       res[i] = layer.hash(lon[i], lat[i]);
   }
 }
-
-/// Defines a set of spherical coordinates, in radians.
-pub struct LonLat {
-  pub lon: f64,
-  pub lat: f64,
-}
-
-impl LonLat {
-  pub fn from_vals(lon: f64, lat: f64) -> LonLat {
-    LonLat { lon, lat}
-  }
-
-  pub fn from_tuple(lonlat: (f64, f64)) -> LonLat {
-    LonLat::from_vals(lonlat.0, lonlat.1)
-  }
-}
-
+/*
 /// Test if mutable pointers really works.
 /// Again, we do not return a LonLat or an array of 2 doubles not to have to explicitly call a function
 /// to free the memory on the Python side.
@@ -94,24 +76,24 @@ pub extern "C" fn hpx_center(depth: u8, hash: u64, lon: &mut f64, lat: &mut f64)
   *lon = l;
   *lat = b;
   // LonLat::from_tuple(center(depth, hash as u64))
-}
+}*/
 
 /// We do not return an array of LonLat not to have to explicitly call a function
 /// to free the memory on the Python side.
-pub extern "C" fn hpx_center_multi(depth: u8, n_elems: u32, 
-                                   hash_ptr: *mut u64, res_ptr: *mut f64) {
-  let n_elems = n_elems as usize;
-  let hashs = unsafe{ build_array(hash_ptr, n_elems) };
-  let res = unsafe{ build_array_mut(res_ptr, 2 * n_elems) };
+#[no_mangle]
+pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *mut u64, coords: *mut f64) {
+  let num_ipixels = num_ipixels as usize;
+  
+  let hashs = unsafe{ build_array(ipixels, num_ipixels) };
+  let res = unsafe{ build_array_mut(coords, num_ipixels << 1) };
+
   let layer = get_or_create(depth);
+  
   for i in (0..res.len()).step_by(2) {
     let (l, b) = layer.center(hashs[i >> 1]);
     res[i] = l;
     res[i + 1] = b;
   }
-  // Do this so that rust will not free the memory of the arrays (they are owned and will be free the caller)
-  std::mem::forget(hash_ptr);
-  std::mem::forget(res_ptr);
 }
 
 /// The given array must be of size 8
