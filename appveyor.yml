@@ -92,10 +92,10 @@ before_test:
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location
-  - xcopy "build\lib\rust_pypi\*.pyd" rust_pypi /sy
+  - xcopy "build\lib\cdshealpix\*.pyd" cdshealpix /sy
 
 test_script:
-  - python -m pytest -v rust_pypi
+  - python -m pytest -v cdshealpix
 
 before_deploy:
   - python -m pip install twine

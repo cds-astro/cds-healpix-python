@@ -41,8 +41,8 @@ script:
   - curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
   - export PATH="$HOME/.cargo/bin:$PATH"
   - $PYTHON setup.py build_rust
-  - find build/ -name "*.so" -type f -exec cp {} ./rust_pypi \;
-  - $PYTHON -m pytest -v rust_pypi
+  - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
+  - $PYTHON -m pytest -v cdshealpix
 
 after_success:
   - $PIP install twine
