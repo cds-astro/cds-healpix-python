@@ -1,6 +1,6 @@
 # cds-healpix python package
 
-[![Build Status](https://travis-ci.org/cds-astro/cds-healpix-python.svg?branch=master)](https://travis-ci.org/cds-astro/cds-healpix-python)
+[![Build Status](https://travis-ci.org/cds-astro/cds-healpix-python.svg?branch=master)](https://travis-ci.org/cds-astro/cds-healpix-python) [![Build status](https://ci.appveyor.com/api/projects/status/obx59vfwehpxf13g/branch/master?svg=true)](https://ci.appveyor.com/project/bmatthieu3/cds-healpix-python/branch/master)
 
 This repository contains all the wrapping code for interfacing the cdshealpix Rust crate with Python.
 
