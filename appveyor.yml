@@ -92,8 +92,6 @@ before_test:
 
 test_script:
   - python -m pytest -v cdshealpix
-
-build_success:
   # Upload to PyPI if the tests succeed
   - python -m pip install twine
   - python -m twine upload "dist\\*.whl" --skip-existing
