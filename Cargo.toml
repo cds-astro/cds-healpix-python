@@ -1,0 +1,24 @@
+[package]
+name = "cdshealpix_python"
+version = "0.1.0"
+authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
+edition = "2018"
+license = "MIT/Apache-2.0"
+readme = "README.md"
+categories = ["algorithms", "science"] 
+repository = "https://github.com/cds-astro/cds-healpix-python/"
+description = """
+Python cdshealpix package wrapping code of the cdshealpix crate.
+"""
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-rust"]
+
+[lib]
+name = "cdshealpix_python"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+# The cdshealpix rust crate
+cdshealpix = "0.1.1"

@@ -1,0 +1,109 @@
+environment:
+  global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+    TWINE_USERNAME: bmatthieu3
+    CIBW_BEFORE_BUILD: pip install setuptools-rust
+  # Note: TWINE_PASSWORD is set in Appveyor settings
+  matrix:
+    # Nightly 64-bit MSVC
+    - channel: nightly
+      target: x86_64-pc-windows-msvc
+      PYTHON: "C:\\Python27-x64"
+      PYTHON_VERSION: "2.7.x"
+      PYTHON_ARCH: "64"
+      CIBW_SKIP: "*win32* cp33-* cp34-* cp35-* cp36-* cp37-*"
+    - channel: nightly
+      target: x86_64-pc-windows-msvc
+      PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.x"
+      PYTHON_ARCH: "64"
+      CIBW_SKIP: "*win32* cp27-* cp33-* cp35-* cp36-* cp37-*"
+    - channel: nightly
+      target: x86_64-pc-windows-msvc
+      PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "64"
+      CIBW_SKIP: "*win32* cp27-* cp33-* cp34-* cp36-* cp37-*"
+    - channel: nightly
+      target: x86_64-pc-windows-msvc
+      PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "64"
+      CIBW_SKIP: "*win32* cp27-* cp33-* cp34-* cp35-* cp37-*"
+    - channel: nightly
+      target: x86_64-pc-windows-msvc
+      PYTHON: "C:\\Python37-x64"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "64"
+      CIBW_SKIP: "*win32* cp27-* cp33-* cp34-* cp35-* cp36-*"
+    # Nightly 32-bit MSVC
+    - channel: nightly
+      target: i686-pc-windows-msvc
+      PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7.x"
+      PYTHON_ARCH: "32"
+      CIBW_SKIP: "*win_amd64* cp33-* cp34-* cp35-* cp36-* cp37-*"
+    - channel: nightly
+      target: i686-pc-windows-msvc
+      PYTHON: "C:\\Python34"
+      PYTHON_VERSION: "3.4.x"
+      PYTHON_ARCH: "32"
+      CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp35-* cp36-* cp37-*"
+    - channel: nightly
+      target: i686-pc-windows-msvc
+      PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "32"
+      CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp36-* cp37-*"
+    - channel: nightly
+      target: i686-pc-windows-msvc
+      PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.x"
+      PYTHON_ARCH: "32"
+      CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp35-* cp37-*"
+    - channel: nightly
+      target: i686-pc-windows-msvc
+      PYTHON: "C:\\Python37"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "32"
+      CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp35-* cp36-*"
+
+# from: https://github.com/starkat99/appveyor-rust/blob/master/appveyor.yml
+install:
+  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+  - rustup-init -yv --default-toolchain nightly --default-host %target%
+  - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
+  - rustc -vV
+  - cargo -vV
+  - pip install cibuildwheel==0.9.1 setuptools_rust
+
+build_script:
+  - cibuildwheel --output-dir dist
+
+before_test:
+  # Set the path so that the good python version is chosen
+  - set PATH=%PYTHON%;%PATH%
+  # Install python dependencies for running compiling
+  # the dynamic library and run the tests
+  - python -m pip install pytest cffi setuptools_rust
+  # Compile the dynamic library (.pyd on Windows env)
+  - python setup.py build_rust
+  # Copy the generated library to the python files location
+  - xcopy "build\lib\rust_pypi\*.pyd" rust_pypi /sy
+
+test_script:
+  - python -m pytest -v rust_pypi
+
+before_deploy:
+  - python -m pip install twine
+
+after_deploy:
+  # Upload to PyPI if the tests succeed
+  - python -m twine upload "dist\\*.whl" --skip-existing
+
+artifacts:
+  - path: "dist\\*.whl"
+    name: Wheels
