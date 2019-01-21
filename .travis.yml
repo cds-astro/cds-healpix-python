@@ -54,8 +54,6 @@ after_success:
   - export CIBW_BEFORE_BUILD="pip install setuptools-rust && source {project}/install_cargo.sh"
   - export CIBW_ENVIRONMENT='PATH="$HOME/.cargo/bin:$PATH"'
   - cibuildwheel --output-dir dist
-
-before_deploy:
   # Deploy the wheels to PyPI
   - $PIP install twine
   - $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*.whl --skip-existing

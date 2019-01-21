@@ -88,7 +88,7 @@ before_test:
   - set PATH=%PYTHON%;%PATH%
   # Install python dependencies for running compiling
   # the dynamic library and run the tests
-  - python -m pip install pytest cffi setuptools_rust
+  - python -m pip install pytest cffi setuptools_rust astropy numpy
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location
