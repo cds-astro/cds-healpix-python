@@ -9,8 +9,6 @@ def healpix_from_lonlat(lon, lat, depth):
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
 
-    print("dtype", lon.dtype)
-
     if lon.shape[0] != lat.shape[0]:
         raise IndexError("The number of longitudes does not match with the number of latitudes given")
     
