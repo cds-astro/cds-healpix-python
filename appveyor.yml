@@ -80,7 +80,6 @@ install:
   - cargo -vV
   # Set the path so that the good python version is chosen
   - set PATH=%PYTHON%;%PATH%
-  - python -m pip install cibuildwheel==0.9.1
 
 build_script:
   # Install python dependencies for running compiling
@@ -95,6 +94,7 @@ test_script:
   - python -m pytest -v cdshealpix
 
 after_test:
+  - python -m pip install cibuildwheel==0.9.1
   - cibuildwheel --output-dir dist
   # Upload to PyPI if the tests succeed
   - python -m pip install twine
