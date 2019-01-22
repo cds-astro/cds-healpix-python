@@ -40,6 +40,7 @@ def test_healpix_center_lonlat():
 def test_healpix_center_skycoord():
     skycoord = healpix_center_skycoord(ipixels=[0, 2, 4], depth=0)
 
+#TODO: see a cleaner method for performing benchmarks
 def test_healpix_vertices_lonlat():
     depth = 0
     size = 100000
@@ -58,8 +59,6 @@ def test_healpix_vertices_lonlat():
     lon2, lat2 = boundaries_lonlat(ipixels, nside=(1 << depth), step=1, order='nested')
     d2 = datetime.now() - t1
     print('astropy_healpix: ', d2)
-
-    print('speedup factor: ', d2 / d1)
 
 def test_healpix_neighbours():
     print(healpix_neighbours([0, 6], depth=0))

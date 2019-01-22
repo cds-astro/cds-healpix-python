@@ -1,8 +1,6 @@
 from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
-
-
 setup(
     name="cdshealpix",
     version="0.1.1",
