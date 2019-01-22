@@ -67,21 +67,12 @@ environment:
       PYTHON_ARCH: "32"
       CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp35-* cp36-*"
 
-# from: https://github.com/starkat99/appveyor-rust/blob/master/appveyor.yml
-install:
-  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
-  - rustup-init -yv --default-toolchain nightly --default-host %target%
-  - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
-  - rustc -vV
-  - cargo -vV
-  - pip install cibuildwheel==0.9.1 setuptools_rust
-
 before_test:
   # Set the path so that the good python version is chosen
   - set PATH=%PYTHON%;%PATH%
   # Install python dependencies for running compiling
   # the dynamic library and run the tests
-  - python -m pip install pytest cffi setuptools_rust astropy numpy
+  - python -m pip install pytest cffi setuptools-rust astropy numpy
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location
@@ -91,6 +82,13 @@ test_script:
   - python -m pytest -v cdshealpix
 
 after_test:
+  # Build the wheel. See: https://github.com/starkat99/appveyor-rust/blob/master/appveyor.yml
+  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+  - rustup-init -yv --default-toolchain nightly --default-host %target%
+  - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
+  - rustc -vV
+  - cargo -vV
+  - pip install cibuildwheel==0.9.1 setuptools-rust
   - cibuildwheel --output-dir dist
   # Upload to PyPI if the tests succeed
   - python -m pip install twine
