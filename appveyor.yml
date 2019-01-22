@@ -1,5 +1,9 @@
 environment:
   global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
     TWINE_USERNAME: bmatthieu3
     CIBW_BEFORE_BUILD: pip install setuptools-rust
   # Note: TWINE_PASSWORD is set in Appveyor settings
@@ -67,6 +71,14 @@ environment:
       PYTHON_ARCH: "32"
       CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp35-* cp36-*"
 
+install:
+  # Install cargo. See: https://github.com/starkat99/appveyor-rust/blob/master/appveyor.yml
+  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+  - rustup-init -yv --default-toolchain nightly --default-host %target%
+  - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
+  - rustc -vV
+  - cargo -vV
+
 before_test:
   # Set the path so that the good python version is chosen
   - set PATH=%PYTHON%;%PATH%
@@ -82,13 +94,7 @@ test_script:
   - python -m pytest -v cdshealpix
 
 after_test:
-  # Build the wheel. See: https://github.com/starkat99/appveyor-rust/blob/master/appveyor.yml
-  - appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
-  - rustup-init -yv --default-toolchain nightly --default-host %target%
-  - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
-  - rustc -vV
-  - cargo -vV
-  - pip install cibuildwheel==0.9.1 setuptools-rust
+  - python -m pip install cibuildwheel==0.9.1
   - cibuildwheel --output-dir dist
   # Upload to PyPI if the tests succeed
   - python -m pip install twine
