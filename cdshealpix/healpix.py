@@ -33,6 +33,7 @@ def healpix_from_lonlat(lon, lat, depth):
 
 def healpix_center_lonlat(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
+    ipixels = ipixels.astype(np.uint64)
     
     num_ipixels = ipixels.shape[0]
     # Allocation of the array containing the resulting coordinates
@@ -56,6 +57,7 @@ def healpix_center_lonlat(ipixels, depth):
 
 def healpix_center_skycoord(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
+    ipixels = ipixels.astype(np.uint64)
     
     num_ipixels = ipixels.shape[0]
     # Allocation of the array containing the resulting coordinates
