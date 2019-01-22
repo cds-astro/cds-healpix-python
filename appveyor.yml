@@ -79,13 +79,13 @@ install:
   - rustc -vV
   - cargo -vV
   # Set the path so that the good python version is chosen
-  - pip install cibuildwheel==0.9.1 setuptools_rust
+  - pip install cibuildwheel==0.10.0 setuptools_rust
   - set PATH=%PYTHON%;%PATH%
 
 build_script:
   # Install python dependencies for running compiling
   # the dynamic library and run the tests
-  - python -m pip install pytest cffi setuptools-rust astropy numpy
+  - python -m pip install astropy pytest cffi setuptools-rust numpy
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location

@@ -40,13 +40,13 @@ ffi.cdef("""
    // - no output: the result is stored in the `result` array
    // We use the `result` array so that the memory is managed by Python and do not have to be free
    // by an explicit call to a specific free function.
-   void hpx_hash_lonlat(uint8_t depth, uint32_t num_coords, double* lon, double* lat, uint64_t* ipixels);
+   void hpx_hash_lonlat(uint8_t depth, uint32_t num_coords, const double* lon, const double* lat, uint64_t* ipixels);
 
-   void hpx_center_lonlat(uint8_t depth, uint32_t num_ipixels, uint64_t* ipixels, double* coords);
+   void hpx_center_lonlat(uint8_t depth, uint32_t num_ipixels, const uint64_t* ipixels, double* center_coords);
    
-   void* hpx_vertices(unsigned char depth, unsigned long int hash, double* res_ptr);
+   void hpx_vertices_lonlat(uint8_t depth, uint32_t num_ipixels, const uint64_t* ipixels, double* vertices_coords);
      
-   void* hpx_neighbours(unsigned char depth, unsigned long int hash, long int* res_ptr);
+   void hpx_neighbours(uint8_t depth, uint32_t num_ipixels, const uint64_t* ipixels, int64_t* res);
      
    // Structure storing a BMOC cell informations, i.e.
    // the cell depth, the cell number and a flag telling if the cell is fully (1) or partially (0) covered
@@ -74,11 +74,17 @@ C = ffi.dlopen(dyn_lib_path)
 
 from .healpix import healpix_from_lonlat, \
  healpix_center_lonlat, \
- healpix_center_skycoord
+ healpix_center_skycoord, \
+ healpix_vertices_lonlat, \
+ healpix_vertices_skycoord, \
+ healpix_neighbours
 from .version import __version__
 
 __all__ = [
     'healpix_from_lonlat',
     'healpix_center_lonlat',
-    'healpix_center_skycoord'
+    'healpix_center_skycoord',
+    'healpix_vertices_lonlat',
+    'healpix_vertices_skycoord',
+    'healpix_neighbours',
 ]

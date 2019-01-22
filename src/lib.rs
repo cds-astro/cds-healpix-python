@@ -15,19 +15,25 @@ use cdshealpix::compass_point::{MainWind};
 // see: https://www.bignerdranch.com/blog/building-an-ios-app-in-rust-part-3/
 
 
-pub unsafe fn build_array<T>(ptr: *mut T, len: usize) -> &'static [T] {
+pub fn build_array<T>(ptr: *const T, len: usize) -> &'static [T] {
   assert!(!ptr.is_null());
-  std::slice::from_raw_parts(ptr, len)
+  unsafe {
+    std::slice::from_raw_parts(ptr, len)
+  }
 }
 
-pub unsafe fn build_array_mut<T>(ptr: *mut T, len: usize) -> &'static mut [T] {
+pub fn build_array_mut<T>(ptr: *mut T, len: usize) -> &'static mut [T] {
   assert!(!ptr.is_null());
-  std::slice::from_raw_parts_mut(ptr, len)
+  unsafe {
+    std::slice::from_raw_parts_mut(ptr, len)
+  }
 }
 
-pub unsafe fn build_vec<T>(input: *mut T, len: usize) -> Vec<T> {
+pub fn build_vec<T>(input: *mut T, len: usize) -> Vec<T> {
   assert!(!input.is_null());
-  Vec::from_raw_parts(input, len, len)
+  unsafe {
+    Vec::from_raw_parts(input, len, len)
+  }
 }
 
 /*
@@ -54,13 +60,13 @@ pub extern "C" fn hpx_hash_multi(depth: u8, n_elems: u32, coords_ptr: *mut f64, 
 } */
 
 #[no_mangle]
-pub extern "C" fn hpx_hash_lonlat(depth: u8, num_coords: u32, lon: *mut f64, lat: *mut f64, ipixels: *mut u64) {
+pub extern "C" fn hpx_hash_lonlat(depth: u8, num_coords: u32, lon: *const f64, lat: *const f64, ipixels: *mut u64) {
   let num_coords = num_coords as usize;
   
-  let lon = unsafe{ build_array(lon, num_coords) };
-  let lat = unsafe{ build_array(lat, num_coords) };
+  let lon = build_array(lon, num_coords);
+  let lat = build_array(lat, num_coords);
 
-  let res = unsafe{ build_array_mut(ipixels, num_coords) };
+  let res = build_array_mut(ipixels, num_coords);
   
   let layer = get_or_create(depth);
   for i in 0..num_coords {
@@ -81,11 +87,11 @@ pub extern "C" fn hpx_center(depth: u8, hash: u64, lon: &mut f64, lat: &mut f64)
 /// We do not return an array of LonLat not to have to explicitly call a function
 /// to free the memory on the Python side.
 #[no_mangle]
-pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *mut u64, coords: *mut f64) {
+pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *const u64, center_coords: *mut f64) {
   let num_ipixels = num_ipixels as usize;
   
-  let hashs = unsafe{ build_array(ipixels, num_ipixels) };
-  let res = unsafe{ build_array_mut(coords, num_ipixels << 1) };
+  let hashs = build_array(ipixels, num_ipixels);
+  let res = build_array_mut(center_coords, num_ipixels << 1);
 
   let layer = get_or_create(depth);
   
@@ -97,38 +103,53 @@ pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *mut u
 }
 
 /// The given array must be of size 8
-/// [Slon, Slat, Elon, Elat, Nlon, Nlat, Slon, Slat]
-pub extern "C" fn hpx_vertices(depth: u8, hash: u64, res_ptr: *mut f64) {
-  let res = unsafe{ build_array_mut(res_ptr, 8 as usize) };
-  let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = vertices(depth, hash as u64);
-  res[0] = s_lon;
-  res[1] = s_lat;
-  res[2] = e_lon;
-  res[3] = e_lat;
-  res[4] = n_lon;
-  res[5] = n_lat;
-  res[6] = w_lon;
-  res[7] = w_lat;
-  std::mem::forget(res_ptr);
-}
+/// [Slon, Slat, Elon, Elat, Nlon, Nlat, Wlon, Wlat]
+#[no_mangle]
+pub extern "C" fn hpx_vertices_lonlat(depth: u8, num_ipixels: u32, ipixels: *const u64, vertices_coords: *mut f64) {
+  let num_ipixels = num_ipixels as usize;
+  let res = build_array_mut(vertices_coords, num_ipixels << 3);
+  let ipixels = build_array(ipixels, num_ipixels);
 
+  for i in 0..num_ipixels {
+    let ipix = ipixels[i];
+    let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = vertices(depth, ipix);
+    let off = i << 3;
+
+    res[off] = s_lon;
+    res[off + 1] = s_lat;
+    res[off + 2] = e_lon;
+    res[off + 3] = e_lat;
+    res[off + 4] = n_lon;
+    res[off + 5] = n_lat;
+    res[off + 6] = w_lon;
+    res[off + 7] = w_lat;
+  }
+}
 
 /// The given array must be of size 9
 /// `[S, SE, E, SW, C, NE, W, NW, N]`
-pub extern "C" fn hpx_neighbours(depth: u8, hash: f64, res_ptr: *mut i64) {
-  let res = unsafe{ build_array_mut(res_ptr, 9 as usize) };
-  let neig_map = neighbours(depth, hash as u64, true);
-  res[0] = to_i64(neig_map.get(MainWind::S));
-  res[1] = to_i64(neig_map.get(MainWind::SE));
-  res[2] = to_i64(neig_map.get(MainWind::E));
-  res[3] = to_i64(neig_map.get(MainWind::SW));
-  res[4] = hash as i64;
-  res[5] = to_i64(neig_map.get(MainWind::NE));
-  res[6] = to_i64(neig_map.get(MainWind::W));
-  res[7] = to_i64(neig_map.get(MainWind::NW));
-  res[8] = to_i64(neig_map.get(MainWind::N));
-  // Do this so that rust will not free the memory of the arrays (they are owned and will be free the caller)
-  std::mem::forget(res_ptr);
+#[no_mangle]
+pub extern "C" fn hpx_neighbours(depth: u8, num_ipixels: u32, ipixels: *const u64, res: *mut i64) {
+  let num_ipixels = num_ipixels as usize;
+  let ipixels = build_array(ipixels, num_ipixels);
+
+  let res = build_array_mut(res, 9 * num_ipixels);
+
+  for i in 0..num_ipixels {
+    let ipix = ipixels[i];
+    let neig_map = neighbours(depth, ipix, true);
+
+    let off = i * 9;
+    res[off] = to_i64(neig_map.get(MainWind::S));
+    res[off + 1] = to_i64(neig_map.get(MainWind::SE));
+    res[off + 2] = to_i64(neig_map.get(MainWind::E));
+    res[off + 3] = to_i64(neig_map.get(MainWind::SW));
+    res[off + 4] = ipix as i64;
+    res[off + 5] = to_i64(neig_map.get(MainWind::NE));
+    res[off + 6] = to_i64(neig_map.get(MainWind::W));
+    res[off + 7] = to_i64(neig_map.get(MainWind::NW));
+    res[off + 8] = to_i64(neig_map.get(MainWind::N));
+  }
 }
 
 fn to_i64(val: Option<&u64>) -> i64 {
@@ -137,7 +158,6 @@ fn to_i64(val: Option<&u64>) -> i64 {
     None => -1_i64,
   }
 }
-
 
 // https://doc.rust-lang.org/1.7.0/src/libc/lib.rs.html#109
 
@@ -204,7 +224,7 @@ pub extern "C" fn hpx_query_cone_approx_custom(depth: u8, delta_depth: u8, lon: 
 #[no_mangle]
 pub extern "C" fn hpx_query_polygon_approx(depth: u8, n_vertices: u32, vertices_ptr: *mut f64) -> *mut PyBMOC  { // *mut [BMOCCell]
   let n_vertices = n_vertices as usize;
-  let vertices_coos = unsafe{ build_array(vertices_ptr, 2 * n_vertices) };
+  let vertices_coos = build_array(vertices_ptr, 2 * n_vertices);
   let mut vertices: Vec<(f64, f64)> = Vec::with_capacity(n_vertices);
   for i in (0..n_vertices << 1).step_by(2) {
     vertices.push((vertices_coos[i], vertices_coos[i+1]));
