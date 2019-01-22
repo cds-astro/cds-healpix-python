@@ -94,7 +94,7 @@ def healpix_neighbours(ipixels, depth):
     num_ipixels = ipixels.shape[0]
     # Allocation of the array containing the neighbours
     neighbours = np.zeros(num_ipixels * 9, dtype=np.int64)
-
+    
     C.hpx_neighbours(
         # depth
         depth,

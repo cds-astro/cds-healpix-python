@@ -126,6 +126,7 @@ pub extern "C" fn hpx_vertices_lonlat(depth: u8, num_ipixels: u32, ipixels: *con
   }
 }
 
+use std::panic;
 /// The given array must be of size 9
 /// `[S, SE, E, SW, C, NE, W, NW, N]`
 #[no_mangle]
@@ -134,7 +135,6 @@ pub extern "C" fn hpx_neighbours(depth: u8, num_ipixels: u32, ipixels: *const u6
   let ipixels = build_array(ipixels, num_ipixels);
 
   let res = build_array_mut(res, 9 * num_ipixels);
-
   for i in 0..num_ipixels {
     let ipix = ipixels[i];
     let neig_map = neighbours(depth, ipix, true);

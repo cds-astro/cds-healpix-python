@@ -62,4 +62,4 @@ def test_healpix_vertices_lonlat():
     print('speedup factor: ', d2 / d1)
 
 def test_healpix_neighbours():
-    print(healpix_neighbours(0, depth=0))
+    print(healpix_neighbours([0, 6], depth=0))

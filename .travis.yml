@@ -39,7 +39,8 @@ script:
   - cibuildwheel --output-dir dist
   ### Run the tests ###
   # Download the dependencies for compiling cdshealpix
-  - $PIP install pytest cffi astropy numpy setuptools-rust
+  - $PIP install pytest setuptools-rust
+  - $PIP install -r requirements.txt
   # Install Rust compiler
   - curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
   - export PATH="$HOME/.cargo/bin:$PATH"
