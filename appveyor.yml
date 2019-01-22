@@ -74,7 +74,7 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV
   - cargo -vV
-  - python -m pip install cibuildwheel==0.9.1 setuptools_rust
+  - pip install cibuildwheel==0.9.1 setuptools_rust
 
 before_test:
   # Set the path so that the good python version is chosen
