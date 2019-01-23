@@ -13,7 +13,7 @@ from ..healpix import healpix_from_lonlat, \
 def test_healpix_from_lonlat():
     size = 1000000
     lon = np.random.rand(size) * 360 * u.deg
-    #     lat = [0, 54, 9, 32, 49, 21, 0] * u.deg
+    #lat = [0, 54, 9, 32, 49, 21, 0] * u.deg
     lat = (np.random.rand(size) * 180 - 90) * u.deg
     depth = 12
     healpix_from_lonlat(lon=lon, lat=lat, depth=depth)
@@ -24,15 +24,14 @@ def test_healpix_from_lonlat():
     ipixels = healpix_from_lonlat(lon=lon, lat=lat, depth=depth)
     d1 = datetime.now() - t0
     print('cdshealpix: ', d1)
-    print(ipixels)
+    
 
     t1 = datetime.now()
     ipixels2 = lonlat_to_healpix(lon=lon, lat=lat, nside=(1 << depth), order='nested')
     d2 = datetime.now() - t1
     print('astropy_healpix: ', d2)
-    print(ipixels2)
-
-    print('speedup factor: ', d2 / d1)
+    
+    assert((ipixels == ipixels2).all())
 
 def test_healpix_center_lonlat():
     lon, lat = healpix_center_lonlat(ipixels=[0, 2, 4], depth=0)
