@@ -15,21 +15,21 @@ use cdshealpix::compass_point::{MainWind};
 // see: https://www.bignerdranch.com/blog/building-an-ios-app-in-rust-part-3/
 
 
-pub fn build_array<T>(ptr: *const T, len: usize) -> &'static [T] {
+pub fn to_slice<T>(ptr: *const T, len: usize) -> &'static [T] {
   assert!(!ptr.is_null());
   unsafe {
     std::slice::from_raw_parts(ptr, len)
   }
 }
 
-pub fn build_array_mut<T>(ptr: *mut T, len: usize) -> &'static mut [T] {
+pub fn to_slice_mut<T>(ptr: *mut T, len: usize) -> &'static mut [T] {
   assert!(!ptr.is_null());
   unsafe {
     std::slice::from_raw_parts_mut(ptr, len)
   }
 }
 
-pub fn build_vec<T>(input: *mut T, len: usize) -> Vec<T> {
+pub fn to_vec<T>(input: *mut T, len: usize) -> Vec<T> {
   assert!(!input.is_null());
   unsafe {
     Vec::from_raw_parts(input, len, len)
@@ -47,8 +47,8 @@ pub extern "C" fn hpx_hash(depth: u8, lon: f64, lat: f64) -> u64 {
 #[no_mangle]
 pub extern "C" fn hpx_hash_multi(depth: u8, n_elems: u32, coords_ptr: *mut f64, res_ptr: *mut u64) {
   let n_elems = n_elems as usize;
-  let coords = unsafe{ build_array(coords_ptr, 2 * n_elems) };
-  let res = unsafe{ build_array_mut(res_ptr, n_elems) };
+  let coords = unsafe{ to_slice(coords_ptr, 2 * n_elems) };
+  let res = unsafe{ to_slice_mut(res_ptr, n_elems) };
   // let mut res = unsafe{ build_vec(res_ptr, n_elems) };
   let layer = get_or_create(depth);
   for i in (0..coords.len()).step_by(2) {
@@ -63,10 +63,10 @@ pub extern "C" fn hpx_hash_multi(depth: u8, n_elems: u32, coords_ptr: *mut f64, 
 pub extern "C" fn hpx_hash_lonlat(depth: u8, num_coords: u32, lon: *const f64, lat: *const f64, ipixels: *mut u64) {
   let num_coords = num_coords as usize;
   
-  let lon = build_array(lon, num_coords);
-  let lat = build_array(lat, num_coords);
+  let lon = to_slice(lon, num_coords);
+  let lat = to_slice(lat, num_coords);
 
-  let res = build_array_mut(ipixels, num_coords);
+  let res = to_slice_mut(ipixels, num_coords);
   
   let layer = get_or_create(depth);
   for i in 0..num_coords {
@@ -90,8 +90,8 @@ pub extern "C" fn hpx_center(depth: u8, hash: u64, lon: &mut f64, lat: &mut f64)
 pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *const u64, center_coords: *mut f64) {
   let num_ipixels = num_ipixels as usize;
   
-  let hashs = build_array(ipixels, num_ipixels);
-  let res = build_array_mut(center_coords, num_ipixels << 1);
+  let hashs = to_slice(ipixels, num_ipixels);
+  let res = to_slice_mut(center_coords, num_ipixels << 1);
 
   let layer = get_or_create(depth);
   
@@ -107,8 +107,8 @@ pub extern "C" fn hpx_center_lonlat(depth: u8, num_ipixels: u32, ipixels: *const
 #[no_mangle]
 pub extern "C" fn hpx_vertices_lonlat(depth: u8, num_ipixels: u32, ipixels: *const u64, vertices_coords: *mut f64) {
   let num_ipixels = num_ipixels as usize;
-  let res = build_array_mut(vertices_coords, num_ipixels << 3);
-  let ipixels = build_array(ipixels, num_ipixels);
+  let res = to_slice_mut(vertices_coords, num_ipixels << 3);
+  let ipixels = to_slice(ipixels, num_ipixels);
 
   for i in 0..num_ipixels {
     let ipix = ipixels[i];
@@ -132,9 +132,9 @@ use std::panic;
 #[no_mangle]
 pub extern "C" fn hpx_neighbours(depth: u8, num_ipixels: u32, ipixels: *const u64, res: *mut i64) {
   let num_ipixels = num_ipixels as usize;
-  let ipixels = build_array(ipixels, num_ipixels);
+  let ipixels = to_slice(ipixels, num_ipixels);
 
-  let res = build_array_mut(res, 9 * num_ipixels);
+  let res = to_slice_mut(res, 9 * num_ipixels);
   for i in 0..num_ipixels {
     let ipix = ipixels[i];
     let neig_map = neighbours(depth, ipix, true);
@@ -165,7 +165,7 @@ fn to_i64(val: Option<&u64>) -> i64 {
 #[repr(C)]
 pub struct PyBMOC {
   len: u32,
-  data: *mut BMOCCell,
+  cells: Vec<BMOCCell>,
 }
 
 #[derive(Debug)]
@@ -176,10 +176,14 @@ pub struct BMOCCell {
   flag: u8,
 }
 
+
 #[no_mangle]
 pub extern "C" fn bmoc_free(ptr: *mut PyBMOC) {
   if !ptr.is_null() {
-    unsafe { Box::from_raw(ptr) };
+    unsafe {
+        Box::from_raw(ptr)
+        // Drop the content of the Box<PyBMOC> here
+    };
   }
 }
 
@@ -192,54 +196,45 @@ pub extern "C" fn length(ptr: *const BMOCCell) -> f64 {
   array.length()
 }*/
 
+#[no_mangle]
+pub extern "C" fn hpx_query_cone_approx(depth: u8, lon: f64, lat: f64, radius: f64) -> *const PyBMOC {
+    let cells = to_bmoc_cell_array(cone_overlap_approx(depth, lon, lat, radius));
+
+    let len = cells.len() as u32;
+    let bmoc = Box::new(PyBMOC {
+        len,
+        cells,
+    });
+    Box::into_raw(bmoc)
+}
 
 #[no_mangle]
-pub extern "C" fn hpx_query_cone_approx(depth: u8, lon: f64, lat: f64, radius: f64) -> *mut PyBMOC {
-  let mut cells = to_bmoc_cell_array(cone_overlap_approx(depth, lon, lat, radius));
-  cells.shrink_to_fit();
-  let data = cells.as_mut_ptr();
+pub extern "C" fn hpx_query_cone_approx_custom(depth: u8, delta_depth: u8, lon: f64, lat: f64, radius: f64) -> *const PyBMOC {
+  let cells = to_bmoc_cell_array(cone_overlap_approx_custom(depth, delta_depth, lon, lat, radius));
+
   let len = cells.len() as u32;
-  std::mem::forget(cells);
   let bmoc = Box::new(PyBMOC {
     len,
-    data,
+    cells,
   });
   Box::into_raw(bmoc)
 }
 
 #[no_mangle]
-pub extern "C" fn hpx_query_cone_approx_custom(depth: u8, delta_depth: u8, lon: f64, lat: f64, radius: f64) -> *mut PyBMOC {
-  let mut cells = to_bmoc_cell_array(cone_overlap_approx_custom(depth, delta_depth, lon, lat, radius));
-  cells.shrink_to_fit();
-  let data = cells.as_mut_ptr();
-  let len = cells.len() as u32;
-  std::mem::forget(cells);
-  let bmoc = Box::new(PyBMOC {
-    len,
-    data,
-  });
-  Box::into_raw(bmoc)
-}
-
-#[no_mangle]
-pub extern "C" fn hpx_query_polygon_approx(depth: u8, n_vertices: u32, vertices_ptr: *mut f64) -> *mut PyBMOC  { // *mut [BMOCCell]
+pub extern "C" fn hpx_query_polygon_approx(depth: u8, n_vertices: u32, vertices_ptr: *mut f64) -> *const PyBMOC  {
   let n_vertices = n_vertices as usize;
-  let vertices_coos = build_array(vertices_ptr, 2 * n_vertices);
+  let vertices_coos = to_slice(vertices_ptr, 2 * n_vertices);
   let mut vertices: Vec<(f64, f64)> = Vec::with_capacity(n_vertices);
   for i in (0..n_vertices << 1).step_by(2) {
     vertices.push((vertices_coos[i], vertices_coos[i+1]));
   }
-  // println!("entry len: {}", vertices.len());
-  std::mem::forget(vertices_coos);
-  let mut cells = to_bmoc_cell_array(polygon_overlap_approx(depth, &vertices.into_boxed_slice()));
-  cells.shrink_to_fit();
-  let ptr = cells.as_mut_ptr();
+
+  let cells = to_bmoc_cell_array(polygon_overlap_approx(depth, &vertices.into_boxed_slice()));
   let len = cells.len() as u32;
-  std::mem::forget(cells);
-  // Box::into_raw(cells)
+
   let bmoc = Box::new(PyBMOC {
     len,
-    data: ptr, //Box::into_raw(cells),
+    cells,
   });
   Box::into_raw(bmoc)
 }
@@ -255,19 +250,7 @@ fn to_bmoc_cell_array(bmoc: BMOC) -> Vec<BMOCCell> {
       flag: cell.is_full as u8,
     });
   }
+  // Free the cells without which are not occupied
+  cells.shrink_to_fit();
   cells
 }
-
-/*fn to_bmoc_cell_array(bmoc: BMOC) -> Box<[BMOCCell]> {
-  let n_elems = bmoc.entries.len();
-  let mut cells: Vec<BMOCCell> = Vec::with_capacity(n_elems);
-  for raw_value in bmoc.entries.iter() {
-    let cell = bmoc.from_raw_value(*raw_value);
-    cells.push(BMOCCell {
-      depth: cell.depth,
-      hash: cell.hash,
-      flag: cell.is_full as u8,
-    });
-  }
-  cells.into_boxed_slice()
-}*/

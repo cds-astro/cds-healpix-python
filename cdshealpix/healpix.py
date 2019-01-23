@@ -1,4 +1,4 @@
-from . import C, ffi
+from . import lib, ffi
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
@@ -17,7 +17,7 @@ def lonlat_to_healpix(lon, lat, depth):
     # Allocation of the array containing the resulting ipixels
     ipixels = np.zeros(num_ipixels, dtype=np.uint64)
 
-    C.hpx_hash_lonlat(
+    lib.hpx_hash_lonlat(
         # depth
         depth,
         # num of ipixels
@@ -39,7 +39,7 @@ def healpix_to_lonlat(ipixels, depth):
     # Allocation of the array containing the resulting coordinates
     lonlat = np.zeros(num_ipixels << 1, dtype=np.float64)
 
-    C.hpx_center_lonlat(
+    lib.hpx_center_lonlat(
         # depth
         depth,
         # num of ipixels
@@ -67,7 +67,7 @@ def healpix_vertices_lonlat(ipixels, depth):
     # Allocation of the array containing the resulting coordinates
     lonlat = np.zeros(num_ipixels << 3, dtype=np.float64)
 
-    C.hpx_vertices_lonlat(
+    lib.hpx_vertices_lonlat(
         # depth
         depth,
         # num of ipixels
@@ -95,7 +95,7 @@ def healpix_neighbours(ipixels, depth):
     # Allocation of the array containing the neighbours
     neighbours = np.zeros(num_ipixels * 9, dtype=np.int64)
     
-    C.hpx_neighbours(
+    lib.hpx_neighbours(
         # depth
         depth,
         # num of ipixels
@@ -109,3 +109,17 @@ def healpix_neighbours(ipixels, depth):
     neighbours = neighbours.reshape((-1, 9))
 
     return neighbours
+
+from .bmoc import BMOC
+def cone_search_lonlat(lon, lat, radius, depth):
+    if not lon.isscalar or not lat.isscalar or not radius.isscalar:
+        raise ValueError('The longitude, latitude and radius must be '
+                         'scalar Quantity objects')
+
+    lon = lon.to_value(u.rad)
+    lat = lat.to_value(u.rad)
+    radius = radius.to_value(u.rad)
+
+    cone = BMOC(depth=depth, lon=lon, lat=lat, radius=radius)
+
+    return cone.ipixels, cone.depth
