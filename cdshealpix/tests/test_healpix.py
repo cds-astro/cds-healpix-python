@@ -8,7 +8,8 @@ from ..healpix import lonlat_to_healpix, \
  healpix_to_skycoord, \
  healpix_vertices_lonlat, \
  healpix_neighbours, \
- cone_search_lonlat
+ cone_search_lonlat, \
+ polygon_search_lonlat
 
 def test_lonlat_to_healpix():
     size = 10000
@@ -64,3 +65,15 @@ def test_cone_search_lonlat():
     npix = 12 * 4 ** (depth)
     assert(((cone_depth >= 0) & (cone_depth <= depth)).all())
     assert(((cone_ipix >= 0) & (cone_ipix < npix)).all())
+
+def test_polygon_search_lonlat():
+    size = 10
+    depth = 12
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
+
+    poly_ipix, poly_depth = polygon_search_lonlat(lon=lon, lat=lat, depth=depth)
+
+    npix = 12 * 4 ** (depth)
+    assert(((poly_depth >= 0) & (poly_depth <= depth)).all())
+    assert(((poly_ipix >= 0) & (poly_ipix < npix)).all())

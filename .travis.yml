@@ -24,7 +24,6 @@ matrix:
     - os: osx
       language: generic
       env:
-        - CIBW_SKIP=*cp34-*
         - PIP=pip2
         - PYTHON=python2
 

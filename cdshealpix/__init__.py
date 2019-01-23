@@ -42,7 +42,8 @@ from .healpix import lonlat_to_healpix, \
  healpix_vertices_lonlat, \
  healpix_vertices_skycoord, \
  healpix_neighbours, \
- cone_search_lonlat
+ cone_search_lonlat, \
+ polygon_search_lonlat
 from .version import __version__
 
 __all__ = [
@@ -53,4 +54,5 @@ __all__ = [
     'healpix_vertices_skycoord',
     'healpix_neighbours',
     'cone_search_lonlat',
+    'polygon_search_lonlat',
 ]

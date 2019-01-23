@@ -221,12 +221,15 @@ pub extern "C" fn hpx_query_cone_approx_custom(depth: u8, delta_depth: u8, lon: 
 }
 
 #[no_mangle]
-pub extern "C" fn hpx_query_polygon_approx(depth: u8, n_vertices: u32, vertices_ptr: *mut f64) -> *const PyBMOC  {
+pub extern "C" fn hpx_query_polygon_approx(depth: u8, n_vertices: u32, lon: *mut f64, lat: *mut f64) -> *const PyBMOC  {
   let n_vertices = n_vertices as usize;
-  let vertices_coos = to_slice(vertices_ptr, 2 * n_vertices);
+
+  let lon = to_slice(lon, n_vertices);
+  let lat = to_slice(lat, n_vertices);
+  
   let mut vertices: Vec<(f64, f64)> = Vec::with_capacity(n_vertices);
-  for i in (0..n_vertices << 1).step_by(2) {
-    vertices.push((vertices_coos[i], vertices_coos[i+1]));
+  for i in 0..n_vertices {
+    vertices.push((lon[i], lat[i]));
   }
 
   let cells = to_bmoc_cell_array(polygon_overlap_approx(depth, &vertices.into_boxed_slice()));

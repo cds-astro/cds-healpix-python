@@ -37,4 +37,4 @@ const bmoc* hpx_query_cone_approx(uint8_t depth,
                                    double lon, double lat,
                                    double radius);
 const bmoc* hpx_query_cone_approx_custom(uint8_t depth, uint8_t delta_depth, double lon, double lat, double radius);
-const bmoc* hpx_query_polygon_approx(uint8_t depth, uint32_t n_vertices, double* vertices_coords);
+const bmoc* hpx_query_polygon_approx(uint8_t depth, uint32_t n_vertices, const double* lon, const double* lat);

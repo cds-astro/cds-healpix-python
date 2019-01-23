@@ -1,4 +1,5 @@
 from . import lib, ffi
+from .bmoc import BMOCConeApprox, BMOCPolygonApprox
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
@@ -10,8 +11,8 @@ def lonlat_to_healpix(lon, lat, depth):
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
 
-    if lon.shape[0] != lat.shape[0]:
-        raise IndexError("The number of longitudes does not match with the number of latitudes given")
+    if lon.shape != lat.shape:
+        raise ValueError("The number of longitudes does not match with the number of latitudes given")
     
     num_ipixels = lon.shape[0]
     # Allocation of the array containing the resulting ipixels
@@ -110,7 +111,6 @@ def healpix_neighbours(ipixels, depth):
 
     return neighbours
 
-from .bmoc import BMOC
 def cone_search_lonlat(lon, lat, radius, depth):
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
@@ -120,6 +120,22 @@ def cone_search_lonlat(lon, lat, radius, depth):
     lat = lat.to_value(u.rad)
     radius = radius.to_value(u.rad)
 
-    cone = BMOC(depth=depth, lon=lon, lat=lat, radius=radius)
+    cone = BMOCConeApprox(depth=depth, lon=lon, lat=lat, radius=radius)
 
     return cone.ipixels, cone.depth
+
+def polygon_search_lonlat(lon, lat, depth):
+    lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
+    lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
+
+    if lon.shape != lat.shape:
+        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+
+    num_vertices = lon.shape[0]
+
+    if num_vertices < 3:
+        raise IndexError("There must be at least 3 vertices in order to form a polygon")
+    
+    polygon = BMOCPolygonApprox(depth=depth, num_vertices=num_vertices, lon=lon, lat=lat)
+
+    return polygon.ipixels, polygon.depth
