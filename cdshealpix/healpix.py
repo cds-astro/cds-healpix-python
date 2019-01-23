@@ -4,7 +4,7 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 import numpy as np
 
-def healpix_from_lonlat(lon, lat, depth):
+def lonlat_to_healpix(lon, lat, depth):
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
@@ -31,7 +31,7 @@ def healpix_from_lonlat(lon, lat, depth):
 
     return ipixels
 
-def healpix_center_lonlat(ipixels, depth):
+def healpix_to_lonlat(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
     ipixels = ipixels.astype(np.uint64)
     
@@ -55,8 +55,8 @@ def healpix_center_lonlat(ipixels, depth):
 
     return lon, lat
 
-def healpix_center_skycoord(ipixels, depth):
-    lon, lat = healpix_center_lonlat(ipixels, depth)
+def healpix_to_skycoord(ipixels, depth):
+    lon, lat = healpix_to_lonlat(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def healpix_vertices_lonlat(ipixels, depth):

@@ -1,63 +1,73 @@
 import pytest
 import astropy.units as u
 import numpy as np
-from astropy_healpix.core import lonlat_to_healpix
+import astropy_healpix
 
-from ..healpix import healpix_from_lonlat, \
- healpix_center_lonlat, \
- healpix_center_skycoord, \
+from ..healpix import lonlat_to_healpix, \
+ healpix_to_lonlat, \
+ healpix_to_skycoord, \
  healpix_vertices_lonlat, \
- healpix_vertices_skycoord, \
  healpix_neighbours
 
-def test_healpix_from_lonlat():
-    size = 1000000
-    lon = np.random.rand(size) * 360 * u.deg
-    #lat = [0, 54, 9, 32, 49, 21, 0] * u.deg
-    lat = (np.random.rand(size) * 180 - 90) * u.deg
+@pytest.mark.benchmark(group="lonlat_to_healpix")
+def test_lonlat_to_healpix(benchmark):
+    size = 10000
     depth = 12
-    healpix_from_lonlat(lon=lon, lat=lat, depth=depth)
-    lonlat_to_healpix(lon=lon, lat=lat, nside=(1 << depth), order='nested')
-    print('\n')
-    from datetime import datetime
-    t0 = datetime.now()
-    ipixels = healpix_from_lonlat(lon=lon, lat=lat, depth=depth)
-    d1 = datetime.now() - t0
-    print('cdshealpix: ', d1)
-    
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-    t1 = datetime.now()
-    ipixels2 = lonlat_to_healpix(lon=lon, lat=lat, nside=(1 << depth), order='nested')
-    d2 = datetime.now() - t1
-    print('astropy_healpix: ', d2)
-    
-    assert((ipixels == ipixels2).all())
+    ipixels = benchmark(lonlat_to_healpix, lon=lon, lat=lat, depth=depth)
 
-def test_healpix_center_lonlat():
-    lon, lat = healpix_center_lonlat(ipixels=[0, 2, 4], depth=0)
+@pytest.mark.benchmark(group="lonlat_to_healpix")
+def test_lonlat_to_healpix_astropy(benchmark):
+    size = 10000
+    depth = 12
+    nside = 1 << depth
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-def test_healpix_center_skycoord():
-    skycoord = healpix_center_skycoord(ipixels=[0, 2, 4], depth=0)
+    ipixels = benchmark(astropy_healpix.core.lonlat_to_healpix, lon=lon, lat=lat, nside=nside, order='nested')
 
-#TODO: see a cleaner method for performing benchmarks
-def test_healpix_vertices_lonlat():
-    depth = 0
+@pytest.mark.benchmark(group="healpix_to_lonlat")
+def test_healpix_to_lonlat(benchmark):
+    size = 10000
+    depth = 12
+    ipixels = np.random.randint(12 * 4 ** (depth), size=size)
+
+    lon, lat = benchmark(healpix_to_lonlat, ipixels=ipixels, depth=depth)
+
+@pytest.mark.benchmark(group="healpix_to_lonlat")
+def test_healpix_to_lonlat_astropy(benchmark):
+    size = 10000
+    depth = 12
+    nside = 1 << depth
+    ipixels = np.random.randint(12 * 4 ** (depth), size=size)
+
+    lon, lat = benchmark(astropy_healpix.core.healpix_to_lonlat, healpix_index=ipixels, nside=nside, order='nested')
+
+def test_healpix_to_skycoord():
+    skycoord = healpix_to_skycoord(ipixels=[0, 2, 4], depth=0)
+
+@pytest.mark.benchmark(group="healpix_vertices_lonlat")
+def test_healpix_vertices_lonlat(benchmark):
+    depth = 12
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
-    print(ipixels)
 
-    print('\n')
-    from datetime import datetime
-    t0 = datetime.now()
-    lon, lat = healpix_vertices_lonlat(ipixels=ipixels, depth=depth)
-    d1 = datetime.now() - t0
-    print('cdshealpix: ', d1)
+    lon, lat = benchmark(healpix_vertices_lonlat, ipixels=ipixels, depth=depth)
 
-    from astropy_healpix.core import boundaries_lonlat
-    t1 = datetime.now()
-    lon2, lat2 = boundaries_lonlat(ipixels, nside=(1 << depth), step=1, order='nested')
-    d2 = datetime.now() - t1
-    print('astropy_healpix: ', d2)
+@pytest.mark.benchmark(group="healpix_vertices_lonlat")
+def test_healpix_vertices_lonlat_astropy(benchmark):
+    depth = 12
+    size = 100000
+    ipixels = np.random.randint(12 * 4**(depth), size=size)
 
-def test_healpix_neighbours():
-    print(healpix_neighbours([0, 6], depth=0))
+    lon2, lat2 = benchmark(astropy_healpix.core.boundaries_lonlat, healpix_index=ipixels, nside=(1 << depth), step=1, order='nested')
+
+@pytest.mark.benchmark(group="healpix_neighbours")
+def test_healpix_neighbours(benchmark):
+    depth = 12
+    size = 100000
+    ipixels = np.random.randint(12 * 4**(depth), size=size)
+
+    neighbours = benchmark(healpix_neighbours, ipixels=ipixels, depth=depth)

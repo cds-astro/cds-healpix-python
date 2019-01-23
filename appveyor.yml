@@ -85,8 +85,8 @@ install:
 build_script:
   # Install python dependencies for running compiling
   # the dynamic library and run the tests
-  - python -m pip install pytest setuptools-rust astropy_healpix
   - python -m pip install -r requirements.txt
+  - python -m pip install pytest pytest_benchmark setuptools-rust astropy_healpix
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location

@@ -72,18 +72,18 @@ ffi.cdef("""
 dyn_lib_path = find_dynamic_lib_file()
 C = ffi.dlopen(dyn_lib_path)
 
-from .healpix import healpix_from_lonlat, \
- healpix_center_lonlat, \
- healpix_center_skycoord, \
+from .healpix import lonlat_to_healpix, \
+ healpix_to_lonlat, \
+ healpix_to_skycoord, \
  healpix_vertices_lonlat, \
  healpix_vertices_skycoord, \
  healpix_neighbours
 from .version import __version__
 
 __all__ = [
-    'healpix_from_lonlat',
-    'healpix_center_lonlat',
-    'healpix_center_skycoord',
+    'lonlat_to_healpix',
+    'healpix_to_lonlat',
+    'healpix_to_skycoord',
     'healpix_vertices_lonlat',
     'healpix_vertices_skycoord',
     'healpix_neighbours',
