@@ -182,7 +182,7 @@ pub extern "C" fn bmoc_free(ptr: *mut PyBMOC) {
   if !ptr.is_null() {
     unsafe {
         Box::from_raw(ptr)
-        // Drop the content of the Box<PyBMOC> here
+        // Drop the content of the PyBMOC here.
     };
   }
 }
@@ -253,7 +253,7 @@ fn to_bmoc_cell_array(bmoc: BMOC) -> Vec<BMOCCell> {
       flag: cell.is_full as u8,
     });
   }
-  // Free the cells without which are not occupied
+  // Free the cells which are not occupied
   cells.shrink_to_fit();
   cells
 }

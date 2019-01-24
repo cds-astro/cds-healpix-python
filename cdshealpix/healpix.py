@@ -5,7 +5,14 @@ import astropy.units as u
 from astropy.coordinates import SkyCoord
 import numpy as np
 
-def lonlat_to_healpix(lon, lat, depth):
+# Raise a ValueError exception if the input 
+# HEALPix cells array contains invalid values
+def _check_ipixels(data, depth):
+    npix = 12 * 4 ** (depth)
+    if (data >= npix).any() or (data < 0).any():
+        raise ValueError("The input HEALPix cells contains value out of [0, {0}[".format(npix))
+
+def lonlat_to_healpix_nest(lon, lat, depth):
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
@@ -32,8 +39,10 @@ def lonlat_to_healpix(lon, lat, depth):
 
     return ipixels
 
-def healpix_to_lonlat(ipixels, depth):
+def healpix_to_lonlat_nest(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
+    _check_ipixels(data=ipixels, depth=depth)
+
     ipixels = ipixels.astype(np.uint64)
     
     num_ipixels = ipixels.shape[0]
@@ -56,12 +65,14 @@ def healpix_to_lonlat(ipixels, depth):
 
     return lon, lat
 
-def healpix_to_skycoord(ipixels, depth):
-    lon, lat = healpix_to_lonlat(ipixels, depth)
+def healpix_to_skycoord_nest(ipixels, depth):
+    lon, lat = healpix_to_lonlat_nest(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def healpix_vertices_lonlat(ipixels, depth):
+def healpix_vertices_lonlat_nest(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
+    _check_ipixels(data=ipixels, depth=depth)
+
     ipixels = ipixels.astype(np.uint64)
     
     num_ipixels = ipixels.shape[0]
@@ -84,12 +95,14 @@ def healpix_vertices_lonlat(ipixels, depth):
 
     return lon, lat
 
-def healpix_vertices_skycoord(ipixels, depth):
-    lon, lat = healpix_vertices_lonlat(ipixels, depth)
+def healpix_vertices_skycoord_nest(ipixels, depth):
+    lon, lat = healpix_vertices_lonlat_nest(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def healpix_neighbours(ipixels, depth):
+def healpix_neighbours_nest(ipixels, depth):
     ipixels = np.atleast_1d(ipixels).ravel()
+    _check_ipixels(data=ipixels, depth=depth)
+
     ipixels = ipixels.astype(np.uint64)
     
     num_ipixels = ipixels.shape[0]
@@ -111,7 +124,7 @@ def healpix_neighbours(ipixels, depth):
 
     return neighbours
 
-def cone_search_lonlat(lon, lat, radius, depth):
+def cone_search_lonlat_nest(lon, lat, radius, depth):
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
                          'scalar Quantity objects')
@@ -124,7 +137,7 @@ def cone_search_lonlat(lon, lat, radius, depth):
 
     return cone.ipixels, cone.depth
 
-def polygon_search_lonlat(lon, lat, depth):
+def polygon_search_lonlat_nest(lon, lat, depth):
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
 

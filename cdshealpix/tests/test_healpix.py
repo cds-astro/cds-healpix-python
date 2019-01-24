@@ -3,13 +3,13 @@ import numpy as np
 
 import astropy.units as u
 
-from ..healpix import lonlat_to_healpix, \
- healpix_to_lonlat, \
- healpix_to_skycoord, \
- healpix_vertices_lonlat, \
- healpix_neighbours, \
- cone_search_lonlat, \
- polygon_search_lonlat
+from ..healpix import lonlat_to_healpix_nest, \
+ healpix_to_lonlat_nest, \
+ healpix_to_skycoord_nest, \
+ healpix_vertices_lonlat_nest, \
+ healpix_neighbours_nest, \
+ cone_search_lonlat_nest, \
+ polygon_search_lonlat_nest
 
 def test_lonlat_to_healpix():
     size = 10000
@@ -17,7 +17,7 @@ def test_lonlat_to_healpix():
     lon = np.random.rand(size) * 360 * u.deg
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-    ipixels = lonlat_to_healpix(lon=lon, lat=lat, depth=depth)
+    ipixels = lonlat_to_healpix_nest(lon=lon, lat=lat, depth=depth)
 
     npix = 12 * 4**(depth)
     assert(((ipixels >= 0) & (ipixels < npix)).all())
@@ -27,11 +27,11 @@ def test_healpix_to_lonlat():
     depth = 12
     ipixels = np.random.randint(12 * 4 ** (depth), size=size)
 
-    lon, lat = healpix_to_lonlat(ipixels=ipixels, depth=depth)
+    lon, lat = healpix_to_lonlat_nest(ipixels=ipixels, depth=depth)
     assert(lon.shape == lat.shape)
 
 def test_healpix_to_skycoord():
-    skycoord = healpix_to_skycoord(ipixels=[0, 2, 4], depth=0)
+    skycoord = healpix_to_skycoord_nest(ipixels=[0, 2, 4], depth=0)
     assert(skycoord.icrs.ra.shape == skycoord.icrs.dec.shape)
 
 def test_healpix_vertices_lonlat():
@@ -39,7 +39,7 @@ def test_healpix_vertices_lonlat():
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
-    lon, lat = healpix_vertices_lonlat(ipixels=ipixels, depth=depth)
+    lon, lat = healpix_vertices_lonlat_nest(ipixels=ipixels, depth=depth)
     assert(lon.shape == lat.shape)
     assert(lon.shape == (size, 4))
 
@@ -48,7 +48,7 @@ def test_healpix_neighbours():
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
-    neighbours = healpix_neighbours(ipixels=ipixels, depth=depth)
+    neighbours = healpix_neighbours_nest(ipixels=ipixels, depth=depth)
     assert(neighbours.shape == (size, 9))
 
     npix = 12 * 4**(depth)
@@ -60,7 +60,7 @@ def test_cone_search_lonlat():
     radius = (np.random.rand(1)[0] * 45) * u.deg
     depth = 12
     
-    cone_ipix, cone_depth = cone_search_lonlat(lon=lon, lat=lat, radius=radius, depth=depth)
+    cone_ipix, cone_depth = cone_search_lonlat_nest(lon=lon, lat=lat, radius=radius, depth=depth)
 
     npix = 12 * 4 ** (depth)
     assert(((cone_depth >= 0) & (cone_depth <= depth)).all())
@@ -72,7 +72,7 @@ def test_polygon_search_lonlat():
     lon = np.random.rand(size) * 360 * u.deg
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-    poly_ipix, poly_depth = polygon_search_lonlat(lon=lon, lat=lat, depth=depth)
+    poly_ipix, poly_depth = polygon_search_lonlat_nest(lon=lon, lat=lat, depth=depth)
 
     npix = 12 * 4 ** (depth)
     assert(((poly_depth >= 0) & (poly_depth <= depth)).all())

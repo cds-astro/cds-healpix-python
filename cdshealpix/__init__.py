@@ -36,23 +36,23 @@ with open("./cdshealpix/bindings.h", "r") as f_in:
 dyn_lib_path = find_dynamic_lib_file()
 lib = ffi.dlopen(dyn_lib_path)
 
-from .healpix import lonlat_to_healpix, \
- healpix_to_lonlat, \
- healpix_to_skycoord, \
- healpix_vertices_lonlat, \
- healpix_vertices_skycoord, \
- healpix_neighbours, \
- cone_search_lonlat, \
- polygon_search_lonlat
+from .healpix import lonlat_to_healpix_nest, \
+ healpix_to_lonlat_nest, \
+ healpix_to_skycoord_nest, \
+ healpix_vertices_lonlat_nest, \
+ healpix_vertices_skycoord_nest, \
+ healpix_neighbours_nest, \
+ cone_search_lonlat_nest, \
+ polygon_search_lonlat_nest
 from .version import __version__
 
 __all__ = [
-    'lonlat_to_healpix',
-    'healpix_to_lonlat',
-    'healpix_to_skycoord',
-    'healpix_vertices_lonlat',
-    'healpix_vertices_skycoord',
-    'healpix_neighbours',
-    'cone_search_lonlat',
-    'polygon_search_lonlat',
+    'lonlat_to_healpix_nest',
+    'healpix_to_lonlat_nest',
+    'healpix_to_skycoord_nest',
+    'healpix_vertices_lonlat_nest',
+    'healpix_vertices_skycoord_nest',
+    'healpix_neighbours_nest',
+    'cone_search_lonlat_nest',
+    'polygon_search_lonlat_nest',
 ]

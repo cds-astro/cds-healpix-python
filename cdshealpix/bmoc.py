@@ -6,7 +6,7 @@ class BMOC(object):
         self.__obj = obj
         self.ipixels = np.zeros(self.__obj.ncells, dtype=np.uint64)
         self.depth = np.zeros(self.__obj.ncells, dtype=np.uint32)
-        
+
         for i in range(self.ipixels.shape[0]):
             self.ipixels[i] = self.__obj.cells[i].hash
             self.depth[i] = self.__obj.cells[i].depth

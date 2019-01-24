@@ -24,8 +24,8 @@ matrix:
     - os: osx
       language: generic
       env:
-        - PIP=pip2
-        - PYTHON=python2
+        - PIP=pip
+        - PYTHON=python
 
 env:
   global:
