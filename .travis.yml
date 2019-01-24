@@ -24,8 +24,11 @@ matrix:
     - os: osx
       language: generic
       env:
-        - PIP=pip
-        - PYTHON=python
+        - PIP=pip2
+        - PYTHON=python2
+        # Skip generating Python3.4 MacOS wheel because upgrading pip stalls
+        # See https://github.com/joerick/cibuildwheel/issues/122
+        - CIBW_SKIP=*cp34-*
 
 env:
   global:
