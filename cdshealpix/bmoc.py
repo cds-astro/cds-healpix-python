@@ -4,12 +4,16 @@ import numpy as np
 class BMOC(object):
     def __init__(self, obj):
         self.__obj = obj
-        self.ipixels = np.zeros(self.__obj.ncells, dtype=np.uint64)
-        self.depth = np.zeros(self.__obj.ncells, dtype=np.uint32)
+        num_pix = self.__obj.ncells
+        self.data = np.zeros(num_pix, dtype={
+            'names':('ipix', 'depth', 'fully_covered'),
+            'formats':(np.uint64, np.uint32, np.uint8),
+        })
 
-        for i in range(self.ipixels.shape[0]):
-            self.ipixels[i] = self.__obj.cells[i].hash
-            self.depth[i] = self.__obj.cells[i].depth
+        for i in range(num_pix):
+            self.data["ipix"][i] = self.__obj.cells[i].hash
+            self.data["depth"][i] = self.__obj.cells[i].depth
+            self.data["fully_covered"][i] = self.__obj.cells[i].flag
 
     def __enter__(self):
         return self

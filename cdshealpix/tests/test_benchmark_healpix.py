@@ -81,7 +81,7 @@ depth_c = 5
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search(benchmark):
-    ipix, depth = benchmark(cone_search_lonlat_nest, lon=lon_c, lat=lat_c, radius=radius_c, depth=depth_c)
+    res = benchmark(cone_search_lonlat_nest, lon=lon_c, lat=lat_c, radius=radius_c, depth=depth_c)
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search_astropy(benchmark):

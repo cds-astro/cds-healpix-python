@@ -135,7 +135,7 @@ def cone_search_lonlat_nest(lon, lat, radius, depth):
 
     cone = BMOCConeApprox(depth=depth, lon=lon, lat=lat, radius=radius)
 
-    return cone.ipixels, cone.depth
+    return cone.data
 
 def polygon_search_lonlat_nest(lon, lat, depth):
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
@@ -151,4 +151,4 @@ def polygon_search_lonlat_nest(lon, lat, depth):
     
     polygon = BMOCPolygonApprox(depth=depth, num_vertices=num_vertices, lon=lon, lat=lat)
 
-    return polygon.ipixels, polygon.depth
+    return polygon.data

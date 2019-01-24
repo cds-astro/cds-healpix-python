@@ -60,11 +60,11 @@ def test_cone_search_lonlat():
     radius = (np.random.rand(1)[0] * 45) * u.deg
     depth = 12
     
-    cone_ipix, cone_depth = cone_search_lonlat_nest(lon=lon, lat=lat, radius=radius, depth=depth)
+    res = cone_search_lonlat_nest(lon=lon, lat=lat, radius=radius, depth=depth)
 
     npix = 12 * 4 ** (depth)
-    assert(((cone_depth >= 0) & (cone_depth <= depth)).all())
-    assert(((cone_ipix >= 0) & (cone_ipix < npix)).all())
+    assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())
+    assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
 
 def test_polygon_search_lonlat():
     size = 10
@@ -72,8 +72,8 @@ def test_polygon_search_lonlat():
     lon = np.random.rand(size) * 360 * u.deg
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-    poly_ipix, poly_depth = polygon_search_lonlat_nest(lon=lon, lat=lat, depth=depth)
+    res = polygon_search_lonlat_nest(lon=lon, lat=lat, depth=depth)
 
     npix = 12 * 4 ** (depth)
-    assert(((poly_depth >= 0) & (poly_depth <= depth)).all())
-    assert(((poly_ipix >= 0) & (poly_ipix < npix)).all())
+    assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())
+    assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
