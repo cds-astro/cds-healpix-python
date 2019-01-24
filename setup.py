@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
-from cdshealpix.version import __version__
+exec(open('./cdshealpix/version.py').read())
 
 def get_package_dependencies():
     dependencies = []
