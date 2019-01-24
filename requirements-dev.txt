@@ -1,0 +1,6 @@
+setuptools_rust
+pytest
+astropy_healpix
+healpy
+pytest_benchmark
+cffi
