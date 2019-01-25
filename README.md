@@ -135,7 +135,6 @@ The generation of the dynamic library is managed by [setuptools_rust](https://gi
 cd <path_to_cloned_repo>
 ```
 
-
 and run this command:
 
 ```shell
