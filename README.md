@@ -29,6 +29,61 @@ import astropy.units as u
 ipixels = lonlat_to_healpix_nest(lon=[0, 50, 25] * u.deg, lat=[6, -12, 45] * u.deg, depth=12)
 ```
 
+### Get the vertices (lon, lat) position from HEALPix indices
+
+```python
+from cdshealpix import healpix_vertices_lonlat_nest
+import numpy as np
+
+ipixels = np.array([42, 6, 10])
+
+lon, lat = healpix_vertices_lonlat_nest(ipixels=ipixels, depth=12)
+```
+
+### Get the neighbours from HEALPix indices
+
+```python
+from cdshealpix import healpix_neighbours_nest
+import numpy as np
+
+ipixels = np.array([42, 6, 10])
+
+neighbours = healpix_neighbours_nest(ipixels=ipixels, depth=12)
+```
+
+### Cone search
+
+```python
+from cdshealpix import cone_search_lonlat_nest
+import astropy.units as u
+
+cone = cone_search_lonlat_nest(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+# This gives a numpy array of structures describing a bmoc.
+# This structure contains 3 attributes:
+# - the HEALPix indice of the cell
+# - the depth of the cell
+# - a flag. If it is equal to one, the cell is fully covered by the cone. If it is equal to 0 then the cell is partially covered by the cone
+cone
+>>> array([(4407159, 10, 0), (4407163, 10, 0), (4407164, 10, 0), ...,
+       (5030019, 10, 0), (5030020, 10, 0), (5030024, 10, 0)],
+      dtype=[('ipix', '<u8'), ('depth', '<u4'), ('fully_covered', 'u1')])
+```
+
+### Polygon search
+
+```python
+from cdshealpix import polygon_search_lonlat_nest
+import astropy.units as u
+import numpy as np
+
+depth = 12
+# Generate a triangle
+lon = np.random.rand(3) * 360 * u.deg
+lat = (np.random.rand(3) * 178 - 89) * u.deg
+
+poly = polygon_search_lonlat_nest(lon=lon, lat=lat, depth=depth)
+```
+
 ## Contributing
 
 This section describes how you can contribute to the project. It will require you to install:
@@ -36,7 +91,7 @@ This section describes how you can contribute to the project. It will require yo
 - [Rustup](https://www.rust-lang.org/learn/get-started): the Rust installer and version management tool.
 - [setuptools_rust](https://github.com/PyO3/setuptools-rust) PyPI package
 - For running the basic tests: [pytest](https://docs.pytest.org/en/latest/)
-- For running the benchmarks: [pytest_benchmark](https://pytest-benchmark.readthedocs.io/en/latest/) [astropy_healpix](https://github.com/astropy/astropy-healpix), [healpy](https://github.com/healpy/healpy)
+- For running the benchmarks: [pytest_benchmark](https://pytest-benchmark.readthedocs.io/en/latest/) [astropy_healpix](https://github.com/astropy/astropy-healpix)
 
 ### Compiling the cdshealpix Rust dynamic library
 
@@ -44,7 +99,7 @@ This section describes how you can contribute to the project. It will require yo
 
 If you want to contribute you first must download Rustup:
 ```shell
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
+curl https://sh.rustup.rs -sSf | sh -s -- -y
 ```
 
 

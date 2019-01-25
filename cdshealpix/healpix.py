@@ -133,7 +133,7 @@ def cone_search_lonlat_nest(lon, lat, radius, depth):
     lat = lat.to_value(u.rad)
     radius = radius.to_value(u.rad)
 
-    cone = BMOCConeApprox(depth=depth, lon=lon, lat=lat, radius=radius)
+    cone = BMOCConeApprox(depth=depth, depth_delta=2, lon=lon, lat=lat, radius=radius)
 
     return cone.data
 
