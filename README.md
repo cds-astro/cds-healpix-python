@@ -99,13 +99,13 @@ This section describes how you can contribute to the project. It will require yo
 
 If you want to contribute you first must download Rustup:
 ```shell
-curl https://sh.rustup.rs -sSf | sh -s -- -y
+curl https://sh.rustup.rs -sSf | sh
 ```
-
+and follow the installation instructions.
 
 Rustup will allow you to compile the dynamic library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded from python by the CFFI package.
 
-Then you can create a new virtual environment cdshealpix-env specifying the version of python you need:
+Then you can create a new virtual environment (using the virtualenv package) cdshealpix-env specifying the version of python you need:
 
 ```shell
 virtualenv -p /usr/bin/python3 cdshealpix-env
@@ -123,13 +123,20 @@ Install all the python dependencies for contributing:
 pip install -r <path_to_cloned_repo>/requirements-dev.txt
 ```
 
-At this moment you have correctly set up your development environment. You can develop and launch tests/benchmarks in it. When you will be done, you can deactivate it by typing ```deactivate```.
+At this moment you have correctly set up your development environment. You can develop and launch the tests/benchmarks in it. When you will be done, you can deactivate it by typing ```deactivate```.
 
 The next step tells you how to generate the dynamic library associated with `cdshealpix`.
 
 #### Dynamic library compilation
 
-The generation of the dynamic library is managed by [setuptools_rust](https://github.com/PyO3/setuptools-rust). Just run this command in the root of your cloned repo.
+The generation of the dynamic library is managed by [setuptools_rust](https://github.com/PyO3/setuptools-rust). Just go to the root of your cloned repo:
+
+```shell
+cd <path_to_cloned_repo>
+```
+
+
+and run this command:
 
 ```shell
 python setup.py build_rust
