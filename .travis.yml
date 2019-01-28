@@ -22,6 +22,7 @@ matrix:
         # We use docker for generating the wheels for Linux.
         - docker
     - os: osx
+      sudo: required
       language: generic
       env:
         - PIP=pip2
