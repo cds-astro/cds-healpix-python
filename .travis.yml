@@ -7,11 +7,12 @@ env:
 
 stages:
   - test
-  - name: deploy
-    if: branch = master
+  - deploy
+#  - name: deploy
+#    if: branch = master
 
 # TEST STAGE
-matrix:
+jobs:
   include:
     - stage: test
       name: "Python2 linux"
@@ -19,42 +20,28 @@ matrix:
       env:
         - PIP=pip2
         - PYTHON=python2
+      script: ./testing.sh
     - name: "Python3 linux"
       os: linux
       env:
         - PIP=pip
         - PYTHON=python
+      script: ./testing.sh
     - name: "Python2 OSX"
       os: osx
       language: generic
       env:
         - PIP=pip2
         - PYTHON=python2
+      script: ./testing.sh
     - name: "Python3 OSX"
       os: osx
       language: generic
       env:
         - PIP=pip
         - PYTHON=python
-
-script:
-  ### Run the tests ###
-  # Download the dependencies for compiling cdshealpix
-  - $PIP install -r requirements.txt
-  - $PIP install pytest setuptools-rust
-  # Install Rust compiler
-  - curl https://sh.rustup.rs -sSf | sh -s -- -y
-  - export PATH="$HOME/.cargo/bin:$PATH"
-  # Generate the dynamic library from the cdshealpix Rust crate.
-  # This will download the crate from crates.io and build it first.
-  - $PYTHON setup.py build_rust
-  # Move the dynamic lib to the python package folder
-  - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
-  - $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
-
-# DEPLOY STAGE
-jobs: 
-  include:
+      script: ./testing.sh    
+    # DEPLOY STAGE
     - stage: deploy
       name: "manylinux1_i686"
       # Job generating the wheels for Linux 32bit platforms
