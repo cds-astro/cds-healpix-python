@@ -7,35 +7,52 @@ env:
 
 stages:
   - test
-  - name: deploy
-    if: branch = master
+  - deploy
+#  - name: deploy
+#    if: branch = master
 
 # TEST STAGE
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - name: "Python2 linux"
+      os: linux
+      env:
+        - PIP=pip2
+        - PYTHON=python2
+    - name: "Python3 linux"
+      os: linux
+      env:
+        - PIP=pip
+        - PYTHON=python
+    - name: "Python2 OSX"
+      os: osx
+      language: generic
+      env:
+        - PIP=pip2
+        - PYTHON=python2
+    - name: "Python3 OSX"
+      os: osx
+      language: generic
+      env:
+        - PIP=pip
+        - PYTHON=python
 
 script:
   ### Run the tests ###
   # Download the dependencies for compiling cdshealpix
-  - pip install -r requirements.txt
-  - pip install pytest setuptools-rust
+  - $PIP install -r requirements.txt
+  - $PIP install pytest setuptools-rust
   # Install Rust compiler
   - curl https://sh.rustup.rs -sSf | sh -s -- -y
   - export PATH="$HOME/.cargo/bin:$PATH"
   # Generate the dynamic library from the cdshealpix Rust crate.
   # This will download the crate from crates.io and build it first.
-  - python setup.py build_rust
+  - $PYTHON setup.py build_rust
   # Move the dynamic lib to the python package folder
   - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
-  - python -m pytest -v cdshealpix/tests/test_healpix.py
+  - $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
 
+# DEPLOY STAGE
 jobs: 
   include:
     - stage: deploy
