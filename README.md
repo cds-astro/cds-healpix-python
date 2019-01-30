@@ -12,52 +12,52 @@ This package is available for Python 2.7/3.4/3.5/3.6 and 3.7.
 ### HEALPix indices to (lon, lat) astropy quantities
 
 ```python
-from cdshealpix import healpix_to_lonlat_nest
+from cdshealpix import healpix_to_lonlat
 import numpy as np
 
 ipixels = np.array([42, 6, 10])
 
-lon, lat = healpix_to_lonlat_nest(ipixels=ipixels, depth=12)
+lon, lat = healpix_to_lonlat(ipixels=ipixels, depth=12)
 ```
 
 ### (lon, lat) astropy quantities to HEALPix indices
 
 ```python
-from cdshealpix import lonlat_to_healpix_nest
+from cdshealpix import lonlat_to_healpix
 import astropy.units as u
 
-ipixels = lonlat_to_healpix_nest(lon=[0, 50, 25] * u.deg, lat=[6, -12, 45] * u.deg, depth=12)
+ipixels = lonlat_to_healpix(lon=[0, 50, 25] * u.deg, lat=[6, -12, 45] * u.deg, depth=12)
 ```
 
 ### Get the vertices (lon, lat) position from HEALPix indices
 
 ```python
-from cdshealpix import healpix_vertices_lonlat_nest
+from cdshealpix import healpix_vertices_lonlat
 import numpy as np
 
 ipixels = np.array([42, 6, 10])
 
-lon, lat = healpix_vertices_lonlat_nest(ipixels=ipixels, depth=12)
+lon, lat = healpix_vertices_lonlat(ipixels=ipixels, depth=12)
 ```
 
 ### Get the neighbours from HEALPix indices
 
 ```python
-from cdshealpix import healpix_neighbours_nest
+from cdshealpix import healpix_neighbours
 import numpy as np
 
 ipixels = np.array([42, 6, 10])
 
-neighbours = healpix_neighbours_nest(ipixels=ipixels, depth=12)
+neighbours = healpix_neighbours(ipixels=ipixels, depth=12)
 ```
 
 ### Cone search
 
 ```python
-from cdshealpix import cone_search_lonlat_nest
+from cdshealpix import cone_search_lonlat
 import astropy.units as u
 
-cone = cone_search_lonlat_nest(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
 # This gives a numpy array of structures describing a bmoc.
 # This structure contains 3 attributes:
 # - the HEALPix indice of the cell
@@ -72,7 +72,7 @@ cone
 ### Polygon search
 
 ```python
-from cdshealpix import polygon_search_lonlat_nest
+from cdshealpix import polygon_search_lonlat
 import astropy.units as u
 import numpy as np
 
@@ -81,7 +81,7 @@ depth = 12
 lon = np.random.rand(3) * 360 * u.deg
 lat = (np.random.rand(3) * 178 - 89) * u.deg
 
-poly = polygon_search_lonlat_nest(lon=lon, lat=lat, depth=depth)
+poly = polygon_search_lonlat(lon=lon, lat=lat, depth=depth)
 ```
 
 ## Contributing
@@ -147,7 +147,7 @@ The generated dynamic library will be located in a build/ folder. Just copy it i
 cp build/lib/cdshealpix/*.so cdshealpix
 ```
 
-You do not have to recompile the dynamic library every time if you just work on the python wrapping code. It is only necessary if you want to update the rust wrapping code located in src/lib.rs.
+You do not have to recompile the dynamic library every time if you just work on the python-side code. It is only necessary if you want to update the Rust code located in src/lib.rs.
 
 ### Running the tests
 

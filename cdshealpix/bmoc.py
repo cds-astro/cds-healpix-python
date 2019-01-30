@@ -23,13 +23,14 @@ class BMOC(object):
         self.__obj = None
 
 class BMOCConeApprox(BMOC):
-    def __init__(self, depth, depth_delta, lon, lat, radius):
+    def __init__(self, depth, depth_delta, lon, lat, radius, flat):
         BMOC.__init__(self, lib.hpx_query_cone_approx_custom(
             depth,
             depth_delta,
             lon,
             lat,
-            radius
+            radius,
+            flat
         ))
 
 class BMOCPolygonApprox(BMOC):
