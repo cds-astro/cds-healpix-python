@@ -1,10 +1,48 @@
 # Building wheels for Linux and MacOS platforms
 language: python
 
-matrix:
+env:
+  global:
+    - TWINE_USERNAME=bmatthieu3
+
+stages:
+  - test
+  - name: deploy
+    if: branch = master
+
+# TEST STAGE
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+os:
+  - linux
+  - osx
+
+script:
+  ### Run the tests ###
+  # Download the dependencies for compiling cdshealpix
+  - pip install -r requirements.txt
+  - pip install pytest setuptools-rust
+  # Install Rust compiler
+  - curl https://sh.rustup.rs -sSf | sh -s -- -y
+  - export PATH="$HOME/.cargo/bin:$PATH"
+  # Generate the dynamic library from the cdshealpix Rust crate.
+  # This will download the crate from crates.io and build it first.
+  - python setup.py build_rust
+  # Move the dynamic lib to the python package folder
+  - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
+  - python -m pytest -v cdshealpix/tests/test_healpix.py
+
+jobs: 
   include:
-    # Job generating the wheels for Linux 32bit platforms
-    - sudo: required
+    - stage: deploy
+      name: "manylinux1_i686"
+      # Job generating the wheels for Linux 32bit platforms
+      os: linux
+      sudo: required
       env:
         - CIBW_SKIP=*manylinux1_i686*
         - PIP=pip
@@ -12,8 +50,11 @@ matrix:
       services:
         # We use docker for generating the wheels for Linux.
         - docker
-    # Job generating the wheels for Linux 64bit platforms
-    - sudo: required
+      script: ./deploy.sh
+    - name: "manylinux1_x86_64"
+      # Job generating the wheels for Linux 64bit platforms
+      os: linux
+      sudo: required
       env:
         - CIBW_SKIP=*manylinux1_x86_64*
         - PIP=pip
@@ -21,46 +62,74 @@ matrix:
       services:
         # We use docker for generating the wheels for Linux.
         - docker
-    - os: osx
+      script: ./deploy.sh
+    - name: "MacOS"
+      os: osx
       sudo: required
       language: generic
       env:
         - PIP=pip2
         - PYTHON=python2
-        # Skip generating Python3.4 MacOS wheel because upgrading pip stalls
-        # See https://github.com/joerick/cibuildwheel/issues/122
-        - CIBW_SKIP=*cp34-*
+      script: ./deploy.sh
 
-env:
-  global:
-    - TWINE_USERNAME=bmatthieu3
+# matrix:
+#   include:
+#     # Job generating the wheels for Linux 32bit platforms
+#     - os: linux
+#       sudo: required
+#       env:
+#         - CIBW_SKIP=*manylinux1_i686*
+#         - PIP=pip
+#         - PYTHON=python
+#       services:
+#         # We use docker for generating the wheels for Linux.
+#         - docker
+#     # Job generating the wheels for Linux 64bit platforms
+#     - os: linux
+#       sudo: required
+#       env:
+#         - CIBW_SKIP=*manylinux1_x86_64*
+#         - PIP=pip
+#         - PYTHON=python
+#       services:
+#         # We use docker for generating the wheels for Linux.
+#         - docker
+#     - os: osx
+#       sudo: required
+#       language: generic
+#       env:
+#         - PIP=pip2
+#         - PYTHON=python2
+#         # Skip generating Python3.4 MacOS wheel because upgrading pip stalls
+#         # See https://github.com/joerick/cibuildwheel/issues/122
+#         - CIBW_SKIP=*cp34-*
 
-script:
-  ### Run the tests ###
-  # Download the dependencies for compiling cdshealpix
-  - $PIP install -r requirements.txt
-  - $PIP install pytest setuptools-rust
-  # Install Rust compiler
-  - curl https://sh.rustup.rs -sSf | sh -s -- -y
-  - export PATH="$HOME/.cargo/bin:$PATH"
-  # Generate the dynamic library from the cdshealpix Rust crate.
-  # This will download the crate from crates.io and build it first.
-  - $PYTHON setup.py build_rust
-  # Move the dynamic lib to the python package folder
-  - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
-  - $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
+# script:
+#   ### Run the tests ###
+#   # Download the dependencies for compiling cdshealpix
+#   - $PIP install -r requirements.txt
+#   - $PIP install pytest setuptools-rust
+#   # Install Rust compiler
+#   - curl https://sh.rustup.rs -sSf | sh -s -- -y
+#   - export PATH="$HOME/.cargo/bin:$PATH"
+#   # Generate the dynamic library from the cdshealpix Rust crate.
+#   # This will download the crate from crates.io and build it first.
+#   - $PYTHON setup.py build_rust
+#   # Move the dynamic lib to the python package folder
+#   - find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
+#   - $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
 
-after_success:
-  # Build and deploy if the tests pass and 
-  # the commit is tagged
-  - |
-    if [[ $TRAVIS_TAG ]]; then
-      ### Build the wheels ###
-      $PIP install git+https://github.com/YannickJadoul/cibuildwheel.git@pip-19-stalling-workaround setuptools-rust
-      export CIBW_BEFORE_BUILD="pip install setuptools-rust && curl https://sh.rustup.rs -sSf | sh -s -- -y"
-      export CIBW_ENVIRONMENT='PATH="$HOME/.cargo/bin:$PATH"'
-      cibuildwheel --output-dir dist
-      ### Upload the wheels to PyPI ###
-      $PIP install twine
-      $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*.whl --skip-existing
-    fi
+# after_success:
+#   # Build and deploy if the tests pass and
+#   # the commit is tagged
+#   - |
+#     if [[ $TRAVIS_TAG ]]; then
+#       ### Build the wheels ###
+#       $PIP install git+https://github.com/YannickJadoul/cibuildwheel.git@pip-19-stalling-workaround setuptools-rust
+#       export CIBW_BEFORE_BUILD="pip install setuptools-rust && curl https://sh.rustup.rs -sSf | sh -s -- -y"
+#       export CIBW_ENVIRONMENT='PATH="$HOME/.cargo/bin:$PATH"'
+#       cibuildwheel --output-dir dist
+#       ### Upload the wheels to PyPI ###
+#       $PIP install twine
+#       $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*.whl --skip-existing
+#     fi
