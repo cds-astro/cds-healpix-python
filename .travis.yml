@@ -7,9 +7,8 @@ env:
 
 stages:
   - test
-  - deploy
-#  - name: deploy
-#    if: branch = master
+  - name: deploy
+    if: branch = master
 
 # TEST STAGE
 matrix:
