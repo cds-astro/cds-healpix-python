@@ -50,7 +50,7 @@ jobs:
     # DEPLOYING STAGE
     - stage: deploy
       name: "manylinux1_i686"
-      # Job generating the wheels for Linux 32bit platforms
+      # Job generating the wheels for Linux 32-bit platforms
       os: linux
       sudo: required
       env:
@@ -62,7 +62,7 @@ jobs:
         - docker
       script: ./deploy.sh
     - name: "manylinux1_x86_64"
-      # Job generating the wheels for Linux 64bit platforms
+      # Job generating the wheels for Linux 64-bit platforms
       os: linux
       sudo: required
       env:
