@@ -18,6 +18,9 @@ setup(
         # The binding with the Rust cdshealpix API is done using CFFI
         binding=Binding.NoBinding)],
     packages=["cdshealpix"],
+    package_dir={'cdshealpix': 'cdshealpix'},
+    # include the file containing the prototypes
+    package_data={'cdshealpix': ['bindings.h']},
     install_requires=get_package_dependencies(),
     # rust extensions are not zip safe, just like C-extensions.
     zip_safe=False,
