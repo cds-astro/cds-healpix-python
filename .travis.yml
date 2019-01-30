@@ -13,7 +13,6 @@ stages:
   # - manylinux1_i686 py2.7/py3.4->3.7
   # - manylinux1_x86_64 py2.7/py3.4->3.7
   # - osx py2.7/py3.4->3.7
-  - deploy
   - name: deploy
     if: branch = master AND \
         tag = true
@@ -31,8 +30,8 @@ jobs:
     - name: "Python3 linux"
       os: linux
       env:
-        - PIP=pip
-        - PYTHON=python
+        - PIP=pip3
+        - PYTHON=python3
       script: ./testing.sh
     - name: "Python2 OSX"
       os: osx
@@ -45,9 +44,9 @@ jobs:
       os: osx
       language: generic
       env:
-        - PIP=pip
-        - PYTHON=python
-      script: ./testing.sh    
+        - PIP=pip3
+        - PYTHON=python3
+      script: ./testing.sh
     # DEPLOYING STAGE
     - stage: deploy
       name: "manylinux1_i686"

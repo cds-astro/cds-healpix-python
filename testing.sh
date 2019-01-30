@@ -3,7 +3,7 @@
 ### Run the tests ###
 # Download the dependencies for compiling cdshealpix
 $PIP install -r requirements.txt
-$PIP install pytest setuptools-rust
+$PIP install pytest setuptools-rust astropy_healpix
 # Install Rust compiler
 curl https://sh.rustup.rs -sSf | sh -s -- -y
 export PATH="$HOME/.cargo/bin:$PATH"
