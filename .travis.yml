@@ -14,7 +14,8 @@ stages:
 # TEST STAGE
 matrix:
   include:
-    - name: "Python2 linux"
+    - stage: test
+      name: "Python2 linux"
       os: linux
       env:
         - PIP=pip2
