@@ -57,7 +57,7 @@ neighbours = healpix_neighbours(ipixels=ipixels, depth=12)
 from cdshealpix import cone_search_lonlat
 import astropy.units as u
 
-cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
 # This gives a numpy array of structures describing a bmoc.
 # This structure contains 3 attributes:
 # - the HEALPix indice of the cell
