@@ -124,7 +124,7 @@ def healpix_neighbours(ipixels, depth):
 
     return neighbours
 
-def cone_search_lonlat(lon, lat, radius, depth, flat=False):
+def cone_search_lonlat(lon, lat, radius, depth, delta_depth=2, flat=False):
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
                          'scalar Quantity objects')
@@ -133,7 +133,7 @@ def cone_search_lonlat(lon, lat, radius, depth, flat=False):
     lat = lat.to_value(u.rad)
     radius = radius.to_value(u.rad)
 
-    cone = BMOCConeApprox(depth=depth, depth_delta=2, lon=lon, lat=lat, radius=radius, flat=flat)
+    cone = BMOCConeApprox(depth=depth, depth_delta=delta_depth, lon=lon, lat=lat, radius=radius, flat=flat)
 
     return cone.data
 
