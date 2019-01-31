@@ -114,7 +114,7 @@ virtualenv -p /usr/bin/python3 cdshealpix-env
 Activate it: 
 
 ```shell
-source cdshealpix/bin/activate
+source cdshealpix-env/bin/activate
 ```
 
 Install all the python dependencies for contributing:
