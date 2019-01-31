@@ -123,7 +123,7 @@ Install all the python dependencies for contributing:
 pip install -r <path_to_cloned_repo>/requirements-dev.txt
 ```
 
-At this moment you have correctly set up your development environment. You can develop and launch the tests/benchmarks in it. When you will be done, you can deactivate it by typing ```deactivate```.
+At this moment you have correctly set up your development environment. When you will be done with your developments, remember to deactivate your environment by typing ```deactivate```.
 
 The next step tells you how to generate the dynamic library associated with `cdshealpix`.
 
