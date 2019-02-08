@@ -4,8 +4,8 @@ extern crate cdshealpix;
 use cdshealpix::compass_point::MainWind;
 use cdshealpix::nested::bmoc::*;
 use cdshealpix::nested::{
-    cone_overlap_approx_custom, get_or_create, neighbours,
-    polygon_overlap_approx, vertices,
+    cone_coverage_approx_custom, get_or_create, neighbours,
+    polygon_coverage, vertices,
 };
 
 // Build
@@ -222,7 +222,7 @@ pub extern "C" fn hpx_query_cone_approx(
 */
 
 #[no_mangle]
-pub extern "C" fn hpx_query_cone_approx_custom(
+pub extern "C" fn hpx_query_cone_approx(
     depth: u8,
     delta_depth: u8,
     lon: f64,
@@ -230,8 +230,7 @@ pub extern "C" fn hpx_query_cone_approx_custom(
     radius: f64,
     flat: bool
 ) -> *const PyBMOC {
-
-    let bmoc = cone_overlap_approx_custom(
+    let bmoc = cone_coverage_approx_custom(
         depth,
         delta_depth,
         lon,
@@ -252,7 +251,7 @@ pub extern "C" fn hpx_query_cone_approx_custom(
 }
 
 #[no_mangle]
-pub extern "C" fn hpx_query_polygon_approx(
+pub extern "C" fn hpx_query_polygon(
     depth: u8,
     n_vertices: u32,
     lon: *mut f64,
@@ -268,7 +267,8 @@ pub extern "C" fn hpx_query_polygon_approx(
         vertices.push((lon[i], lat[i]));
     }
 
-    let cells = to_bmoc_cell_array(polygon_overlap_approx(depth, &vertices.into_boxed_slice()));
+    // Exact polygon
+    let cells = to_bmoc_cell_array(polygon_coverage(depth, &vertices.into_boxed_slice(), true));
     let len = cells.len() as u32;
 
     let bmoc = Box::new(PyBMOC { len, cells });
@@ -295,13 +295,11 @@ fn to_bmoc_flat_cell_array(bmoc: BMOC) -> Vec<BMOCCell> {
     let bmoc_flat = bmoc.flat_iter();
     let mut cells: Vec<BMOCCell> = Vec::with_capacity(bmoc_flat.deep_size());
 
-    let depth = bmoc_flat.depth();
-    let flag = 1;
-    for hash in bmoc_flat {
+    for cell in bmoc.flat_iter_cell() {
         cells.push(BMOCCell {
-            depth,
-            hash,
-            flag,
+            depth: cell.depth,
+            hash: cell.hash,
+            flag: cell.is_full as u8
         });
     }
     // Free the cells which are not occupied

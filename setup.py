@@ -1,11 +1,15 @@
+import os
+
 from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
-exec(open('./cdshealpix/version.py').read())
+version_file_path = os.path.join(os.path.dirname(__file__), "cdshealpix/version.py")
+exec(open(version_file_path).read())
 
 def get_package_dependencies():
     dependencies = []
-    with open("./requirements.txt", "r") as f_in:
+    requirement_file_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
+    with open(requirement_file_path, "r") as f_in:
         dependencies = f_in.read().splitlines()
     return dependencies
 

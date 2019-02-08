@@ -24,7 +24,7 @@ class BMOC(object):
 
 class BMOCConeApprox(BMOC):
     def __init__(self, depth, depth_delta, lon, lat, radius, flat):
-        BMOC.__init__(self, lib.hpx_query_cone_approx_custom(
+        BMOC.__init__(self, lib.hpx_query_cone_approx(
             depth,
             depth_delta,
             lon,
@@ -35,7 +35,7 @@ class BMOCConeApprox(BMOC):
 
 class BMOCPolygonApprox(BMOC):
     def __init__(self, depth, num_vertices, lon, lat):
-        BMOC.__init__(self, lib.hpx_query_polygon_approx(
+        BMOC.__init__(self, lib.hpx_query_polygon(
             depth,
             num_vertices,
             ffi.cast("const double*", lon.ctypes.data),

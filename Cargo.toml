@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix_python"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
@@ -21,4 +21,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # The cdshealpix rust crate
-cdshealpix = "0.1.2"
+cdshealpix = "0.1.4"

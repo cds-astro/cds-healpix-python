@@ -20,7 +20,7 @@ def lonlat_to_healpix(lon, lat, depth):
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
-    
+
     num_ipixels = lon.shape[0]
     # Allocation of the array containing the resulting ipixels
     ipixels = np.zeros(num_ipixels, dtype=np.uint64)
@@ -148,7 +148,7 @@ def polygon_search_lonlat(lon, lat, depth):
 
     if num_vertices < 3:
         raise IndexError("There must be at least 3 vertices in order to form a polygon")
-    
+
     polygon = BMOCPolygonApprox(depth=depth, num_vertices=num_vertices, lon=lon, lat=lat)
 
     return polygon.data

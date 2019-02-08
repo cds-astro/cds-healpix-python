@@ -67,7 +67,7 @@ def test_cone_search_lonlat():
     assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
 
 def test_polygon_search_lonlat():
-    size = 10
+    size = 3
     depth = 12
     lon = np.random.rand(size) * 360 * u.deg
     lat = (np.random.rand(size) * 178 - 89) * u.deg
