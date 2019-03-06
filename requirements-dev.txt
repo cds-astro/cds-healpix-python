@@ -1,6 +1,8 @@
 setuptools_rust
 pytest
+pytest_benchmark
 astropy_healpix
 healpy
-pytest_benchmark
 cffi
+sphinx
+numpydoc
