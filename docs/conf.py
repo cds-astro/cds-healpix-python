@@ -143,7 +143,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'cdshealpix.tex', 'cdshealpix Documentation',
-     'François-Xavier Pineau, Matthieu Baumann', 'manual'),
+     u'François-Xavier Pineau, Matthieu Baumann', 'manual'),
 ]
 
 
