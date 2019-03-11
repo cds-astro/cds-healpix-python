@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from astropy.coordinates import Angle
+from astropy.coordinates import Angle, SkyCoord
 import astropy.units as u
 
 from ..healpix import lonlat_to_healpix, \
@@ -81,14 +81,13 @@ def test_polygon_search_lonlat():
     assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
 
 def test_elliptical_cone_search_lonlat():
-    lon = 0 * u.deg
-    lat = 0 * u.deg
-    a = Angle(190, unit="deg")
-    b = Angle(60, unit="deg")
+    center = SkyCoord(0, 0, unit="deg", frame="icrs")
+    a = Angle(50, unit="deg")
+    b = Angle(5, unit="deg")
     pa = Angle(0, unit="deg")
     depth = 12
 
-    res = elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth)
+    res = elliptical_cone_search_lonlat(center, a, b, pa, depth)
 
     npix = 12 * 4 ** (depth)
     assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())
