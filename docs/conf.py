@@ -22,8 +22,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'cdshealpix'
-copyright = '2019, François-Xavier Pineau, Matthieu Baumann'
-author = 'François-Xavier Pineau, Matthieu Baumann'
+copyright = u'2019, François-Xavier Pineau, Matthieu Baumann'
+author = u'François-Xavier Pineau, Matthieu Baumann'
 
 # The short X.Y version
 version = ''
@@ -143,7 +143,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'cdshealpix.tex', 'cdshealpix Documentation',
-     'Francois-Xavier Pineau, Matthieu Baumann', 'manual'),
+     u'François-Xavier Pineau, Matthieu Baumann', 'manual'),
 ]
 
 
