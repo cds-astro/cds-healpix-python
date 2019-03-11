@@ -102,6 +102,8 @@ test_script:
   - python -m pytest -v "cdshealpix\tests\test_healpix.py"
   # Install the dependencies for generating the docs and execute the API tests
   - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib spherical-geometry
+  # Add %PYTHON%\Scripts to the PATH so that make.bat can find sphinx-build
+  - set PATH="%PATH%;%PYTHON%\Scripts"
   # Move to the location where the documentation rst files are
   - cd docs
   # Generate the html doc files
