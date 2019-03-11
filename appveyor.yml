@@ -103,7 +103,7 @@ test_script:
   # Install the dependencies for generating the docs and execute the API tests
   - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib mocpy spherical-geometry
   # Add %PYTHON%\Scripts to the PATH so that make.bat can find sphinx-build
-  - set PATH="%PATH%;%PYTHON%\Scripts"
+  - set PATH=%PATH%;%PYTHON%\Scripts
   # Move to the location where the documentation rst files are
   - cd docs
   # Generate the html doc files
