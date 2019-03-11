@@ -1,0 +1,81 @@
+# Building wheels for Linux and MacOS platforms
+language: python
+
+env:
+  global:
+    - TWINE_USERNAME=bmatthieu3
+
+# Define the order of the stages
+stages:
+  - test
+  # Stage reponsible for building and publishing the wheels
+  # to PyPI. Architecture supported:
+  # - manylinux1_i686 py2.7/py3.4->3.7
+  # - manylinux1_x86_64 py2.7/py3.4->3.7
+  # - osx py2.7/py3.4->3.7
+  - deploy
+
+jobs:
+  include:
+    # TESTING STAGE
+    - stage: test
+      name: "Python2 linux"
+      os: linux
+      env:
+        - PIP=pip2
+        - PYTHON=python2
+      script: ./testing.sh
+    - name: "Python3 linux"
+      os: linux
+      env:
+        - PIP=pip
+        - PYTHON=python
+      script: ./testing.sh
+    - name: "Python2 OSX"
+      os: osx
+      language: generic
+      env:
+        - PIP=pip2
+        - PYTHON=python2
+      script: ./testing.sh
+    - name: "Python3 OSX"
+      os: osx
+      language: generic
+      env:
+        - PIP=pip
+        - PYTHON=python
+      script: ./testing.sh
+    # DEPLOYING STAGE
+    - stage: deploy
+      name: "manylinux1_x86_64"
+      # Job generating the wheels for Linux 32-bit platforms
+      os: linux
+      sudo: required
+      env:
+        - CIBW_SKIP=*manylinux1_i686*
+        - PIP=pip
+        - PYTHON=python
+      services:
+        # We use docker for generating the wheels for Linux.
+        - docker
+      script: ./deploy.sh
+    - name: "manylinux1_i686"
+      # Job generating the wheels for Linux 64-bit platforms
+      os: linux
+      sudo: required
+      env:
+        - CIBW_SKIP=*manylinux1_x86_64*
+        - PIP=pip
+        - PYTHON=python
+      services:
+        # We use docker for generating the wheels for Linux.
+        - docker
+      script: ./deploy.sh
+    - name: "MacOS"
+      os: osx
+      sudo: required
+      language: generic
+      env:
+        - PIP=pip2
+        - PYTHON=python2
+      script: ./deploy.sh

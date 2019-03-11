@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+*.pyc
+/cdshealpix/cdshealpix.cpython-36m-x86_64-linux-gnu.so
+Cargo.lock
+build/
+cdshealpix.egg-info/
+*.ipynb
+docs/_build
+docs/_templates
