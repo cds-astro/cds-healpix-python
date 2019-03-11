@@ -115,10 +115,14 @@ test_script:
 
 
 after_test:
-  - cibuildwheel --output-dir dist
-  # Upload to PyPI if the tests succeed
-  - python -m pip install twine
-  - python -m twine upload "dist\\*.whl" --skip-existing
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq $true)
+      {
+        cibuildwheel --output-dir dist
+        # Upload to PyPI if the tests succeed
+        python -m pip install twine
+        python -m twine upload "dist\\*.whl" --skip-existing
+      }
 
 artifacts:
   - path: "dist\\*.whl"
