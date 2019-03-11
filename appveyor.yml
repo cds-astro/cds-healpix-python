@@ -39,6 +39,9 @@ environment:
       PYTHON_VERSION: "3.7.x"
       PYTHON_ARCH: "64"
       CIBW_SKIP: "*win32* cp27-* cp33-* cp34-* cp35-* cp36-*"
+      # We need to use VS 2017 for compiling spherical-geometry
+      # in the build using python 3.7
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     # Nightly 32-bit MSVC
     - channel: nightly
       target: i686-pc-windows-msvc
@@ -98,7 +101,7 @@ test_script:
   # Run the tests
   - python -m pytest -v "cdshealpix\tests\test_healpix.py"
   # Install the dependencies for generating the docs and execute the API tests
-  - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib
+  - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib spherical-geometry
   # Move to the location where the documentation rst files are
   - cd docs
   # Generate the html doc files
