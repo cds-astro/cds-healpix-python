@@ -107,7 +107,7 @@ test_script:
   # Move to the location where the documentation rst files are
   - cd docs
   # Generate the html doc files
-  - make docs
+  - make html
   # Run the tests provinded by the API
   - make doctest
   # Move back to the location of the project
