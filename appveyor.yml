@@ -88,14 +88,26 @@ build_script:
   # Update setuptools so that `python setup.py build_rust` can parse the requirements.txt file
   - python -m pip install setuptools -U
   - python -m pip install -r requirements.txt
-  - python -m pip install pytest setuptools-rust
+  - python -m pip install pytest setuptools-rust 
   # Compile the dynamic library (.pyd on Windows env)
   - python setup.py build_rust
   # Copy the generated library to the python files location
   - xcopy "build\lib\cdshealpix\*.pyd" cdshealpix /sy
 
 test_script:
+  # Run the tests
   - python -m pytest -v "cdshealpix\tests\test_healpix.py"
+  # Install the dependencies for generating the docs and execute the API tests
+  - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib
+  # Move to the location where the documentation rst files are
+  - cd docs
+  # Generate the html doc files
+  - make docs
+  # Run the tests provinded by the API
+  - make doctest
+  # Move back to the location of the project
+  - cd ..
+
 
 after_test:
   - cibuildwheel --output-dir dist
