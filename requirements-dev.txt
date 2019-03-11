@@ -9,3 +9,4 @@ numpydoc
 sphinxcontrib-bibtex
 matplotlib
 mocpy
+spherical-geometry
