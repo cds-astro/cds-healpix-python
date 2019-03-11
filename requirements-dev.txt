@@ -6,3 +6,6 @@ healpy
 cffi
 sphinx
 numpydoc
+sphinxcontrib-bibtex
+matplotlib
+mocpy

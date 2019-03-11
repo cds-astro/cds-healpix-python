@@ -1,8 +1,7 @@
-"""This module illustrates how to write your docstring in OpenAlea
-and other projects related to OpenAlea."""
-
 from . import lib, ffi
-from .bmoc import BMOCConeApprox, BMOCPolygonApprox
+from .bmoc import BMOCConeApprox, \
+                  BMOCPolygon, \
+                  BMOCEllipticalConeApprox
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
@@ -35,20 +34,13 @@ def lonlat_to_healpix(lon, lat, depth):
 
     Returns
     -------
-    result : `numpy.array`
+    ipix : `numpy.array`
         A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
 
     Raises
     ------
     ValueError
         When the number of longitudes and latitudes given do not match.
-
-    References
-    ----------
-    .. [1] Gorsky2005: "HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere", Górski, K. M. et al., 2005; 2005ApJ...622..759G.
-    .. [2] Calabretta2004: "Mapping on the HEALPix grid", Calabretta, M. R., 2004; 2004astro.ph.12607C
-    .. [3] Calabretta2007: "Mapping on the HEALPix grid", Calabretta, M. R. et Roukema, B. F., 2007; 2007MNRAS.381..865C
-    .. [4] Reinecke2015: "Efficient data structures for masks on 2D grids", Reinecke, M. et Hivon, E., 2015; 2015A&A...580A.132R
 
     Examples
     --------
@@ -58,7 +50,7 @@ def lonlat_to_healpix(lon, lat, depth):
     >>> lon = [0, 50, 25] * u.deg
     >>> lat = [6, -12, 45] * u.deg
     >>> depth = 12
-    >>> lonlat_to_healpix(lon, lat, depth)
+    >>> ipix = lonlat_to_healpix(lon, lat, depth)
     """
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
@@ -87,10 +79,36 @@ def lonlat_to_healpix(lon, lat, depth):
     return ipixels
 
 def healpix_to_lonlat(ipixels, depth):
-    """This is the form of a docstring.
+    """Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
-    It can be spread over several lines.
+    This method does the opposite transformation of `lonlat_to_healpix`.
+    It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
+    Parameters
+    ----------
+    ipixels : `numpy.array`
+        The HEALPix cell indexes given as a `np.uint64` numpy array.
+    depth : int
+        The depth of the HEALPix cells.
+
+    Returns
+    -------
+    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+        The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.
+
+    Raises
+    ------
+    ValueError
+        When the HEALPix cell indexes given have values out of :math:`[0, 4^{29 - depth}[`.
+
+    Examples
+    --------
+    >>> from cdshealpix import healpix_to_lonlat
+    >>> import numpy as np
+    >>> ipixels = np.array([42, 6, 10])
+    >>> depth = 12
+    >>> lon, lat = healpix_to_lonlat(ipixels, depth)
     """
     ipixels = np.atleast_1d(ipixels).ravel()
     _check_ipixels(data=ipixels, depth=depth)
@@ -118,15 +136,74 @@ def healpix_to_lonlat(ipixels, depth):
     return lon, lat
 
 def healpix_to_skycoord(ipixels, depth):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+    """Get the sky coordinates of the center of some HEALPix cells at a given depth.
+
+    This method does the opposite transformation of `lonlat_to_healpix`.
+    It is the equivalent of `healpix_to_lonlat` except that it returns `astropy.coordinates.SkyCoord` instead
+    of `astropy.units.Quantity`.
+    It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    ipixels : `numpy.array`
+        The HEALPix cell indexes given as a `np.uint64` numpy array.
+    depth : int
+        The depth of the HEALPix cells.
+
+    Returns
+    -------
+    skycoord : `astropy.coordinates.SkyCoord`
+        The sky coordinates of the center of the HEALPix cells given as a `~astropy.coordinates.SkyCoord` object.
+
+    Raises
+    ------
+    ValueError
+        When the HEALPix cell indexes given have values out of :math:`[0, 4^{29 - depth}[`.
+
+    Examples
+    --------
+    >>> from cdshealpix import healpix_to_skycoord
+    >>> import numpy as np
+    >>> ipixels = np.array([42, 6, 10])
+    >>> depth = 12
+    >>> skycoord = healpix_to_skycoord(ipixels, depth)
     """
     lon, lat = healpix_to_lonlat(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def healpix_vertices_lonlat(ipixels, depth):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+    """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given depth.
+
+    This method returns the 4 vertices of each cell in `ipixels`.
+    This method is wrapped around the `vertices <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.vertices>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    ipixels : `numpy.array`
+        The HEALPix cell indexes given as a `np.uint64` numpy array.
+    depth : int
+        The depth of the HEALPix cells.
+
+    Returns
+    -------
+    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+        The sky coordinates of the 4 vertices of the HEALPix cells. `lon` and `lat` are each `~astropy.units.Quantity` instances
+        containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipixels`.
+
+    Raises
+    ------
+    ValueError
+        When the HEALPix cell indexes given have values out of :math:`[0, 4^{29 - depth}[`.
+
+    Examples
+    --------
+    >>> from cdshealpix import healpix_vertices_lonlat
+    >>> import numpy as np
+    >>> ipixels = np.array([42, 6, 10])
+    >>> depth = 12
+    >>> lon, lat = healpix_vertices_lonlat(ipixels, depth)
     """
     ipixels = np.atleast_1d(ipixels).ravel()
     _check_ipixels(data=ipixels, depth=depth)
@@ -154,15 +231,74 @@ def healpix_vertices_lonlat(ipixels, depth):
     return lon, lat
 
 def healpix_vertices_skycoord(ipixels, depth):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+    """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
+
+    This method returns the 4 vertices of each cell in `ipixels`.
+    This method is wrapped around the `vertices <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.vertices>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    ipixels : `numpy.array`
+        The HEALPix cell indexes given as a `np.uint64` numpy array.
+    depth : int
+        The depth of the HEALPix cells.
+
+    Returns
+    -------
+    vertices : `astropy.coordinates.SkyCoord`
+        The sky coordinates of the 4 vertices of the HEALPix cells. `vertices` is a `~astropy.coordinates.SkyCoord` object
+        containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cells given in `ipixels`.
+
+    Raises
+    ------
+    ValueError
+        When the HEALPix cell indexes given have values out of :math:`[0, 4^{29 - depth}[`.
+
+    Examples
+    --------
+    >>> from cdshealpix import healpix_vertices_skycoord
+    >>> import numpy as np
+    >>> ipixels = np.array([42, 6, 10])
+    >>> depth = 12
+    >>> skycoord = healpix_vertices_skycoord(ipixels, depth)
     """
     lon, lat = healpix_vertices_lonlat(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def healpix_neighbours(ipixels, depth):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+    """Get the neighbouring cells of some HEALPix cells at a given depth.
+
+    This method returns a :math:`N` x :math:`9` `np.uint64` numpy array containing the neighbours of each cell of the :math:`N` sized `ipixels` array.
+    This method is wrapped around the `neighbours <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.neighbours>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    ipixels : `numpy.array`
+        The HEALPix cell indexes given as a `np.uint64` numpy array.
+    depth : int
+        The depth of the HEALPix cells.
+
+    Returns
+    -------
+    neighbours : `numpy.array`
+        A :math:`N` x :math:`9` `np.uint64` numpy array containing the neighbours of each cell.
+        The :math:`5^{th}` element corresponds to the index of HEALPix cell from which the neighbours are evaluated.
+        All its 8 neighbours occup the remaining elements of the line.
+
+    Raises
+    ------
+    ValueError
+        When the HEALPix cell indexes given have values out of :math:`[0, 4^{29 - depth}[`.
+
+    Examples
+    --------
+    >>> from cdshealpix import healpix_neighbours
+    >>> import numpy as np
+    >>> ipixels = np.array([42, 6, 10])
+    >>> depth = 12
+    >>> neighbours = healpix_neighbours(ipixels, depth)
     """
     ipixels = np.atleast_1d(ipixels).ravel()
     _check_ipixels(data=ipixels, depth=depth)
@@ -188,9 +324,48 @@ def healpix_neighbours(ipixels, depth):
 
     return neighbours
 
-def cone_search_lonlat(lon, lat, radius, depth, delta_depth=2, flat=False):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+def cone_search_lonlat(lon, lat, radius, depth, depth_delta=2, flat=False):
+    """Get the HEALPix cells contained in a cone at a given depth.
+
+    This method is wrapped around the `cone <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.cone_coverage_approx_custom>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    lon : `astropy.units.Quantity`
+        Longitude of the center of the cone.
+    lat : `astropy.units.Quantity`
+        Latitude of the center of the cone.
+    radius : `astropy.units.Quantity`
+        Radius of the cone.
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+    depth_delta : int, optional
+        To control the approximation, you can choose to perform the computations at a deeper depth using the `depth_delta` parameter.
+        The depth at which the computations will be made will therefore be equal to `depth` + `depth_delta`.
+    flat : boolean, optional
+        False by default (i.e. returns a consistent MOC). If True, the HEALPix cells returned will all be at depth indicated by `depth`.
+
+    Returns
+    -------
+    cells : `numpy.array`
+        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
+        The structure of a cell contains 3 attributes:
+
+        * A `ipix` field being a np.uint64
+        * A `depth` field being a np.uint32
+        * A `fully_covered` (i.e. a boolean flag) field stored in a np.uint8
+
+    Raises
+    ------
+    ValueError
+        When one of `lat`, `lon` and `radius` contains more that one value.
+
+    Examples
+    --------
+    >>> from cdshealpix import cone_search_lonlat
+    >>> import astropy.units as u
+    >>> cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
     """
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
@@ -200,13 +375,51 @@ def cone_search_lonlat(lon, lat, radius, depth, delta_depth=2, flat=False):
     lat = lat.to_value(u.rad)
     radius = radius.to_value(u.rad)
 
-    cone = BMOCConeApprox(depth=depth, depth_delta=delta_depth, lon=lon, lat=lat, radius=radius, flat=flat)
+    cone = BMOCConeApprox(depth=depth, depth_delta=depth_delta, lon=lon, lat=lat, radius=radius, flat=flat)
 
     return cone.data
 
-def polygon_search_lonlat(lon, lat, depth):
-    """
-    Returns the HEALPix cell indexes containing sky coordinates.
+def polygon_search_lonlat(lon, lat, depth, flat=False):
+    """Get the HEALPix cells contained in a polygon at a given depth.
+
+    This method is wrapped around the `polygon_coverage <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.polygon_coverage>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    lon : `astropy.units.Quantity`
+        The longitudes of the vertices defining the polygon.
+    lat : `astropy.units.Quantity`
+        The latitudes of the vertices defining the polygon.
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+
+    Returns
+    -------
+    cells : `numpy.array`
+        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
+        The structure of a cell contains 3 attributes:
+
+        * A ipix value being a np.uint64
+        * A depth value being a np.uint32
+        * A fully_covered flag bit stored in a np.uint8
+
+    Raises
+    ------
+    ValueError
+        When `lon` and `lat` do not have the same dimensions.
+    IndexError
+        When less than 3 vertices (.i.e. defining at least a triangle) are given.
+
+    Examples
+    --------
+    >>> from cdshealpix import polygon_search_lonlat
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> lon = np.random.rand(3) * 360 * u.deg
+    >>> lat = (np.random.rand(3) * 178 - 89) * u.deg
+    >>> depth = 12
+    >>> poly = polygon_search_lonlat(lon, lat, depth)
     """
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
@@ -219,6 +432,73 @@ def polygon_search_lonlat(lon, lat, depth):
     if num_vertices < 3:
         raise IndexError("There must be at least 3 vertices in order to form a polygon")
 
-    polygon = BMOCPolygonApprox(depth=depth, num_vertices=num_vertices, lon=lon, lat=lat)
+    polygon = BMOCPolygon(depth=depth, num_vertices=num_vertices, lon=lon, lat=lat, flat=flat)
 
     return polygon.data
+
+def elliptical_cone_search_lonlat(center, major_axe, minor_axe, pa, depth, depth_delta=2, flat=False):
+    """Get the HEALPix cells contained in an elliptical cone at a given depth.
+
+    This method is wrapped around the `elliptical_cone_coverage_custom <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.elliptical_cone_coverage_custom>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    center : `astropy.coordinates.SkyCoord`
+        Center of the elliptical cone.
+    major_axe : `astropy.coordinates.Angle`
+        Semi-major axe of the elliptical cone.
+    minor_axe : `astropy.coordinates.Angle`
+        Semi-minor axe of the elliptical cone.
+    pa : `astropy.coordinates.Angle`
+        The position angle (i.e. the angle between the north and the semi-major axis, east-of-north).
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+    depth_delta : int, optional
+        To control the approximation, you can choose to perform the computations at a deeper depth using the `depth_delta` parameter.
+        The depth at which the computations will be made will therefore be equal to `depth` + `depth_delta`.
+    flat : boolean, optional
+        False by default (i.e. returns a consistent MOC). If True, the HEALPix cells returned will all be at depth indicated by `depth`.
+
+    Returns
+    -------
+    cells : `numpy.array`
+        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
+        The structure of a cell contains 3 attributes:
+
+        * A ipix value being a np.uint64
+        * A depth value being a np.uint32
+        * A fully_covered flag bit stored in a np.uint8
+
+    Raises
+    ------
+    ValueError
+        When one of `center`, `major_axe`, `minor_axe` or `pa` contains more that one value.
+
+    Examples
+    --------
+    >>> from cdshealpix import elliptical_cone_search_lonlat
+    >>> import astropy.units as u
+    >>> from astropy.coordinates import Angle, SkyCoord
+    >>> import numpy as np
+    >>> center = SkyCoord(0, 0, unit="deg", frame="icrs")
+    >>> a = Angle(50, unit="deg")
+    >>> b = Angle(10, unit="deg")
+    >>> pa = Angle(45, unit="deg")
+    >>> depth = 12
+    >>> elliptical_cone = elliptical_cone_search_lonlat(center, a, b, pa, depth)
+    """
+    if not center.icrs.ra.isscalar or not center.icrs.dec.isscalar or not major_axe.isscalar \
+        or not minor_axe.isscalar or not pa.isscalar:
+        raise ValueError('The longitude, latitude, semi-minor axe, semi-major axe and angle must be '
+                         'scalar Quantity objects')
+
+    lon = center.icrs.ra.to_value(u.rad)
+    lat = center.icrs.dec.to_value(u.rad)
+    major_axe = major_axe.to_value(u.rad)
+    minor_axe = minor_axe.to_value(u.rad)
+    pa = pa.to_value(u.rad)
+
+    elliptical_cone = BMOCEllipticalConeApprox(depth=depth, depth_delta=depth_delta, lon=lon, lat=lat, a=major_axe, b=minor_axe, pa=pa, flat=flat)
+
+    return elliptical_cone.data

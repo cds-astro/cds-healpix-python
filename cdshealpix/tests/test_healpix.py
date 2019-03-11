@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 
+from astropy.coordinates import Angle
 import astropy.units as u
 
 from ..healpix import lonlat_to_healpix, \
@@ -9,7 +10,8 @@ from ..healpix import lonlat_to_healpix, \
  healpix_vertices_lonlat, \
  healpix_neighbours, \
  cone_search_lonlat, \
- polygon_search_lonlat
+ polygon_search_lonlat, \
+ elliptical_cone_search_lonlat
 
 def test_lonlat_to_healpix():
     size = 10000
@@ -73,6 +75,20 @@ def test_polygon_search_lonlat():
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
     res = polygon_search_lonlat(lon=lon, lat=lat, depth=depth)
+
+    npix = 12 * 4 ** (depth)
+    assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())
+    assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
+
+def test_elliptical_cone_search_lonlat():
+    lon = 0 * u.deg
+    lat = 0 * u.deg
+    a = Angle(190, unit="deg")
+    b = Angle(60, unit="deg")
+    pa = Angle(0, unit="deg")
+    depth = 12
+
+    res = elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth)
 
     npix = 12 * 4 ** (depth)
     assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())

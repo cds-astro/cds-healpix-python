@@ -33,11 +33,25 @@ class BMOCConeApprox(BMOC):
             flat
         ))
 
-class BMOCPolygonApprox(BMOC):
-    def __init__(self, depth, num_vertices, lon, lat):
+class BMOCPolygon(BMOC):
+    def __init__(self, depth, num_vertices, lon, lat, flat):
         BMOC.__init__(self, lib.hpx_query_polygon(
             depth,
             num_vertices,
             ffi.cast("const double*", lon.ctypes.data),
-            ffi.cast("const double*", lat.ctypes.data)
+            ffi.cast("const double*", lat.ctypes.data),
+            flat
+        ))
+
+class BMOCEllipticalConeApprox(BMOC):
+    def __init__(self, depth, depth_delta, lon, lat, a, b, pa, flat):
+        BMOC.__init__(self, lib.hpx_query_elliptical_cone_approx(
+            depth,
+            depth_delta,
+            lon,
+            lat,
+            a,
+            b,
+            pa,
+            flat
         ))

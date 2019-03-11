@@ -1,7 +1,20 @@
 Examples
 ========
 
-Notebooks examples can be found on:
+Cone search:
+------------
 
-* `The official github repo <https://github.com/cds-astro/mocpy/tree/master/notebooks>`__.
-* `Binder <https://mybinder.org/v2/gh/cds-astro/mocpy/master>`__. This allows you to run and modify the notebooks.
+.. plot:: examples/cone_search.py
+    :include-source:
+
+Elliptical cone search:
+-----------------------
+
+.. plot:: examples/elliptic_search.py
+    :include-source:
+
+Polygon search:
+---------------
+
+.. plot:: examples/polygon_search.py
+    :include-source:

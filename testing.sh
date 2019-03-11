@@ -13,3 +13,12 @@ $PYTHON setup.py build_rust
 # Move the dynamic lib to the python package folder
 find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
 $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
+
+# Compile the docs
+$PIP install sphinx numpydoc sphinxcontrib-bibtex matplotlib
+cd ./docs
+# Generate the HTML files
+make html
+# Run the API examples
+make doctest
+cd ..

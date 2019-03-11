@@ -50,6 +50,8 @@ extensions = [
     # To support Numpy docstrings, we use this extension:
     # see https://numpydoc.readthedocs.io/en/latest/install.html
     'numpydoc',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.mathjax',
 ]
 default_role = 'py:obj'
 numpydoc_class_members_toctree = False
