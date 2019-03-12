@@ -99,6 +99,9 @@ To work on the documentation you have to install a few more package:
 
 - `sphinx <http://www.sphinx-doc.org/en/master/>`__: responsible for building the documentation in HTML
 - `numpydoc <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`__ allowing to write the API documentation using numpy docstrings
+- `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`__ allowing the definition of bibtex references
+- `mocpy <https://mocpy.readthedocs.io/en/latest/>`__ is used for generating nice plots of the HEALPix cells obtained
+- `matplotlib <https://matplotlib.org/>`__ is used by `mocpy` for plotting purposes
 
 These packages can be installed via pip but are already referred in `requirements-dev.txt`. So if you did a: 
 
