@@ -1,0 +1,12 @@
+setuptools_rust
+pytest
+pytest_benchmark
+astropy_healpix
+healpy
+cffi
+sphinx
+numpydoc
+sphinxcontrib-bibtex
+matplotlib
+mocpy
+spherical-geometry
