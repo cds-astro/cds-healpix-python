@@ -8,3 +8,4 @@ cdshealpix.egg-info/
 *.ipynb
 docs/_build
 docs/_templates
+publish_docs.sh
