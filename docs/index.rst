@@ -18,7 +18,7 @@ Welcome to cdshealpix's documentation!
 `cdshealpix` is a Python wrapper around the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
 `cdshealpix` is deployed to the PyPI server as the `cdshealpix <https://pypi.org/project/cdshealpix/>`__ named pip package and
-is available for Python 2.7, 3.4, 3.5, 3.6 and 3.7 through the following architectures:
+is available for Python 2.7, 3.4, 3.5 (not for windows archs), 3.6 and 3.7 through the following architectures:
 
 * Linux i686/x86_64
 * Windows 32/64 bits

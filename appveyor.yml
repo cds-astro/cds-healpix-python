@@ -25,13 +25,6 @@ environment:
       CIBW_SKIP: "*win32* cp27-* cp33-* cp35-* cp36-* cp37-*"
     - channel: nightly
       target: x86_64-pc-windows-msvc
-      PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5.x"
-      PYTHON_ARCH: "64"
-      CIBW_SKIP: "*win32* cp27-* cp33-* cp34-* cp36-* cp37-*"
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    - channel: nightly
-      target: x86_64-pc-windows-msvc
       PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6.x"
       PYTHON_ARCH: "64"
@@ -57,13 +50,6 @@ environment:
       PYTHON_VERSION: "3.4.x"
       PYTHON_ARCH: "32"
       CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp35-* cp36-* cp37-*"
-    - channel: nightly
-      target: i686-pc-windows-msvc
-      PYTHON: "C:\\Python35"
-      PYTHON_VERSION: "3.5.x"
-      PYTHON_ARCH: "32"
-      CIBW_SKIP: "*win_amd64* cp27-* cp33-* cp34-* cp36-* cp37-*"
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     - channel: nightly
       target: i686-pc-windows-msvc
       PYTHON: "C:\\Python36"
