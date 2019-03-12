@@ -95,7 +95,7 @@ For running the benchmarks:
 Working on the documentation
 ----------------------------
 
-To work on the documentation you have to install a few more package:
+To work on the documentation you have to install a few more packages:
 
 - `sphinx <http://www.sphinx-doc.org/en/master/>`__: responsible for building the documentation in HTML
 - `numpydoc <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`__ allowing to write the API documentation using numpy docstrings
