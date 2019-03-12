@@ -21,4 +21,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # The cdshealpix rust crate
-cdshealpix = "0.1.5"
+cdshealpix = { git = 'https://github.com/cds-astro/cds-healpix-rust' }

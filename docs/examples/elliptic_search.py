@@ -6,7 +6,7 @@ import numpy as np
 elliptical_cone = elliptical_cone_search_lonlat(
     center=SkyCoord(0, 0, unit="deg", frame="icrs"),
     major_axe=Angle(50, unit="deg"),
-    minor_axe=Angle(5, unit="deg"),
+    minor_axe=Angle(10, unit="deg"),
     pa=Angle(20, unit="deg"),
     depth=10,
     depth_delta=0
@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
 with WCS(fig,
-        fov=100 * u.deg,
-        center=SkyCoord(180, 0, unit="deg", frame="icrs"),
+        fov=120 * u.deg,
+        center=SkyCoord(0, 0, unit="deg", frame="icrs"),
         coordsys="icrs",
         rotation=Angle(0, u.degree),
         projection="AIT") as wcs:
