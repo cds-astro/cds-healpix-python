@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix_python"
-version = "0.1.8"
+version = "0.1.10"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
@@ -21,4 +21,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # The cdshealpix rust crate
-cdshealpix = { git = 'https://github.com/cds-astro/cds-healpix-rust' }
+cdshealpix = { git = 'https://github.com/cds-astro/cds-healpix-rust', branch = 'master' }
