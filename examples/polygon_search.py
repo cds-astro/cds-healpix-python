@@ -25,6 +25,7 @@ with WCS(fig,
     ax = fig.add_subplot(1, 1, 1, projection=wcs)
     # Call fill with a matplotlib axe and the `~astropy.wcs.WCS` wcs object.
     moc.fill(ax=ax, wcs=wcs, alpha=0.5, fill=True, color="green")
+    # Draw the perimeter of the MOC in black
     moc.border(ax=ax, wcs=wcs, alpha=0.5, color="black")
 plt.xlabel('ra')
 plt.ylabel('dec')

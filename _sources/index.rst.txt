@@ -29,7 +29,7 @@ What is HEALPix ?
 
 HEALPix describes a partionning of the sky into several equal area cells.
 This partionning is hierarchical meaning that each cell has a depth associated to it.
-Possible depth are in :math:`[0, 29]`. A cell of depth :math:`N` can be subdivided into 
+Possible depths are in :math:`[0, 29]`. A cell of depth :math:`N` can be subdivided into
 its four children of depth :math:`N+1`:
 
 - At the depth :math:`0`, the sky is fractionned into :math:`12` cells of equal areas.

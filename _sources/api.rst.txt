@@ -1,8 +1,8 @@
 API
 ===
 
-This is the API for the cdshealpix python package. This package is a wrapper around the Rust `cdshealpix <https://crates.io/crates/cdshealpix>`__  crate.
-This functions currently available by `cdshealpix` are the following:
+This is the API for the `cdshealpix` python package. This package is a wrapper around the Rust `cdshealpix <https://crates.io/crates/cdshealpix>`__  crate.
+The functions currently implemented by `cdshealpix` are the following:
 
 * :meth:`~cdshealpix.lonlat_to_healpix` and :meth:`~cdshealpix.skycoord_to_healpix` returns the
   HEALPix cell(s) containing some user-defined sky coordinates.

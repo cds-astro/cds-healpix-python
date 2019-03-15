@@ -38,8 +38,8 @@
             
   <div class="section" id="api">
 <h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
-<p>This is the API for the cdshealpix python package. This package is a wrapper around the Rust <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix</a>  crate.
-This functions currently available by <a class="reference internal" href="#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a> are the following:</p>
+<p>This is the API for the <a class="reference internal" href="#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a> python package. This package is a wrapper around the Rust <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix</a>  crate.
+The functions currently implemented by <a class="reference internal" href="#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a> are the following:</p>
 <ul class="simple">
 <li><a class="reference internal" href="#cdshealpix.lonlat_to_healpix" title="cdshealpix.lonlat_to_healpix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lonlat_to_healpix()</span></code></a> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">skycoord_to_healpix()</span></code> returns the
 HEALPix cell(s) containing some user-defined sky coordinates.</li>
@@ -62,10 +62,10 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">The longitudes of the sky coordinates.</p>
 </dd>
-<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">The latitudes of the sky coordinates.</p>
 </dd>
 <dt><strong>depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
@@ -124,7 +124,7 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt>
+<dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt>
 <dd><p class="first last">The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.</p>
 </dd>
 </dl>
@@ -154,8 +154,8 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <code class="descclassname">cdshealpix.</code><code class="descname">healpix_to_skycoord</code><span class="sig-paren">(</span><em>ipixels</em>, <em>depth</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.healpix_to_skycoord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the sky coordinates of the center of some HEALPix cells at a given depth.</p>
 <p>This method does the opposite transformation of <a class="reference internal" href="#cdshealpix.lonlat_to_healpix" title="cdshealpix.lonlat_to_healpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonlat_to_healpix</span></code></a>.
-It is the equivalent of <a class="reference internal" href="#cdshealpix.healpix_to_lonlat" title="cdshealpix.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a> except that it returns <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a> instead
-of <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>.
+It is the equivalent of <a class="reference internal" href="#cdshealpix.healpix_to_lonlat" title="cdshealpix.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a> except that it returns <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a> instead
+of <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>.
 It’s wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center">center</a>
 method from the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -173,8 +173,8 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>skycoord</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt>
-<dd><p class="first last">The sky coordinates of the center of the HEALPix cells given as a <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object.</p>
+<dt><strong>skycoord</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt>
+<dd><p class="first last">The sky coordinates of the center of the HEALPix cells given as a <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object.</p>
 </dd>
 </dl>
 </td>
@@ -220,8 +220,8 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt>
-<dd><p class="first last">The sky coordinates of the 4 vertices of the HEALPix cells. <code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code> are each <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a> instances
+<dt><strong>lon, lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt>
+<dd><p class="first last">The sky coordinates of the 4 vertices of the HEALPix cells. <code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code> are each <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quantity</span></code></a> instances
 containing a <span class="math notranslate nohighlight">\(N\)</span> x <span class="math notranslate nohighlight">\(4\)</span> numpy array where N is the number of HEALPix cell given in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ipixels</span></code>.</p>
 </dd>
 </dl>
@@ -268,8 +268,8 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>vertices</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt>
-<dd><p class="first last">The sky coordinates of the 4 vertices of the HEALPix cells. <code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code> is a <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object
+<dt><strong>vertices</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt>
+<dd><p class="first last">The sky coordinates of the 4 vertices of the HEALPix cells. <code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code> is a <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object
 containing a <span class="math notranslate nohighlight">\(N\)</span> x <span class="math notranslate nohighlight">\(4\)</span> numpy array where N is the number of HEALPix cells given in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ipixels</span></code>.</p>
 </dd>
 </dl>
@@ -354,13 +354,13 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">Longitude of the center of the cone.</p>
 </dd>
-<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">Latitude of the center of the cone.</p>
 </dd>
-<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>radius</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">Radius of the cone.</p>
 </dd>
 <dt><strong>depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
@@ -417,10 +417,10 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">The longitudes of the vertices defining the polygon.</p>
 </dd>
-<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
+<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt>
 <dd><p class="first last">The latitudes of the vertices defining the polygon.</p>
 </dd>
 <dt><strong>depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
@@ -468,7 +468,7 @@ The structure of a cell contains 3 attributes:</p>
 
 <dl class="function">
 <dt id="cdshealpix.elliptical_cone_search_lonlat">
-<code class="descclassname">cdshealpix.</code><code class="descname">elliptical_cone_search_lonlat</code><span class="sig-paren">(</span><em>center</em>, <em>major_axe</em>, <em>minor_axe</em>, <em>pa</em>, <em>depth</em>, <em>depth_delta=2</em>, <em>flat=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.elliptical_cone_search_lonlat" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">cdshealpix.</code><code class="descname">elliptical_cone_search_lonlat</code><span class="sig-paren">(</span><em>lon</em>, <em>lat</em>, <em>a</em>, <em>b</em>, <em>pa</em>, <em>depth</em>, <em>depth_delta=2</em>, <em>flat=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.elliptical_cone_search_lonlat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the HEALPix cells contained in an elliptical cone at a given depth.</p>
 <p>This method is wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.elliptical_cone_coverage_custom">elliptical_cone_coverage_custom</a>
 method from the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
@@ -477,16 +477,19 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>center</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt>
-<dd><p class="first last">Center of the elliptical cone.</p>
+<dt><strong>lon</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Quantity</span></code></span></dt>
+<dd><p class="first last">Longitude of the center of the elliptical cone.</p>
 </dd>
-<dt><strong>major_axe</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
-<dd><p class="first last">Semi-major axe of the elliptical cone.</p>
+<dt><strong>lat</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Quantity</span></code></span></dt>
+<dd><p class="first last">Latitude of the center of the elliptical cone.</p>
 </dd>
-<dt><strong>minor_axe</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
-<dd><p class="first last">Semi-minor axe of the elliptical cone.</p>
+<dt><strong>a</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
+<dd><p class="first last">Semi-major axe angle of the elliptical cone.</p>
 </dd>
-<dt><strong>pa</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev809)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
+<dt><strong>b</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
+<dd><p class="first last">Semi-minor axe angle of the elliptical cone.</p>
+</dd>
+<dt><strong>pa</strong> <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.coordinates.Angle.html#astropy.coordinates.Angle" title="(in Astropy v3.2.dev1487)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Angle</span></code></a></span></dt>
 <dd><p class="first last">The position angle (i.e. the angle between the north and the semi-major axis, east-of-north).</p>
 </dd>
 <dt><strong>depth</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
@@ -517,7 +520,13 @@ The structure of a cell contains 3 attributes:</p>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>ValueError</strong></dt>
-<dd><p class="first last">When one of <code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">major_axe</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">minor_axe</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">pa</span></code> contains more that one value.</p>
+<dd><p class="first last">If one of <code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">major_axe</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">minor_axe</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">pa</span></code> contains more that one value.</p>
+</dd>
+<dt><strong>ValueError</strong></dt>
+<dd><p class="first last">If the semi-major axis <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> exceeds 90deg (i.e. area of one hemisphere)</p>
+</dd>
+<dt><strong>ValueError</strong></dt>
+<dd><p class="first last">If the semi-minor axis <code class="xref py py-obj docutils literal notranslate"><span class="pre">b</span></code> is greater than the semi-major axis <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></p>
 </dd>
 </dl>
 </td>
@@ -529,12 +538,13 @@ The structure of a cell contains 3 attributes:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="k">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">SkyCoord</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lat</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span> <span class="o">=</span> <span class="n">Angle</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">depth</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">elliptical_cone</span> <span class="o">=</span> <span class="n">elliptical_cone_search_lonlat</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elliptical_cone</span> <span class="o">=</span> <span class="n">elliptical_cone_search_lonlat</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
