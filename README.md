@@ -7,7 +7,7 @@ This repository contains all the wrapping code for interfacing the [cdshealpix R
 It also performs the deployment of the [cdshealpix](https://pypi.org/project/cdshealpix/) PyPI python package for Linux/MacOS/Windows i686 and x86_64 architectures.
 This package is available for Python 2.7/3.4/3.5 (not for windows archs)/3.6 and 3.7.
 
-## Documentation
+## [Documentation](https://cds-astro.github.io/cds-healpix-python/)
 
 The documentation of `cdshealpix` is hosted on github and can be accessed through this [link](https://cds-astro.github.io/cds-healpix-python/). You will find:
 
