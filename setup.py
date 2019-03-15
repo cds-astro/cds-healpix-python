@@ -3,9 +3,11 @@ import os
 from setuptools import setup
 from setuptools_rust import Binding, RustExtension
 
+# Retrieve the cdshealpix current version number
 version_file_path = os.path.join(os.path.dirname(__file__), "cdshealpix/version.py")
 exec(open(version_file_path).read())
 
+# Get the dependencies of cdshealpix by looking into the requirements.txt file
 def get_package_dependencies():
     dependencies = []
     requirement_file_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
@@ -16,11 +18,20 @@ def get_package_dependencies():
 setup(
     name="cdshealpix",
     version=__version__,
+    # setuptools_rust new parameter
     rust_extensions=[RustExtension(
+        # Package name
         "cdshealpix.cdshealpix",
+        # The path to the cargo.toml file defining the rust-side wrapper.
+        # This file usually contains the name of the project, its version, the author
+        # and the dependencies of the crate (in our case the rust wrapper depends on the cdshealpix
+        # crate). 
         'Cargo.toml',
-        # The binding with the Rust cdshealpix API is done using CFFI
-        binding=Binding.NoBinding)],
+        # The binding with the Rust cdshealpix API is manually done using CFFI.
+        # Some rust tools such as the pyo3 can also do rust<->python bindings.
+        binding=Binding.NoBinding,
+        # Add the --release option when building the rust code
+        debug=False)],
     packages=["cdshealpix"],
     package_dir={'cdshealpix': 'cdshealpix'},
     # include the file containing the prototypes

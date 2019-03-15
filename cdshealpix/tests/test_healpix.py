@@ -81,13 +81,14 @@ def test_polygon_search_lonlat():
     assert(((res["ipix"] >= 0) & (res["ipix"] < npix)).all())
 
 def test_elliptical_cone_search_lonlat():
-    center = SkyCoord(0, 0, unit="deg", frame="icrs")
+    lon = 0 * u.deg
+    lat = 0 * u.deg
     a = Angle(50, unit="deg")
     b = Angle(5, unit="deg")
     pa = Angle(0, unit="deg")
     depth = 12
 
-    res = elliptical_cone_search_lonlat(center, a, b, pa, depth)
+    res = elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth)
 
     npix = 12 * 4 ** (depth)
     assert(((res["depth"] >= 0) & (res["depth"] <= depth)).all())

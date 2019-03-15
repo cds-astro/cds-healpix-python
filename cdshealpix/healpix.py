@@ -4,7 +4,7 @@ from .bmoc import BMOCConeApprox, \
                   BMOCEllipticalConeApprox
 
 import astropy.units as u
-from astropy.coordinates import SkyCoord
+from astropy.coordinates import SkyCoord, Angle
 import numpy as np
 
 
@@ -436,7 +436,7 @@ def polygon_search_lonlat(lon, lat, depth, flat=False):
 
     return polygon.data
 
-def elliptical_cone_search_lonlat(center, major_axe, minor_axe, pa, depth, depth_delta=2, flat=False):
+def elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth, depth_delta=2, flat=False):
     """Get the HEALPix cells contained in an elliptical cone at a given depth.
 
     This method is wrapped around the `elliptical_cone_coverage_custom <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.elliptical_cone_coverage_custom>`__
@@ -444,12 +444,14 @@ def elliptical_cone_search_lonlat(center, major_axe, minor_axe, pa, depth, depth
 
     Parameters
     ----------
-    center : `astropy.coordinates.SkyCoord`
-        Center of the elliptical cone.
-    major_axe : `astropy.coordinates.Angle`
-        Semi-major axe of the elliptical cone.
-    minor_axe : `astropy.coordinates.Angle`
-        Semi-minor axe of the elliptical cone.
+    lon : `astropy.coordinates.Quantity`
+        Longitude of the center of the elliptical cone.
+    lat : `astropy.coordinates.Quantity`
+        Latitude of the center of the elliptical cone.
+    a : `astropy.coordinates.Angle`
+        Semi-major axe angle of the elliptical cone.
+    b : `astropy.coordinates.Angle`
+        Semi-minor axe angle of the elliptical cone.
     pa : `astropy.coordinates.Angle`
         The position angle (i.e. the angle between the north and the semi-major axis, east-of-north).
     depth : int
@@ -473,7 +475,11 @@ def elliptical_cone_search_lonlat(center, major_axe, minor_axe, pa, depth, depth
     Raises
     ------
     ValueError
-        When one of `center`, `major_axe`, `minor_axe` or `pa` contains more that one value.
+        If one of `lon`, `lat`, `major_axe`, `minor_axe` or `pa` contains more that one value.
+    ValueError
+        If the semi-major axis `a` exceeds 90deg (i.e. area of one hemisphere)
+    ValueError
+        If the semi-minor axis `b` is greater than the semi-major axis `a`
 
     Examples
     --------
@@ -481,24 +487,38 @@ def elliptical_cone_search_lonlat(center, major_axe, minor_axe, pa, depth, depth
     >>> import astropy.units as u
     >>> from astropy.coordinates import Angle, SkyCoord
     >>> import numpy as np
-    >>> center = SkyCoord(0, 0, unit="deg", frame="icrs")
+    >>> lon = 0 * u.deg
+    >>> lat = 0 * u.deg
     >>> a = Angle(50, unit="deg")
     >>> b = Angle(10, unit="deg")
     >>> pa = Angle(45, unit="deg")
     >>> depth = 12
-    >>> elliptical_cone = elliptical_cone_search_lonlat(center, a, b, pa, depth)
+    >>> elliptical_cone = elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth)
     """
-    if not center.icrs.ra.isscalar or not center.icrs.dec.isscalar or not major_axe.isscalar \
-        or not minor_axe.isscalar or not pa.isscalar:
+    if not lon.isscalar or not lat.isscalar or not a.isscalar \
+        or not b.isscalar or not pa.isscalar:
         raise ValueError('The longitude, latitude, semi-minor axe, semi-major axe and angle must be '
                          'scalar Quantity objects')
 
-    lon = center.icrs.ra.to_value(u.rad)
-    lat = center.icrs.dec.to_value(u.rad)
-    major_axe = major_axe.to_value(u.rad)
-    minor_axe = minor_axe.to_value(u.rad)
+    if a >= Angle(np.pi/2.0, unit="rad"):
+        raise ValueError('The semi-major axis exceeds 90deg.')
+
+    if b > a:
+        raise ValueError('The semi-minor axis is greater than the semi-major axis.')
+
+    lon = lon.to_value(u.rad)
+    lat = lat.to_value(u.rad)
+    a = a.to_value(u.rad)
+    b = b.to_value(u.rad)
     pa = pa.to_value(u.rad)
 
-    elliptical_cone = BMOCEllipticalConeApprox(depth=depth, depth_delta=depth_delta, lon=lon, lat=lat, a=major_axe, b=minor_axe, pa=pa, flat=flat)
+    elliptical_cone = BMOCEllipticalConeApprox(depth=depth,
+        depth_delta=depth_delta,
+        lon=lon,
+        lat=lat,
+        a=a,
+        b=b,
+        pa=pa,
+        flat=flat)
 
     return elliptical_cone.data

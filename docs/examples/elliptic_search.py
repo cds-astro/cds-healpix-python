@@ -1,18 +1,19 @@
+import cdshealpix
+print(cdshealpix.__version__)
 from cdshealpix import elliptical_cone_search_lonlat
 import astropy.units as u
 from astropy.coordinates import Angle, SkyCoord
 import numpy as np
 
 elliptical_cone = elliptical_cone_search_lonlat(
-    center=SkyCoord(0, 0, unit="deg", frame="icrs"),
-    major_axe=Angle(50, unit="deg"),
-    minor_axe=Angle(5, unit="deg"),
-    pa=Angle(20, unit="deg"),
+    lon=0 * u.deg,
+    lat=0 * u.deg,
+    a=Angle(50, unit="deg"),
+    b=Angle(5, unit="deg"),
+    pa=Angle(30, unit="deg"),
     depth=10,
     depth_delta=0
 )
-
-#raise Exception("{}".format(elliptical_cone))
 
 from mocpy import MOC, WCS
 
@@ -23,7 +24,7 @@ fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
 with WCS(fig,
         fov=100 * u.deg,
-        center=SkyCoord(180, 0, unit="deg", frame="icrs"),
+        center=SkyCoord(0, 0, unit="deg", frame="icrs"),
         coordsys="icrs",
         rotation=Angle(0, u.degree),
         projection="AIT") as wcs:
