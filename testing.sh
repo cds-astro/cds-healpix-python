@@ -8,7 +8,7 @@ set -e
 $PIP install -r requirements.txt
 $PIP install pytest setuptools-rust astropy_healpix
 # Install Rust compiler
-curl https://sh.rustup.rs -sSf | sh -s -- -y
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
 export PATH="$HOME/.cargo/bin:$PATH"
 # Generate the dynamic library from the cdshealpix Rust crate.
 # This will download the crate from crates.io and build it first.
