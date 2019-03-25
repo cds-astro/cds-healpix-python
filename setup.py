@@ -1,7 +1,10 @@
 import os
+import sys
 
 from setuptools import setup
 from setuptools_rust import RustExtension
+
+PYTHON_MAJOR_VERSION = sys.version_info[0]
 
 # Retrieve the cdshealpix current version number
 version_file_path = os.path.join(os.path.dirname(__file__), "cdshealpix/version.py")
@@ -27,6 +30,9 @@ setup(
         # and the dependencies of the crate (in our case the rust wrapper depends on the cdshealpix
         # crate). 
         'Cargo.toml',
+        # Specify python version to setuptools_rust
+        rustc_flags=['--cfg=Py_{}'.format(PYTHON_MAJOR_VERSION)],
+        features=['numpy/python{}'.format(PYTHON_MAJOR_VERSION)],
         # Add the --release option when building the rust code
         debug=False)],
     packages=["cdshealpix"],
