@@ -1,11 +1,11 @@
-from cdshealpix import cone_search_lonlat
+from cdshealpix import cone_search
 import astropy.units as u
-cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
 
 from mocpy import MOC, WCS
 from astropy.coordinates import SkyCoord, Angle
 
-moc = MOC.from_cells(cone)
+moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
 import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))

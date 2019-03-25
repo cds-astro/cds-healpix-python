@@ -1,4 +1,4 @@
-from cdshealpix import polygon_search_lonlat
+from cdshealpix import polygon_search
 import astropy.units as u
 import numpy as np
 
@@ -6,12 +6,12 @@ lon = [20, -20, -20, 20] * u.deg
 lat = [20, 20, -20, -20] * u.deg
 
 depth = 7
-poly = polygon_search_lonlat(lon, lat, depth)
+ipix, depth, fully_covered = polygon_search(lon, lat, depth)
 
 from mocpy import MOC, WCS
 from astropy.coordinates import SkyCoord, Angle
 
-moc = MOC.from_cells(poly)
+moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
 import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))

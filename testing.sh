@@ -18,7 +18,10 @@ find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
 $PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
 
 # Compile the docs
-$PIP install sphinx numpydoc sphinxcontrib-bibtex matplotlib mocpy spherical-geometry
+$PIP install sphinx numpydoc sphinxcontrib-bibtex matplotlib spherical-geometry
+# Use of the healpix branch mocpy version (def of from_healpix_cells)
+# to run the test examples
+$PIP install git+https://github.com/cds-astro/mocpy@healpix
 cd ./docs
 # Generate the HTML files
 make html
