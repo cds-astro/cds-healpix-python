@@ -1,7 +1,7 @@
 import os
 
 from setuptools import setup
-from setuptools_rust import Binding, RustExtension
+from setuptools_rust import RustExtension
 
 # Retrieve the cdshealpix current version number
 version_file_path = os.path.join(os.path.dirname(__file__), "cdshealpix/version.py")
@@ -27,15 +27,12 @@ setup(
         # and the dependencies of the crate (in our case the rust wrapper depends on the cdshealpix
         # crate). 
         'Cargo.toml',
-        # The binding with the Rust cdshealpix API is manually done using CFFI.
-        # Some rust tools such as the pyo3 can also do rust<->python bindings.
-        binding=Binding.NoBinding,
         # Add the --release option when building the rust code
         debug=False)],
     packages=["cdshealpix"],
     package_dir={'cdshealpix': 'cdshealpix'},
     # include the file containing the prototypes
-    package_data={'cdshealpix': ['bindings.h']},
+    # package_data={'cdshealpix': ['bindings.h']},
     install_requires=get_package_dependencies(),
     # rust extensions are not zip safe, just like C-extensions.
     zip_safe=False,

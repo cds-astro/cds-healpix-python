@@ -3,7 +3,6 @@ pytest
 pytest_benchmark
 astropy_healpix
 healpy
-cffi
 sphinx
 numpydoc
 sphinxcontrib-bibtex
