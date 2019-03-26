@@ -44,9 +44,9 @@ jobs:
         - >
           docker run
           --interactive
-          --volume "${PWD}"
+          --volume "$TRAVIS_BUILD_DIR"
           daald/ubuntu32:xenial
-          ./testing_py2_ubuntu_32.sh
+          "$TRAVIS_BUILD_DIR"/testing_py2_ubuntu_32.sh
     - name: "Python3 linux_i686"
       os: linux
       services:
@@ -58,9 +58,9 @@ jobs:
         - >
           docker run
           --interactive
-          --volume "${PWD}"
+          --volume "$TRAVIS_BUILD_DIR"
           daald/ubuntu32:xenial
-          ./testing_py3_ubuntu_32.sh
+          "$TRAVIS_BUILD_DIR"/testing_py3_ubuntu_32.sh
       # - MacOS
     - name: "Python2 OSX"
       os: osx
