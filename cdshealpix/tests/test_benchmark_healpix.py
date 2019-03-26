@@ -8,7 +8,7 @@ from ..healpix import lonlat_to_healpix, \
  healpix_to_skycoord, \
  healpix_vertices_lonlat, \
  healpix_neighbours, \
- cone_search_lonlat
+ cone_search
 
 @pytest.mark.benchmark(group="lonlat_to_healpix")
 def test_lonlat_to_healpix(benchmark):
@@ -81,7 +81,7 @@ depth_c = 5
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search(benchmark):
-    res = benchmark.pedantic(cone_search_lonlat, kwargs={'lon': lon_c, 'lat': lat_c, 'radius': radius_c, 'depth': depth_c}, iterations=10, rounds=100)
+    res = benchmark.pedantic(cone_search, kwargs={'lon': lon_c, 'lat': lat_c, 'radius': radius_c, 'depth': depth_c}, iterations=10, rounds=100)
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search_astropy(benchmark):

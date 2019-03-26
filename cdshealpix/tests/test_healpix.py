@@ -57,7 +57,7 @@ def test_healpix_neighbours():
     npix = 12 * 4**(depth)
     assert(((neigh >= -1) & (neigh < npix)).all())
 
-def test_cone_search_lonlat():
+def test_cone_search():
     lon = np.random.rand(1)[0] * 360 * u.deg
     lat = (np.random.rand(1)[0] * 178 - 89) * u.deg
     radius = (np.random.rand(1)[0] * 45) * u.deg
@@ -69,7 +69,7 @@ def test_cone_search_lonlat():
     assert(((depth >= 0) & (depth <= max_depth)).all())
     assert(((ipix >= 0) & (ipix < npix)).all())
 
-def test_polygon_search_lonlat():
+def test_polygon_search():
     size = 3
     max_depth = 12
     lon = np.random.rand(size) * 360 * u.deg
@@ -81,7 +81,7 @@ def test_polygon_search_lonlat():
     assert(((depth >= 0) & (depth <= max_depth)).all())
     assert(((ipix >= 0) & (ipix < npix)).all())
 
-def test_elliptical_cone_search_lonlat():
+def test_elliptical_cone_search():
     lon = 0 * u.deg
     lat = 0 * u.deg
     a = Angle(50, unit="deg")

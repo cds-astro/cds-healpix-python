@@ -24,9 +24,9 @@ The documentation of `cdshealpix` is hosted on github and can be accessed throug
 from cdshealpix import healpix_to_lonlat
 import numpy as np
 
-ipixels = np.array([42, 6, 10])
+ipix = np.array([42, 6, 10])
 
-lon, lat = healpix_to_lonlat(ipixels=ipixels, depth=12)
+lon, lat = healpix_to_lonlat(ipix, depth=12)
 ```
 
 ### (lon, lat) astropy quantities to HEALPix indices
@@ -35,62 +35,70 @@ lon, lat = healpix_to_lonlat(ipixels=ipixels, depth=12)
 from cdshealpix import lonlat_to_healpix
 import astropy.units as u
 
-ipixels = lonlat_to_healpix(lon=[0, 50, 25] * u.deg, lat=[6, -12, 45] * u.deg, depth=12)
+ipix = lonlat_to_healpix(lon=[0, 50, 25] * u.deg, lat=[6, -12, 45] * u.deg, depth=12)
 ```
 
 ### Get the vertices (lon, lat) position from HEALPix indices
 
 ```python
-from cdshealpix import healpix_vertices_lonlat
+from cdshealpix import vertices
 import numpy as np
 
-ipixels = np.array([42, 6, 10])
+ipix = np.array([42, 6, 10])
 
-lon, lat = healpix_vertices_lonlat(ipixels=ipixels, depth=12)
+lon, lat = vertices(ipix, depth=12)
 ```
 
 ### Get the neighbours from HEALPix indices
 
 ```python
-from cdshealpix import healpix_neighbours
+from cdshealpix import neighbours
 import numpy as np
 
-ipixels = np.array([42, 6, 10])
+ipix = np.array([42, 6, 10])
 
-neighbours = healpix_neighbours(ipixels=ipixels, depth=12)
+neighbours = neighbours(ipix, depth=12)
 ```
 
 ### Cone search
 
 ```python
-from cdshealpix import cone_search_lonlat
+from cdshealpix import cone_search
 import astropy.units as u
 
-cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
-# This gives a numpy array of structures describing a bmoc.
-# This structure contains 3 attributes:
-# - the HEALPix indice of the cell
-# - the depth of the cell
-# - a flag. If it is equal to one, the cell is fully covered by the cone. If it is equal to 0 then the cell is partially covered by the cone
-cone
->>> array([(4407159, 10, 0), (4407163, 10, 0), (4407164, 10, 0), ...,
-       (5030019, 10, 0), (5030020, 10, 0), (5030024, 10, 0)],
-      dtype=[('ipix', '<u8'), ('depth', '<u4'), ('fully_covered', 'u1')])
+# Returns a tuple of three equal sized numpy arrays
+# - the first contains the HEALPix cell indices
+# - the second contains the HEALPix cell depths
+# - the third contains for each HEALPix cell whether it is fully covered by the region (cone, elliptical cone or polygon).
+ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
+```
+
+### Elliptical cone search
+
+```python
+from cdshealpix import elliptical_cone_search
+import astropy.units as u
+
+# Returns a tuple of three equal sized numpy arrays
+# - the first contains the HEALPix cell indices
+# - the second contains the HEALPix cell depths
+# - the third contains for each HEALPix cell whether it is fully covered by the region (cone, elliptical cone or polygon).
+ipix, depth, fully_covered = elliptical_cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
 ```
 
 ### Polygon search
 
 ```python
-from cdshealpix import polygon_search_lonlat
+from cdshealpix import polygon_search
 import astropy.units as u
 import numpy as np
 
-depth = 12
+max_depth = 12
 # Generate a triangle
 lon = np.random.rand(3) * 360 * u.deg
 lat = (np.random.rand(3) * 178 - 89) * u.deg
 
-poly = polygon_search_lonlat(lon=lon, lat=lat, depth=depth)
+ipix, depth, fully_covered = polygon_search(lon=lon, lat=lat, depth=max_depth)
 ```
 
 ## Contributing

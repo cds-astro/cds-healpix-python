@@ -173,11 +173,11 @@ def vertices(ipix, depth):
 
     Examples
     --------
-    >>> from cdshealpix import healpix_vertices_lonlat
+    >>> from cdshealpix import vertices
     >>> import numpy as np
     >>> ipixels = np.array([42, 6, 10])
     >>> depth = 12
-    >>> lon, lat = healpix_vertices_lonlat(ipixels, depth)
+    >>> lon, lat = vertices(ipixels, depth)
     """
     #ipixels = np.atleast_1d(ipixels).ravel()
     _check_ipixels(data=ipix, depth=depth)
@@ -217,11 +217,11 @@ def vertices_skycoord(ipixels, depth):
 
     Examples
     --------
-    >>> from cdshealpix import healpix_vertices_skycoord
+    >>> from cdshealpix import vertices
     >>> import numpy as np
     >>> ipixels = np.array([42, 6, 10])
     >>> depth = 12
-    >>> skycoord = healpix_vertices_skycoord(ipixels, depth)
+    >>> vertices = vertices(ipixels, depth)
     """
     lon, lat = healpix_vertices_lonlat(ipixels, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
@@ -254,11 +254,11 @@ def neighbours(ipix, depth):
 
     Examples
     --------
-    >>> from cdshealpix import healpix_neighbours
+    >>> from cdshealpix import neighbours
     >>> import numpy as np
     >>> ipixels = np.array([42, 6, 10])
     >>> depth = 12
-    >>> neighbours = healpix_neighbours(ipixels, depth)
+    >>> neighbours = neighbours(ipixels, depth)
     """
     #ipix = np.atleast_1d(ipix).ravel()
     _check_ipixels(data=ipix, depth=depth)
@@ -308,9 +308,9 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
 
     Examples
     --------
-    >>> from cdshealpix import cone_search_lonlat
+    >>> from cdshealpix import cone_search
     >>> import astropy.units as u
-    >>> cone = cone_search_lonlat(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+    >>> ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
     """
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
@@ -360,13 +360,13 @@ def polygon_search(lon, lat, depth, flat=False):
 
     Examples
     --------
-    >>> from cdshealpix import polygon_search_lonlat
+    >>> from cdshealpix import polygon_search
     >>> import astropy.units as u
     >>> import numpy as np
     >>> lon = np.random.rand(3) * 360 * u.deg
     >>> lat = (np.random.rand(3) * 178 - 89) * u.deg
-    >>> depth = 12
-    >>> poly = polygon_search_lonlat(lon, lat, depth)
+    >>> max_depth = 12
+    >>> ipix, depth, fully_covered = polygon_search(lon, lat, max_depth)
     """
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
@@ -430,7 +430,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
     Examples
     --------
-    >>> from cdshealpix import elliptical_cone_search_lonlat
+    >>> from cdshealpix import elliptical_cone_search
     >>> import astropy.units as u
     >>> from astropy.coordinates import Angle, SkyCoord
     >>> import numpy as np
@@ -439,8 +439,8 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     >>> a = Angle(50, unit="deg")
     >>> b = Angle(10, unit="deg")
     >>> pa = Angle(45, unit="deg")
-    >>> depth = 12
-    >>> elliptical_cone = elliptical_cone_search_lonlat(lon, lat, a, b, pa, depth)
+    >>> max_depth = 12
+    >>> ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
     """
     if not lon.isscalar or not lat.isscalar or not a.isscalar \
         or not b.isscalar or not pa.isscalar:

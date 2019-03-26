@@ -8,9 +8,9 @@ The functions currently implemented by `cdshealpix` are the following:
   HEALPix cell(s) containing some user-defined sky coordinates.
 * :meth:`~cdshealpix.healpix_to_lonlat` and :meth:`~cdshealpix.healpix_to_skycoord` returns the center(s)
   of user-defined HEALPix cell(s).
-* :meth:`~cdshealpix.healpix_neighbours` returns the neighbours of user-defined HEALPix cell(s).
-* :meth:`~cdshealpix.healpix_vertices_lonlat` and :meth:`~cdshealpix.healpix_vertices_skycoord` returns the vertices of user-defined HEALPix cell(s).
-* :meth:`~cdshealpix.cone_search_lonlat`, :meth:`~cdshealpix.polygon_search_lonlat` and :meth:`~cdshealpix.elliptical_cone_search_lonlat` return the HEALPix cells
+* :meth:`~cdshealpix.neighbours` returns the neighbours of user-defined HEALPix cell(s).
+* :meth:`~cdshealpix.vertices` and :meth:`~cdshealpix.vertices_skycoord` returns the vertices of user-defined HEALPix cell(s).
+* :meth:`~cdshealpix.cone_search`, :meth:`~cdshealpix.polygon_search` and :meth:`~cdshealpix.elliptical_cone_search` return the HEALPix cells
   being located in user-defined cone (resp. polygon or elliptical cone).
 
 .. automodule:: cdshealpix
