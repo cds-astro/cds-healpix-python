@@ -32,7 +32,7 @@ jobs:
         - PIP=pip
         - PYTHON=python
       script: ./testing.sh
-      # - manylinux 32bit
+      # - linux 32bit
     - name: "Python2 linux_i686"
       os: linux
       services:
@@ -46,7 +46,7 @@ jobs:
           --interactive
           --volume "$TRAVIS_BUILD_DIR"
           daald/ubuntu32:xenial
-          "$TRAVIS_BUILD_DIR"/testing_py2_ubuntu_32.sh
+          testing_py2_ubuntu_32.sh
     - name: "Python3 linux_i686"
       os: linux
       services:
@@ -60,7 +60,7 @@ jobs:
           --interactive
           --volume "$TRAVIS_BUILD_DIR"
           daald/ubuntu32:xenial
-          "$TRAVIS_BUILD_DIR"/testing_py3_ubuntu_32.sh
+          testing_py3_ubuntu_32.sh
       # - MacOS
     - name: "Python2 OSX"
       os: osx
