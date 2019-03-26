@@ -17,20 +17,51 @@ stages:
 
 jobs:
   include:
-    # TESTING STAGE
+    #### TESTING STAGE ####
     - stage: test
-      name: "Python2 linux"
+      # - linux
+      name: "Python2 linux_x86"
       os: linux
       env:
         - PIP=pip2
         - PYTHON=python2
       script: ./testing.sh
-    - name: "Python3 linux"
+    - name: "Python3 linux_x86"
       os: linux
       env:
         - PIP=pip
         - PYTHON=python
       script: ./testing.sh
+      # - manylinux 32bit
+    - name: "Python2 linux_32"
+      os: linux
+      services:
+        - docker
+      before_install:
+        - docker pull daald/ubuntu32:xenial
+      before_script:
+      script:
+        - >
+          docker run
+          --interactive
+          --volume "${PWD}"
+          daald/ubuntu32:xenial
+          ./testing_py2_ubuntu32.sh
+    - name: "Python3 linux_32"
+      os: linux
+      services:
+        - docker
+      before_install:
+        - docker pull daald/ubuntu32:xenial
+      before_script:
+      script:
+        - >
+          docker run
+          --interactive
+          --volume "${PWD}"
+          daald/ubuntu32:xenial
+          ./testing_py3_ubuntu32.sh
+      # - MacOS
     - name: "Python2 OSX"
       os: osx
       language: generic
@@ -45,7 +76,7 @@ jobs:
         - PIP=pip
         - PYTHON=python
       script: ./testing.sh
-    # DEPLOYING STAGE
+    #### DEPLOYING STAGE ####
     - stage: deploy
       name: "manylinux1_x86_64"
       # Job generating the wheels for Linux 32-bit platforms

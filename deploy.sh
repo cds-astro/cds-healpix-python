@@ -1,4 +1,7 @@
 #!/bin/bash
+# Abort if any simple command returns a non-zero value.
+# See https://stackoverflow.com/questions/821396/aborting-a-shell-script-if-any-command-returns-a-non-zero-value
+set -e
 
 if [[ $TRAVIS_TAG ]]; then
     # Build and deploy if the tests pass and
