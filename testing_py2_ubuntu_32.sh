@@ -10,14 +10,20 @@
 linux32 --32bit i386 sh -c '
     apt update > /dev/null &&
     apt install -y build-essential libcurl4-openssl-dev libssl-dev \
-	libexpat-dev gettext python >/dev/null
+	libexpat-dev gettext python python-pip >/dev/null
 ' &&
 
 # Run the tests
 linux32 --32bit i386 sh -c '
+    # upgrade pip
+    pip2 install pip --upgrade
     # Download the dependencies for compiling cdshealpix
+    pip2 install astropy==2.0.12
     pip2 install -r requirements.txt
     pip2 install pytest setuptools-rust astropy_healpix
+    # uninstall more-itertools and re-install version 5.0.0
+    pip2 uninstall more-itertools
+    pip2 install more-itertools==5.0.0
     # Install Rust compiler
     curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
     export PATH="$HOME/.cargo/bin:$PATH"
