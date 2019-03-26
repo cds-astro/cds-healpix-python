@@ -33,7 +33,7 @@ jobs:
         - PYTHON=python
       script: ./testing.sh
       # - manylinux 32bit
-    - name: "Python2 linux_32"
+    - name: "Python2 linux_i686"
       os: linux
       services:
         - docker
@@ -46,8 +46,8 @@ jobs:
           --interactive
           --volume "${PWD}"
           daald/ubuntu32:xenial
-          ./testing_py2_ubuntu32.sh
-    - name: "Python3 linux_32"
+          ./testing_py2_ubuntu_32.sh
+    - name: "Python3 linux_i686"
       os: linux
       services:
         - docker
@@ -60,7 +60,7 @@ jobs:
           --interactive
           --volume "${PWD}"
           daald/ubuntu32:xenial
-          ./testing_py3_ubuntu32.sh
+          ./testing_py3_ubuntu_32.sh
       # - MacOS
     - name: "Python2 OSX"
       os: osx
