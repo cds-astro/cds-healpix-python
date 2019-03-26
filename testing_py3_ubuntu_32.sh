@@ -10,7 +10,7 @@
 linux32 --32bit i386 sh -c '
     apt update > /dev/null &&
     apt install -y build-essential libcurl4-openssl-dev libssl-dev \
-	libexpat-dev gettext python >/dev/null
+	libexpat-dev gettext python3 python3-pip >/dev/null
 ' &&
 
 # Run the tests

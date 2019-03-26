@@ -4,6 +4,8 @@ language: python
 env:
   global:
     - TWINE_USERNAME=bmatthieu3
+    - DOCKER_IMAGE_LINUX_32=daald/ubuntu32:xenial
+    - DOCKER_CONTAINER_LINUX_32=linux32_container
 
 # Define the order of the stages
 stages:
@@ -38,27 +40,47 @@ jobs:
       services:
         - docker
       before_install:
-        - docker pull daald/ubuntu32:xenial
+        - docker pull "${DOCKER_IMAGE_LINUX_32}"
+        - >
+          docker run
+          --volume ${PWD}:/mnt/cdshealpix
+          --name "${DOCKER_CONTAINER_LINUX_32}"
+          --rm
+          --interactive
+          --tty
+          --detach
+          "${DOCKER_IMAGE_LINUX_32}"
       before_script:
       script:
         - >
-          docker run
+          docker exec 
           --interactive
-          --entrypoint ./testing_py2_ubuntu_32.sh
-          daald/ubuntu32:xenial
+          --tty
+          "${DOCKER_CONTAINER_LINUX_32}"
+          sh -c "cd /mnt/cdshealpix && ./testing_py2_ubuntu_32.sh"
     - name: "Python3 linux_i686"
       os: linux
       services:
         - docker
       before_install:
-        - docker pull daald/ubuntu32:xenial
+        - docker pull "${DOCKER_IMAGE_LINUX_32}"
+        - >
+          docker run
+          --volume ${PWD}:/mnt/cdshealpix
+          --name "${DOCKER_CONTAINER_LINUX_32}"
+          --rm
+          --interactive
+          --tty
+          --detach
+          "${DOCKER_IMAGE_LINUX_32}"
       before_script:
       script:
         - >
-          docker run
+          docker exec 
           --interactive
-          --entrypoint ./testing_py3_ubuntu_32.sh
-          daald/ubuntu32:xenial
+          --tty
+          "${DOCKER_CONTAINER_LINUX_32}"
+          sh -c "cd /mnt/cdshealpix && ./testing_py3_ubuntu_32.sh"
       # - MacOS
     - name: "Python2 OSX"
       os: osx
