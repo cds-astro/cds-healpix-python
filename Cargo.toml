@@ -22,7 +22,7 @@ crate-type = ["cdylib"]
 [dependencies]
 # The cdshealpix rust crate
 healpix = { package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust', branch = 'master' }
-numpy = "0.4.0"
+numpy = { git = 'https://github.com/bmatthieu3/rust-numpy', branch = 'master' }
 ndarray = "0.12"
 ndarray-parallel = "0.9.0"
 
