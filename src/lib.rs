@@ -14,11 +14,15 @@ use pyo3::prelude::{pymodinit, Py, PyModule, PyResult, Python};
 
 use healpix::compass_point::MainWind;
 
-// Build
-// see: https://github.com/getsentry/milksnake
-
-// see: https://users.rust-lang.org/t/calling-into-rust-from-python/8923
-// see: https://www.bignerdranch.com/blog/building-an-ios-app-in-rust-part-3/
+/// This uses rust-numpy for numpy interoperability between
+/// Python and Rust.
+/// PyArrayDyn rust-numpy array types are converted to ndarray
+/// compatible array types.
+/// ndarray then exposes several numpy-like methods for operating 
+/// like in python.
+/// ndarray also offers a way to zip arrays (immutably and mutably) and
+/// operate on them element-wisely. This is done in parallel using the
+/// ndarray-parallel crate that offers the par_apply method on zipped arrays.
 
 #[pymodinit]
 fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {

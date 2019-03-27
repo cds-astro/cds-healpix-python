@@ -60,7 +60,7 @@ def lonlat_to_healpix(lon, lat, depth):
 
     num_ipixels = lon.shape[0]
     # Allocation of the array containing the resulting ipixels
-    ipixels = np.empty(num_ipixels, dtype=int)
+    ipixels = np.empty(num_ipixels, dtype=np.uint64)
 
     cdshealpix.lonlat_to_healpix(depth, lon, lat, ipixels)
     return ipixels
@@ -97,8 +97,8 @@ def healpix_to_lonlat(ipix, depth):
     >>> depth = 12
     >>> lon, lat = healpix_to_lonlat(ipixels, depth)
     """
-    #ipix = np.atleast_1d(ipix).ravel()
     _check_ipixels(data=ipix, depth=depth)
+    ipix = ipix.astype(np.uint64)
 
     size_skycoords = ipix.shape
     # Allocation of the array containing the resulting coordinates
@@ -179,8 +179,8 @@ def vertices(ipix, depth):
     >>> depth = 12
     >>> lon, lat = vertices(ipixels, depth)
     """
-    #ipixels = np.atleast_1d(ipixels).ravel()
     _check_ipixels(data=ipix, depth=depth)
+    ipix = ipix.astype(np.uint64)
     
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(ipix.shape + (4,))
@@ -243,7 +243,7 @@ def neighbours(ipix, depth):
     Returns
     -------
     neighbours : `numpy.array`
-        A :math:`N` x :math:`9` `np.uint64` numpy array containing the neighbours of each cell.
+        A :math:`N` x :math:`9` `np.int64` numpy array containing the neighbours of each cell.
         The :math:`5^{th}` element corresponds to the index of HEALPix cell from which the neighbours are evaluated.
         All its 8 neighbours occup the remaining elements of the line.
 
@@ -260,11 +260,11 @@ def neighbours(ipix, depth):
     >>> depth = 12
     >>> neighbours = neighbours(ipixels, depth)
     """
-    #ipix = np.atleast_1d(ipix).ravel()
     _check_ipixels(data=ipix, depth=depth)
+    ipix = ipix.astype(np.uint64)
     
     # Allocation of the array containing the neighbours
-    neighbours = np.zeros(ipix.shape + (9,), dtype=int)
+    neighbours = np.zeros(ipix.shape + (9,), dtype=np.int64)
     cdshealpix.neighbours(depth, ipix, neighbours)
 
     return neighbours
@@ -293,13 +293,12 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
 
     Returns
     -------
-    cells : `numpy.array`
-        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
-        The structure of a cell contains 3 attributes:
+    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+        A tuple containing 3 numpy arrays of identical size:
 
-        * A `ipix` field being a np.uint64
-        * A `depth` field being a np.uint32
-        * A `fully_covered` (i.e. a boolean flag) field stored in a np.uint8
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully covered by the cone.
 
     Raises
     ------
@@ -343,13 +342,12 @@ def polygon_search(lon, lat, depth, flat=False):
 
     Returns
     -------
-    cells : `numpy.array`
-        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
-        The structure of a cell contains 3 attributes:
+    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+        A tuple containing 3 numpy arrays of identical size:
 
-        * A ipix value being a np.uint64
-        * A depth value being a np.uint32
-        * A fully_covered flag bit stored in a np.uint8
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully covered by the polygon.
 
     Raises
     ------
@@ -411,13 +409,12 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
     Returns
     -------
-    cells : `numpy.array`
-        A numpy structured array (see `the numpy doc <https://docs.scipy.org/doc/numpy/user/basics.rec.html>`__).
-        The structure of a cell contains 3 attributes:
+    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+        A tuple containing 3 numpy arrays of identical size:
 
-        * A ipix value being a np.uint64
-        * A depth value being a np.uint32
-        * A fully_covered flag bit stored in a np.uint8
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully covered by the elliptical cone.
 
     Raises
     ------
