@@ -58,12 +58,12 @@ def lonlat_to_healpix(lon, lat, depth):
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
 
-    num_ipixels = lon.shape[0]
+    num_ipix = lon.shape[0]
     # Allocation of the array containing the resulting ipixels
-    ipixels = np.empty(num_ipixels, dtype=np.uint64)
+    ipix = np.empty(num_ipix, dtype=np.int64)
 
-    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipixels)
-    return ipixels
+    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix)
+    return ipix
 
 def healpix_to_lonlat(ipix, depth):
     """Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
@@ -98,7 +98,7 @@ def healpix_to_lonlat(ipix, depth):
     >>> lon, lat = healpix_to_lonlat(ipixels, depth)
     """
     _check_ipixels(data=ipix, depth=depth)
-    ipix = ipix.astype(np.uint64)
+    ipix = ipix.astype(np.int64)
 
     size_skycoords = ipix.shape
     # Allocation of the array containing the resulting coordinates
@@ -180,7 +180,7 @@ def vertices(ipix, depth):
     >>> lon, lat = vertices(ipixels, depth)
     """
     _check_ipixels(data=ipix, depth=depth)
-    ipix = ipix.astype(np.uint64)
+    ipix = ipix.astype(np.int64)
     
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(ipix.shape + (4,))
@@ -261,7 +261,7 @@ def neighbours(ipix, depth):
     >>> neighbours = neighbours(ipixels, depth)
     """
     _check_ipixels(data=ipix, depth=depth)
-    ipix = ipix.astype(np.uint64)
+    ipix = ipix.astype(np.int64)
     
     # Allocation of the array containing the neighbours
     neighbours = np.zeros(ipix.shape + (9,), dtype=np.int64)
