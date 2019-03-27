@@ -9,7 +9,7 @@
 # Update packages to the latest available versions
 linux32 --32bit i386 sh -c '
     apt update > /dev/null &&
-    apt install -y build-essential libcurl4-openssl-dev libssl-dev \
+    apt install -y build-essential libfreetype6-dev libpng12-dev pkg-config libcurl4-openssl-dev libssl-dev \
 	libexpat-dev gettext python python-pip >/dev/null
 ' &&
 
