@@ -91,8 +91,8 @@ build_script:
 test_script:
   # Run the tests
   - python -m pytest -v "cdshealpix\tests\test_healpix.py"
-  # Install the dependencies for generating the docs and execute the API tests
-  - python -m pip install sphinx numpydoc sphinxcontrib-bibtex matplotlib spherical-geometry
+  # Install the dependencies for executing the API tests
+  - python -m pip install sphinx numpydoc sphinxcontrib-bibtex
   # Use of the healpix branch mocpy version (def of from_healpix_cells)
   # to run the test examples
   - python -m pip install git+https://github.com/cds-astro/mocpy@healpix
@@ -100,9 +100,7 @@ test_script:
   - set PATH=%PATH%;%PYTHON%\Scripts
   # Move to the location where the documentation rst files are
   - cd docs
-  # Generate the html doc files
-  - make html
-  # Run the tests provinded by the API
+  # Run the tests included in the API doc
   - make doctest
   # Move back to the location of the project
   - cd ..
