@@ -297,7 +297,7 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
 }
 
 fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
-    let ipix: Array1<u64> = bmoc.flat_iter_cell()
+    /*let ipix: Array1<u64> = bmoc.flat_iter_cell()
         .map(|c| c.hash)
         .collect::<Vec<u64>>()
         .into();
@@ -310,8 +310,8 @@ fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>
         .collect::<Vec<bool>>()
         .into();
 
-    (ipix, depth, fully_covered)
-/*  let len = bmoc.deep_size();
+    (ipix, depth, fully_covered)*/
+    let len = bmoc.deep_size();
     let mut ipix = Vec::<u64>::with_capacity(len);
     let mut depth = Vec::<u8>::with_capacity(len);
     let mut fully_covered = Vec::<bool>::with_capacity(len);
@@ -321,6 +321,9 @@ fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>
         depth.push(c.depth);
         fully_covered.push(c.is_full);
     }
+
+    depth.shrink_to_fit();
+    ipix.shrink_to_fit();
+    fully_covered.shrink_to_fit();
     (ipix.into(), depth.into(), fully_covered.into())
-*/
 }
