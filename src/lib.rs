@@ -259,30 +259,7 @@ fn to_i64(val: Option<&u64>) -> i64 {
 }
 
 fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
-    let ipix: Array1<u64> = bmoc.iter()
-        .map(|c| {
-            let cell = bmoc.from_raw_value(*c);
-            cell.hash
-        })
-        .collect::<Vec<u64>>()
-        .into();
-    let depth: Array1<u8> = bmoc.iter()
-        .map(|c| {
-            let cell = bmoc.from_raw_value(*c);
-            cell.depth
-        })
-        .collect::<Vec<u8>>()
-        .into();
-    let fully_covered: Array1<bool> = bmoc.iter()
-        .map(|c| {
-            let cell = bmoc.from_raw_value(*c);
-            cell.is_full
-        })
-        .collect::<Vec<bool>>()
-        .into();
-    
-    (ipix, depth, fully_covered)
-/*  let len = bmoc.entries.len();
+    let len = bmoc.entries.len();
     let mut ipix = Vec::<u64>::with_capacity(len);
     let mut depth = Vec::<u8>::with_capacity(len);
     let mut fully_covered = Vec::<bool>::with_capacity(len);
@@ -293,24 +270,9 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
         fully_covered.push(c.is_full);
     }
     (ipix.into(), depth.into(), fully_covered.into())
-*/
 }
 
 fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
-    /*let ipix: Array1<u64> = bmoc.flat_iter_cell()
-        .map(|c| c.hash)
-        .collect::<Vec<u64>>()
-        .into();
-    let depth: Array1<u8> = bmoc.flat_iter_cell()
-        .map(|c| c.depth)
-        .collect::<Vec<u8>>()
-        .into();
-    let fully_covered: Array1<bool> = bmoc.flat_iter_cell()
-        .map(|c| c.is_full)
-        .collect::<Vec<bool>>()
-        .into();
-
-    (ipix, depth, fully_covered)*/
     let len = bmoc.deep_size();
     let mut ipix = Vec::<u64>::with_capacity(len);
     let mut depth = Vec::<u8>::with_capacity(len);
@@ -325,5 +287,6 @@ fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>
     depth.shrink_to_fit();
     ipix.shrink_to_fit();
     fully_covered.shrink_to_fit();
+
     (ipix.into(), depth.into(), fully_covered.into())
 }
