@@ -53,12 +53,12 @@ def lonlat_to_healpix(lon, lat, depth):
     lat = np.atleast_1d(lat.to_value(u.rad))
 
     if depth < 0 or depth > 29:
-        raise ValueError("Depth must be between 0 and 29 included")
+        raise ValueError("Depth must be in the [0, 29] closed range")
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
 
-    num_ipix = lon.shape[0]
+    num_ipix = lon.shape
     # Allocation of the array containing the resulting ipixels
     ipix = np.empty(num_ipix, dtype=np.uint64)
 
@@ -93,10 +93,13 @@ def healpix_to_lonlat(ipix, depth):
     --------
     >>> from cdshealpix import healpix_to_lonlat
     >>> import numpy as np
-    >>> ipixels = np.array([42, 6, 10])
+    >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> lon, lat = healpix_to_lonlat(ipixels, depth)
+    >>> lon, lat = healpix_to_lonlat(ipix, depth)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
 
@@ -139,9 +142,9 @@ def healpix_to_skycoord(ipix, depth):
     --------
     >>> from cdshealpix import healpix_to_skycoord
     >>> import numpy as np
-    >>> ipixels = np.array([42, 6, 10])
+    >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> skycoord = healpix_to_skycoord(ipixels, depth)
+    >>> skycoord = healpix_to_skycoord(ipix, depth)
     """
     lon, lat = healpix_to_lonlat(ipix, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
@@ -175,10 +178,13 @@ def vertices(ipix, depth):
     --------
     >>> from cdshealpix import vertices
     >>> import numpy as np
-    >>> ipixels = np.array([42, 6, 10])
+    >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> lon, lat = vertices(ipixels, depth)
+    >>> lon, lat = vertices(ipix, depth)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     
@@ -190,16 +196,16 @@ def vertices(ipix, depth):
 
     return lon * u.rad, lat * u.rad
 
-def vertices_skycoord(ipixels, depth):
+def vertices_skycoord(ipix, depth):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
 
-    This method returns the 4 vertices of each cell in `ipixels`.
+    This method returns the 4 vertices of each cell in `ipix`.
     This method is wrapped around the `vertices <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.vertices>`__
     method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
     Parameters
     ----------
-    ipixels : `numpy.array`
+    ipix : `numpy.array`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
@@ -208,7 +214,7 @@ def vertices_skycoord(ipixels, depth):
     -------
     vertices : `astropy.coordinates.SkyCoord`
         The sky coordinates of the 4 vertices of the HEALPix cells. `vertices` is a `~astropy.coordinates.SkyCoord` object
-        containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cells given in `ipixels`.
+        containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cells given in `ipix`.
 
     Raises
     ------
@@ -219,11 +225,11 @@ def vertices_skycoord(ipixels, depth):
     --------
     >>> from cdshealpix import vertices
     >>> import numpy as np
-    >>> ipixels = np.array([42, 6, 10])
+    >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> vertices = vertices(ipixels, depth)
+    >>> vertices = vertices(ipix, depth)
     """
-    lon, lat = healpix_vertices_lonlat(ipixels, depth)
+    lon, lat = healpix_vertices_lonlat(ipix, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def neighbours(ipix, depth):
@@ -256,10 +262,13 @@ def neighbours(ipix, depth):
     --------
     >>> from cdshealpix import neighbours
     >>> import numpy as np
-    >>> ipixels = np.array([42, 6, 10])
+    >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> neighbours = neighbours(ipixels, depth)
+    >>> neighbours = neighbours(ipix, depth)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     
@@ -311,6 +320,9 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     >>> import astropy.units as u
     >>> ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError('The longitude, latitude and radius must be '
                          'scalar Quantity objects')
@@ -321,7 +333,6 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
 
     ipix, depth, full = cdshealpix.cone_search(depth, depth_delta, lon, lat, radius, flat)
     return ipix, depth, full
-
 
 def polygon_search(lon, lat, depth, flat=False):
     """Get the HEALPix cells contained in a polygon at a given depth.
@@ -366,6 +377,9 @@ def polygon_search(lon, lat, depth, flat=False):
     >>> max_depth = 12
     >>> ipix, depth, fully_covered = polygon_search(lon, lat, max_depth)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
     lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
 
@@ -376,6 +390,12 @@ def polygon_search(lon, lat, depth, flat=False):
 
     if num_vertices < 3:
         raise IndexError("There must be at least 3 vertices in order to form a polygon")
+
+    # Check that there is at least 3 distinct vertices.
+    vertices = np.vstack((lon, lat)).T
+    distinct_vertices = np.unique(vertices, axis=0)
+    if distinct_vertices.shape[0] < 3:
+        raise IndexError("There must be at least 3 distinct vertices in order to form a polygon")
 
     ipix, depth, full = cdshealpix.polygon_search(depth, lon, lat, flat)
 
@@ -439,6 +459,9 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     >>> max_depth = 12
     >>> ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
     """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
     if not lon.isscalar or not lat.isscalar or not a.isscalar \
         or not b.isscalar or not pa.isscalar:
         raise ValueError('The longitude, latitude, semi-minor axe, semi-major axe and angle must be '

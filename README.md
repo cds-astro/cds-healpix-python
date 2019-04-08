@@ -70,7 +70,7 @@ import astropy.units as u
 # - the first contains the HEALPix cell indices
 # - the second contains the HEALPix cell depths
 # - the third contains for each HEALPix cell whether it is fully covered by the region (cone, elliptical cone or polygon).
-ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
+ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, depth_delta=2)
 ```
 
 ### Elliptical cone search
@@ -78,12 +78,19 @@ ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10
 ```python
 from cdshealpix import elliptical_cone_search
 import astropy.units as u
-
+from astropy.coordinates import Angle
+import numpy as np
+lon = 0 * u.deg
+lat = 0 * u.deg
+a = Angle(50, unit="deg")
+b = Angle(10, unit="deg")
+pa = Angle(45, unit="deg")
+max_depth = 12
 # Returns a tuple of three equal sized numpy arrays
 # - the first contains the HEALPix cell indices
 # - the second contains the HEALPix cell depths
 # - the third contains for each HEALPix cell whether it is fully covered by the region (cone, elliptical cone or polygon).
-ipix, depth, fully_covered = elliptical_cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10, delta_depth=2)
+ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
 ```
 
 ### Polygon search
@@ -116,7 +123,7 @@ This section describes how you can contribute to the project. It will require yo
 
 If you want to contribute you first must download Rustup:
 ```shell
-curl https://sh.rustup.rs -sSf | sh
+curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
 ```
 and follow the installation instructions.
 
