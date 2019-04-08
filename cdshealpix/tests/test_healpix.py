@@ -28,7 +28,7 @@ def test_lonlat_to_healpix(size):
 def test_healpix_to_lonlat(size):
     depth = np.random.randint(30)
     size = 10000
-    ipixels = np.random.randint(12 * 4 ** depth, size=size)
+    ipixels = np.random.randint(12 * 4 ** depth, size=size, dtype="uint64")
 
     lon, lat = healpix_to_lonlat(ipix=ipixels, depth=depth)
     assert(lon.shape == lat.shape)
