@@ -264,12 +264,14 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
     let mut depth = Vec::<u8>::with_capacity(len);
     let mut fully_covered = Vec::<bool>::with_capacity(len);
 
-    for c in bmoc.into_iter() {
-        ipix.push(c.hash);
-        depth.push(c.depth);
-        fully_covered.push(c.is_full);
+    for c in bmoc.iter() {
+        let cell = bmoc.from_raw_value(*c);
+
+        ipix.push(cell.hash);
+        depth.push(cell.depth);
+        fully_covered.push(cell.is_full);
     }
-    
+
     depth.shrink_to_fit();
     ipix.shrink_to_fit();
     fully_covered.shrink_to_fit();
