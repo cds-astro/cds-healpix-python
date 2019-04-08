@@ -269,6 +269,11 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
         depth.push(c.depth);
         fully_covered.push(c.is_full);
     }
+    
+    depth.shrink_to_fit();
+    ipix.shrink_to_fit();
+    fully_covered.shrink_to_fit();
+
     (ipix.into(), depth.into(), fully_covered.into())
 }
 
