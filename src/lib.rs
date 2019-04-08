@@ -10,7 +10,7 @@ use ndarray::{Array1, Zip};
 use ndarray_parallel::prelude::*;
 
 use numpy::{IntoPyArray, PyArrayDyn, PyArray1};
-use pyo3::prelude::{pymodinit, Py, PyModule, PyResult, Python};
+use pyo3::prelude::{pymodule, Py, PyModule, PyResult, Python};
 
 use healpix::compass_point::MainWind;
 
@@ -24,7 +24,7 @@ use healpix::compass_point::MainWind;
 /// operate on them element-wisely. This is done in parallel using the
 /// ndarray-parallel crate that offers the par_apply method on zipped arrays.
 
-#[pymodinit]
+#[pymodule]
 fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of `lonlat_to_healpix`
     #[pyfn(m, "lonlat_to_healpix")]
