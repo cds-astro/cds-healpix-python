@@ -100,6 +100,7 @@ def healpix_to_lonlat(ipix, depth):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
 
@@ -185,6 +186,7 @@ def vertices(ipix, depth):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     
@@ -229,7 +231,7 @@ def vertices_skycoord(ipix, depth):
     >>> depth = 12
     >>> vertices = vertices(ipix, depth)
     """
-    lon, lat = healpix_vertices_lonlat(ipix, depth)
+    lon, lat = vertices(ipix, depth)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def neighbours(ipix, depth):
@@ -269,6 +271,7 @@ def neighbours(ipix, depth):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     
@@ -365,7 +368,7 @@ def polygon_search(lon, lat, depth, flat=False):
     ValueError
         When `lon` and `lat` do not have the same dimensions.
     IndexError
-        When less than 3 vertices (.i.e. defining at least a triangle) are given.
+        When the number of distinct vertices given is lesser than 3 (i.e. defining at least a triangle).
 
     Examples
     --------

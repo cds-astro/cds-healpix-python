@@ -6,8 +6,8 @@ import astropy_healpix
 from ..healpix import lonlat_to_healpix, \
  healpix_to_lonlat, \
  healpix_to_skycoord, \
- healpix_vertices_lonlat, \
- healpix_neighbours, \
+ vertices, \
+ neighbours, \
  cone_search
 
 @pytest.mark.benchmark(group="lonlat_to_healpix")
@@ -35,7 +35,7 @@ def test_healpix_to_lonlat(benchmark):
     depth = 12
     ipixels = np.random.randint(12 * 4 ** (depth), size=size)
 
-    lon, lat = benchmark(healpix_to_lonlat, ipixels=ipixels, depth=depth)
+    lon, lat = benchmark(healpix_to_lonlat, ipix=ipixels, depth=depth)
 
 @pytest.mark.benchmark(group="healpix_to_lonlat")
 def test_healpix_to_lonlat_astropy(benchmark):
@@ -47,17 +47,17 @@ def test_healpix_to_lonlat_astropy(benchmark):
     lon, lat = benchmark(astropy_healpix.core.healpix_to_lonlat, healpix_index=ipixels, nside=nside, order='nested')
 
 def test_healpix_to_skycoord():
-    skycoord = healpix_to_skycoord(ipixels=[0, 2, 4], depth=0)
+    skycoord = healpix_to_skycoord(ipix=[0, 2, 4], depth=0)
 
-@pytest.mark.benchmark(group="healpix_vertices_lonlat")
+@pytest.mark.benchmark(group="vertices")
 def test_healpix_vertices_lonlat(benchmark):
     depth = 12
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
-    lon, lat = benchmark(healpix_vertices_lonlat, ipixels=ipixels, depth=depth)
+    lon, lat = benchmark(vertices, ipix=ipixels, depth=depth)
 
-@pytest.mark.benchmark(group="healpix_vertices_lonlat")
+@pytest.mark.benchmark(group="vertices")
 def test_healpix_vertices_lonlat_astropy(benchmark):
     depth = 12
     size = 100000
@@ -65,14 +65,13 @@ def test_healpix_vertices_lonlat_astropy(benchmark):
 
     lon2, lat2 = benchmark(astropy_healpix.core.boundaries_lonlat, healpix_index=ipixels, nside=(1 << depth), step=1, order='nested')
 
-@pytest.mark.benchmark(group="healpix_neighbours")
+@pytest.mark.benchmark(group="neighbours")
 def test_healpix_neighbours(benchmark):
     depth = 12
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
-    neighbours = benchmark(healpix_neighbours, ipixels=ipixels, depth=depth)
-
+    res = benchmark(neighbours, ipix=ipixels, depth=depth)
 
 lon_c = np.random.rand(1)[0] * 360 * u.deg
 lat_c = (np.random.rand(1)[0] * 178 - 89) * u.deg
