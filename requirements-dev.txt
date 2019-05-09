@@ -7,6 +7,5 @@ sphinx
 numpydoc
 sphinxcontrib-bibtex
 matplotlib
-# Use of the healpix branch mocpy version (def of from_healpix_cells)
-git+https://github.com/cds-astro/mocpy@healpix
+git+https://github.com/cds-astro/mocpy@master
 spherical-geometry

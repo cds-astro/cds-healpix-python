@@ -281,6 +281,49 @@ def neighbours(ipix, depth):
 
     return neighbours
 
+def external_edges_cells(ipix, depth, delta_depth):
+    """
+    Get the neighbours of specific healpix cells
+
+    This methods returns two arrays. One containing the healpix cells
+    located on the external borders of the cells (at depth: `depth` + `delta_depth`).
+    The other containing the healpix cells located on the external corners of the cells
+    (at depth: `depth` + `delta_depth`). Please note that some pixels do not have 4 external corners
+    e.g. the 12 base pixels have each only 2 external corners.
+
+    Parameters
+    ----------
+    ipix : `numpy.array`
+        The healpix cells from which the external neighbours will be computed
+    depth : int
+        The depth of the input healpix cells
+    delta_depth : int
+        The depth of the returned external neighbours will be equal to: `depth` + `delta_depth`
+
+    Returns
+    -------
+    external_border_cells, external_corner_cells : (`numpy.array`, `numpy.array`)
+        external_border_cells will store the pixels located at the external borders of `ipix`.
+        It will be of shape: (N, 4 * 2 ** (`delta_depth`)) for N input pixels and because each cells have 4 borders.
+        external_corner_cells will store the pixels located at the external corners of `ipix`
+        It will be of shape: (N, 4) for N input pixels. -1 values will be put in the array when the pixels have no corners for specific directions.
+    """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    ipix = np.atleast_1d(ipix)
+    _check_ipixels(data=ipix, depth=depth)
+    ipix = ipix.astype(np.uint64)
+
+    # Allocation of the array containing the neighbours
+    num_external_cells_on_edges = 4 << delta_depth
+    edge_cells = np.zeros(ipix.shape + (num_external_cells_on_edges,), dtype=np.uint64)
+    corner_cells = np.zeros(ipix.shape + (4,), dtype=np.int64)
+
+    cdshealpix.external_edges_cells(depth, delta_depth, ipix, corner_cells, edge_cells)
+
+    return edge_cells, corner_cells
+
 def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     """Get the HEALPix cells contained in a cone at a given depth.
 

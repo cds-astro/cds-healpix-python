@@ -12,7 +12,8 @@ use ndarray_parallel::prelude::*;
 use numpy::{IntoPyArray, PyArrayDyn, PyArray1};
 use pyo3::prelude::{pymodule, Py, PyModule, PyResult, Python};
 
-use healpix::compass_point::MainWind;
+use healpix::compass_point::{MainWind, Cardinal, Ordinal};
+
 
 /// This uses rust-numpy for numpy interoperability between
 /// Python and Rust.
@@ -124,15 +125,15 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             .par_apply(|mut n, &p| {
                 let map = healpix::nested::neighbours(depth, p, true);
 
-                n[0] = to_i64(map.get(MainWind::S));
-                n[1] = to_i64(map.get(MainWind::SE));
-                n[2] = to_i64(map.get(MainWind::E));
-                n[3] = to_i64(map.get(MainWind::SW));
+                n[0] = to_ref_i64(map.get(MainWind::S));
+                n[1] = to_ref_i64(map.get(MainWind::SE));
+                n[2] = to_ref_i64(map.get(MainWind::E));
+                n[3] = to_ref_i64(map.get(MainWind::SW));
                 n[4] = p as i64;
-                n[5] = to_i64(map.get(MainWind::NE));
-                n[6] = to_i64(map.get(MainWind::W));
-                n[7] = to_i64(map.get(MainWind::NW));
-                n[8] = to_i64(map.get(MainWind::N));
+                n[5] = to_ref_i64(map.get(MainWind::NE));
+                n[6] = to_ref_i64(map.get(MainWind::W));
+                n[7] = to_ref_i64(map.get(MainWind::NW));
+                n[8] = to_ref_i64(map.get(MainWind::N));
             });
 
         Ok(())
@@ -248,10 +249,69 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         }
     }
 
+    #[pyfn(m, "external_edges_cells")]
+    fn external_edges_cells(
+        depth: u8,
+        delta_depth: u8,
+        ipix: &PyArrayDyn<u64>,
+        corners: &PyArrayDyn<i64>,
+        edges: &PyArrayDyn<u64>) {
+        let ipix = ipix.as_array();
+
+        let mut corners = corners.as_array_mut();
+        let mut edges = edges.as_array_mut();
+
+        let layer = healpix::nested::get_or_create(depth);
+        Zip::from(corners.genrows_mut())
+            .and(edges.genrows_mut())
+            .and(&ipix)
+            .par_apply(|mut c, mut e, &p| {
+                let external_edges = layer.external_edge_struct(p, delta_depth);
+
+                c[0] = to_i64(external_edges.get_corner(&Cardinal::S));
+                c[1] = to_i64(external_edges.get_corner(&Cardinal::E));
+                c[2] = to_i64(external_edges.get_corner(&Cardinal::N));
+                c[3] = to_i64(external_edges.get_corner(&Cardinal::W));
+
+                let num_cells_per_edge = 1 << delta_depth;
+                let mut offset = 0;
+                // SE
+                let se_edge = external_edges.get_edge(&Ordinal::SE);
+                for i in 0..num_cells_per_edge {
+                    e[offset + i] = se_edge[i];
+                }
+                offset += num_cells_per_edge;
+                // NE
+                let ne_edge = external_edges.get_edge(&Ordinal::NE);
+                for i in 0..num_cells_per_edge {
+                    e[offset + i] = ne_edge[i];
+                }
+                offset += num_cells_per_edge;
+                // NW
+                let nw_edge = external_edges.get_edge(&Ordinal::NW);
+                for i in 0..num_cells_per_edge {
+                    e[offset + i] = nw_edge[i];
+                }
+                offset += num_cells_per_edge;
+                // SW
+                let sw_edge = external_edges.get_edge(&Ordinal::SW);
+                for i in 0..num_cells_per_edge {
+                    e[offset + i] = sw_edge[i];
+                }
+            });
+        }
+
     Ok(())
 }
 
-fn to_i64(val: Option<&u64>) -> i64 {
+fn to_i64(val: Option<u64>) -> i64 {
+    match val {
+        Some(val) => val as i64,
+        None => -1_i64,
+    }
+}
+
+fn to_ref_i64(val: Option<&u64>) -> i64 {
     match val {
         Some(&val) => val as i64,
         None => -1_i64,

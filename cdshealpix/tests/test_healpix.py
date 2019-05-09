@@ -11,7 +11,8 @@ from ..healpix import lonlat_to_healpix, \
  neighbours, \
  cone_search, \
  polygon_search, \
- elliptical_cone_search
+ elliptical_cone_search, \
+ external_edges_cells
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
 def test_lonlat_to_healpix(size):
@@ -161,3 +162,17 @@ def test_elliptical_cone_search():
     npix = 12 * 4 ** (max_depth)
     assert(((depth >= 0) & (depth <= max_depth)).all())
     assert(((ipix >= 0) & (ipix < npix)).all())
+
+@pytest.mark.parametrize("depth,ipix,expected_border_cells,expected_corner_cells", [
+    (0, 0, np.array([90, 91, 94, 95, 26, 27, 30, 31, 53, 55, 61, 63, 69, 71, 77, 79]), np.array([143, -1, 47, -1])),
+    (27, 0, np.array(
+        [1633305464859699882, 1633305464859699883, 1633305464859699886, 1633305464859699887, 16, 18,
+         24, 26, 32, 33, 36, 37, 1248998296657417557, 1248998296657417559, 1248998296657417565, 1248998296657417567]),
+        np.array([2594073385365405695, 1633305464859699898, 48, 1248998296657417589]))
+])
+def test_external_edges_cells(depth, ipix, expected_border_cells, expected_corner_cells):
+    delta_depth = 2
+    ipix_border_cells, ipix_corner_cells = external_edges_cells(ipix, depth, delta_depth)
+    assert((expected_border_cells == ipix_border_cells).all())
+    assert((expected_corner_cells == ipix_corner_cells).all())
+

@@ -6,7 +6,8 @@ from .healpix import lonlat_to_healpix, \
     neighbours, \
     cone_search, \
     polygon_search, \
-    elliptical_cone_search
+    elliptical_cone_search, \
+    external_edges_cells
 
 __all__ = [
     'lonlat_to_healpix',
@@ -16,4 +17,5 @@ __all__ = [
     'cone_search',
     'polygon_search',
     'elliptical_cone_search',
+    'external_edges_cells',
 ]
