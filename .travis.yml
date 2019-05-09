@@ -75,7 +75,7 @@ jobs:
       os: linux
       sudo: required
       env:
-        - CIBW_SKIP="*manylinux1_i686* cp27-*"
+        - CIBW_SKIP="*manylinux1_i686* cp27-* cp34-*"
         - PIP=pip
         - PYTHON=python3
       services:
@@ -87,7 +87,7 @@ jobs:
       os: linux
       sudo: required
       env:
-        - CIBW_SKIP="*manylinux1_x86_64* cp27-*"
+        - CIBW_SKIP="*manylinux1_x86_64* cp27-* cp34-*"
         - PIP=pip
         - PYTHON=python3
       services:
@@ -99,7 +99,7 @@ jobs:
       sudo: required
       language: generic
       env:
-        - CIBW_SKIP=cp27-*
+        - CIBW_SKIP="cp27-* cp34-*"
         - PIP=pip2
         - PYTHON=python2
       script: ./travis/deploy.sh
