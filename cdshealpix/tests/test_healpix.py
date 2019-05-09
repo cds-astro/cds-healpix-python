@@ -175,4 +175,3 @@ def test_external_edges_cells(depth, ipix, expected_border_cells, expected_corne
     ipix_border_cells, ipix_corner_cells = external_edges_cells(ipix, depth, delta_depth)
     assert((expected_border_cells == ipix_border_cells).all())
     assert((expected_corner_cells == ipix_corner_cells).all())
-

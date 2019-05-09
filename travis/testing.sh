@@ -5,8 +5,7 @@ set -e
 
 ### Run the tests ###
 # Download the dependencies for compiling cdshealpix
-$PIP install -r requirements.txt
-$PIP install pytest setuptools-rust astropy_healpix
+$PIP install -r requirements-dev.txt
 # Install Rust compiler
 curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -15,5 +14,5 @@ export PATH="$HOME/.cargo/bin:$PATH"
 $PYTHON setup.py build_rust
 # Move the dynamic lib to the python package folder
 find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
-$PYTHON -m pytest -v cdshealpix/tests/test_healpix.py
+$PYTHON -m pytest -v -s cdshealpix/tests/test_healpix.py
 

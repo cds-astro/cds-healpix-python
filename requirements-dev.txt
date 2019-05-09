@@ -1,5 +1,4 @@
 setuptools_rust
-pytest
 pytest_benchmark
 astropy_healpix
 healpy

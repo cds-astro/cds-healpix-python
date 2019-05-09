@@ -1,5 +1,7 @@
-# Building wheels for Linux and MacOS platforms
+dist: xenial   # required for Python >= 3.7
 language: python
+python:
+  - "3.7"
 
 env:
   global:
@@ -26,7 +28,7 @@ jobs:
       os: linux
       env:
         - PIP=pip
-        - PYTHON=python
+        - PYTHON=python3
       script: ./travis/testing.sh
       # - linux 32bit
     - name: "Python3 linux_i686"
@@ -64,7 +66,7 @@ jobs:
       os: linux
       env:
         - PIP=pip
-        - PYTHON=python
+        - PYTHON=python3
       script: ./travis/build_docs.sh
     #### DEPLOYING STAGE ####
     - stage: deploy
@@ -75,7 +77,7 @@ jobs:
       env:
         - CIBW_SKIP="*manylinux1_i686* cp27-*"
         - PIP=pip
-        - PYTHON=python
+        - PYTHON=python3
       services:
         # We use docker for generating the wheels for Linux.
         - docker
@@ -87,7 +89,7 @@ jobs:
       env:
         - CIBW_SKIP="*manylinux1_x86_64* cp27-*"
         - PIP=pip
-        - PYTHON=python
+        - PYTHON=python3
       services:
         # We use docker for generating the wheels for Linux.
         - docker

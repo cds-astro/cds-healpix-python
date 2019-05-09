@@ -157,19 +157,15 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             radius,
         );
 
-        if flat {
-            let (ipix, depth, fully_covered) = get_flat_cells(bmoc);
-            
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
+        let (ipix, depth, fully_covered) = if flat {
+            get_flat_cells(bmoc)
         } else {
-            let (ipix, depth, fully_covered) = get_cells(bmoc);
+            get_cells(bmoc)
+        };
 
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
-        }
+        (ipix.into_pyarray(py).to_owned(),
+        depth.into_pyarray(py).to_owned(),
+        fully_covered.into_pyarray(py).to_owned())
     }
 
     /// Elliptical cone search
@@ -194,19 +190,15 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             pa,
         );
 
-        if flat {
-            let (ipix, depth, fully_covered) = get_flat_cells(bmoc);
-            
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
+        let (ipix, depth, fully_covered) = if flat {
+            get_flat_cells(bmoc)
         } else {
-            let (ipix, depth, fully_covered) = get_cells(bmoc);
+            get_cells(bmoc)
+        };
 
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
-        }
+        (ipix.into_pyarray(py).to_owned(),
+        depth.into_pyarray(py).to_owned(),
+        fully_covered.into_pyarray(py).to_owned())
     }
 
     /// Polygon search
@@ -234,28 +226,25 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             true
         );
 
-        if flat {
-            let (ipix, depth, fully_covered) = get_flat_cells(bmoc);
-            
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
+        let (ipix, depth, fully_covered) = if flat {
+            get_flat_cells(bmoc)
         } else {
-            let (ipix, depth, fully_covered) = get_cells(bmoc);
+            get_cells(bmoc)
+        };
 
-            (ipix.into_pyarray(py).to_owned(),
-            depth.into_pyarray(py).to_owned(),
-            fully_covered.into_pyarray(py).to_owned())
-        }
+        (ipix.into_pyarray(py).to_owned(),
+        depth.into_pyarray(py).to_owned(),
+        fully_covered.into_pyarray(py).to_owned())
     }
 
     #[pyfn(m, "external_edges_cells")]
-    fn external_edges_cells(
+    fn external_edges_cells(_py: Python,
         depth: u8,
         delta_depth: u8,
         ipix: &PyArrayDyn<u64>,
         corners: &PyArrayDyn<i64>,
-        edges: &PyArrayDyn<u64>) {
+        edges: &PyArrayDyn<u64>)
+    -> PyResult<()> {
         let ipix = ipix.as_array();
 
         let mut corners = corners.as_array_mut();
@@ -273,7 +262,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 c[2] = to_i64(external_edges.get_corner(&Cardinal::N));
                 c[3] = to_i64(external_edges.get_corner(&Cardinal::W));
 
-                let num_cells_per_edge = 1 << delta_depth;
+                // TODO: investigate why it does not abort when adding this line...
+                println!("");
+
+                let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
                 let mut offset = 0;
                 // SE
                 let se_edge = external_edges.get_edge(&Ordinal::SE);
@@ -299,7 +291,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                     e[offset + i] = sw_edge[i];
                 }
             });
-        }
+
+        Ok(())
+    }
 
     Ok(())
 }

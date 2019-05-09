@@ -285,7 +285,7 @@ def external_edges_cells(ipix, depth, delta_depth):
     """
     Get the neighbours of specific healpix cells
 
-    This methods returns two arrays. One containing the healpix cells
+    This method returns two arrays. One containing the healpix cells
     located on the external borders of the cells (at depth: `depth` + `delta_depth`).
     The other containing the healpix cells located on the external corners of the cells
     (at depth: `depth` + `delta_depth`). Please note that some pixels do not have 4 external corners

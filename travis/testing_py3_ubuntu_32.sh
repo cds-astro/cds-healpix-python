@@ -18,7 +18,7 @@ linux32 --32bit i386 sh -c '
 linux32 --32bit i386 sh -c '
     # Download the dependencies for compiling cdshealpix
     pip3 install -r requirements.txt &&
-    pip3 install pytest setuptools-rust astropy_healpix && 
+    pip3 install setuptools_rust pytest_benchmark
     # Install Rust compiler
     curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y &&
     export PATH="$HOME/.cargo/bin:$PATH" &&
