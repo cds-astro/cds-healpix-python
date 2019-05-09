@@ -18,7 +18,7 @@ If you want to contribute you first must download Rustup:
 
 .. code-block:: bash
 
-    curl https://sh.rustup.rs -sSf | sh
+    curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
 
 
 and follow the installation instructions.
