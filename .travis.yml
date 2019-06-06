@@ -60,7 +60,7 @@ jobs:
       language: generic
       env:
         - PIP=pip
-        - PYTHON=python
+        - PYTHON=python3
       script: ./travis/testing.sh
     - name: "Build docs"
       os: linux
@@ -75,7 +75,11 @@ jobs:
       os: linux
       sudo: required
       env:
+<<<<<<< HEAD
         - CIBW_SKIP="*manylinux1_i686* cp27-* cp34-*"
+=======
+        - CIBW_SKIP="*manylinux1_i686* cp34-* cp27-*"
+>>>>>>> run osx tests with python3
         - PIP=pip
         - PYTHON=python3
       services:
@@ -87,7 +91,11 @@ jobs:
       os: linux
       sudo: required
       env:
+<<<<<<< HEAD
         - CIBW_SKIP="*manylinux1_x86_64* cp27-* cp34-*"
+=======
+        - CIBW_SKIP="*manylinux1_x86_64* cp34-* cp27-*"
+>>>>>>> run osx tests with python3
         - PIP=pip
         - PYTHON=python3
       services:
@@ -99,7 +107,11 @@ jobs:
       sudo: required
       language: generic
       env:
+<<<<<<< HEAD
         - CIBW_SKIP="cp27-* cp34-*"
+=======
+        - CIBW_SKIP=cp27-* cp34-*
+>>>>>>> run osx tests with python3
         - PIP=pip2
         - PYTHON=python2
       script: ./travis/deploy.sh
