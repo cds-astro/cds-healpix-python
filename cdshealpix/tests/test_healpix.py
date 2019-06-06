@@ -6,13 +6,14 @@ import astropy.units as u
 
 from ..healpix import lonlat_to_healpix, \
  healpix_to_lonlat, \
+ healpix_to_xy, \
  healpix_to_skycoord, \
  vertices, \
  neighbours, \
  cone_search, \
  polygon_search, \
  elliptical_cone_search, \
- external_edges_cells
+ external_neighbours
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
 def test_lonlat_to_healpix(size):
@@ -170,8 +171,33 @@ def test_elliptical_cone_search():
          24, 26, 32, 33, 36, 37, 1248998296657417557, 1248998296657417559, 1248998296657417565, 1248998296657417567]),
         np.array([2594073385365405695, 1633305464859699898, 48, 1248998296657417589]))
 ])
-def test_external_edges_cells(depth, ipix, expected_border_cells, expected_corner_cells):
+def test_external_neighbours(depth, ipix, expected_border_cells, expected_corner_cells):
     delta_depth = 2
-    ipix_border_cells, ipix_corner_cells = external_edges_cells(ipix, depth, delta_depth)
+    ipix_border_cells, ipix_corner_cells = external_neighbours(ipix, depth, delta_depth)
     assert((expected_border_cells == ipix_border_cells).all())
     assert((expected_corner_cells == ipix_corner_cells).all())
+
+@pytest.mark.parametrize("ipix, depth, expected_x, expected_y", [
+    (np.arange(12), 0,
+     np.array([1., 3., 5., 7., 0., 2., 4., 6., 1., 3., 5., 7.], dtype=np.float64),
+     np.array([1., 1., 1., 1., 0., 0., 0., 0., -1., -1., -1., -1.], dtype=np.float64)),
+    ([], 0,
+     np.array([], dtype=np.float64),
+     np.array([], dtype=np.float64)),
+    (0, 0,
+     np.array([1.], dtype=np.float64),
+     np.array([1.], dtype=np.float64))
+])
+def test_healpix_to_xy(ipix, depth, expected_x, expected_y):
+    healpix_to_xy(ipix, depth)
+    x, y = healpix_to_xy(ipix, depth)
+
+    assert (x == expected_x).all()
+    assert (y == expected_y).all()
+
+def test_healpix_to_xy_expection():
+    with pytest.raises(ValueError):
+        healpix_to_xy(np.array([]), -5)
+    
+    with pytest.raises(ValueError):
+        healpix_to_xy(np.array([-5]), 12)

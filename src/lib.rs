@@ -75,6 +75,31 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(())
     }
 
+    /// wrapper of `healpix_to_xy`
+    #[pyfn(m, "healpix_to_xy")]
+    fn healpix_to_xy(_py: Python,
+        ipix: &PyArrayDyn<u64>,
+        depth: u8,
+        x: &PyArrayDyn<f64>,
+        y: &PyArrayDyn<f64>)
+    -> PyResult<()> {
+        let mut x = x.as_array_mut();
+        let mut y = y.as_array_mut();
+        let ipix = ipix.as_array();
+
+        let layer = healpix::nested::get_or_create(depth);
+        Zip::from(&ipix)
+            .and(&mut x)
+            .and(&mut y)
+            .par_apply(|&p, hpx, hpy| {
+                let (x, y) = layer.center_of_projected_cell(p);
+                *hpx = x;
+                *hpy = y;
+            });
+
+        Ok(())
+    }
+
     /// wrapper of `vertices`
     #[pyfn(m, "vertices")]
     fn vertices(_py: Python,
@@ -237,8 +262,8 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         fully_covered.into_pyarray(py).to_owned())
     }
 
-    #[pyfn(m, "external_edges_cells")]
-    fn external_edges_cells(_py: Python,
+    #[pyfn(m, "external_neighbours")]
+    fn external_neighbours(_py: Python,
         depth: u8,
         delta_depth: u8,
         ipix: &PyArrayDyn<u64>,

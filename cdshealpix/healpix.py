@@ -281,7 +281,7 @@ def neighbours(ipix, depth):
 
     return neighbours
 
-def external_edges_cells(ipix, depth, delta_depth):
+def external_neighbours(ipix, depth, delta_depth):
     """
     Get the neighbours of specific healpix cells
 
@@ -320,7 +320,7 @@ def external_edges_cells(ipix, depth, delta_depth):
     edge_cells = np.zeros(ipix.shape + (num_external_cells_on_edges,), dtype=np.uint64)
     corner_cells = np.zeros(ipix.shape + (4,), dtype=np.int64)
 
-    cdshealpix.external_edges_cells(depth, delta_depth, ipix, corner_cells, edge_cells)
+    cdshealpix.external_neighbours(depth, delta_depth, ipix, corner_cells, edge_cells)
 
     return edge_cells, corner_cells
 
@@ -535,3 +535,42 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
         flat=flat)
 
     return ipix, depth, full
+
+def healpix_to_xy(ipix, depth):
+    """
+    Project the center of a HEALPix cell to the XY-healpix plane
+
+    Parameters
+    ----------
+    ipix : `numpy.array`
+        The HEALPix cells which centers will be projected
+    depth : int
+        The depth of the HEALPix cells
+
+    Returns
+    -------
+    x, y: (`numpy.array`, `numpy.array`)
+        The position of the HEALPix centers in the XY-HEALPix plane.
+        :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
+    
+    Examples
+    --------
+    >>> from cdshealpix import healpix_to_xy
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> depth = 0
+    >>> ipix = np.arange(12)
+    >>> x, y = healpix_to_xy(ipix, depth)
+    """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    ipix = np.atleast_1d(ipix)
+    _check_ipixels(data=ipix, depth=depth)
+    ipix = ipix.astype(np.uint64)
+    
+    x = np.zeros(ipix.shape, dtype=np.float64)
+    y = np.zeros(ipix.shape, dtype=np.float64)
+    cdshealpix.healpix_to_xy(ipix, depth, x, y)
+
+    return x, y
