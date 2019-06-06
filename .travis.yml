@@ -57,9 +57,10 @@ jobs:
       # - MacOS
     - name: "Python3 OSX"
       os: osx
+      python: 3.7
       language: generic
       env:
-        - PIP=pip
+        - PIP=pip3
         - PYTHON=python3
       script: ./travis/testing.sh
     - name: "Build docs"
