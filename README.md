@@ -5,7 +5,7 @@
 This repository contains all the wrapping code for interfacing the [cdshealpix Rust crate](https://github.com/cds-astro/cds-healpix-rust) with Python.
 
 It also performs the deployment of the [cdshealpix](https://pypi.org/project/cdshealpix/) PyPI python package for Linux/MacOS/Windows i686 and x86_64 architectures.
-This package is available for Python 2.7/3.4/3.5 (not for windows archs)/3.6 and 3.7.
+This package is available for Python 3.5, 3.6 and 3.7.
 
 ## [Documentation](https://cds-astro.github.io/cds-healpix-python/)
 
