@@ -83,7 +83,7 @@ test_script:
   - python -m pip install sphinx numpydoc sphinxcontrib-bibtex
   # Use of the healpix branch mocpy version (def of from_healpix_cells)
   # to run the test examples
-  - python -m pip install git+https://github.com/cds-astro/mocpy@healpix
+  - python -m pip install mocpy
   # Add %PYTHON%\Scripts to the PATH so that make.bat can find sphinx-build
   - set PATH=%PATH%;%PYTHON%\Scripts
   # Move to the location where the documentation rst files are

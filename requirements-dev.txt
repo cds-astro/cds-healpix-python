@@ -8,5 +8,5 @@ astropy
 astropy_sphinx_theme
 sphinxcontrib-bibtex
 matplotlib
-git+https://github.com/cds-astro/mocpy@master
+mocpy
 spherical-geometry

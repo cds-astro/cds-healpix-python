@@ -94,7 +94,12 @@ html_theme = 'bootstrap-astropy'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'logotext1': 'cds',  # white,  semi-bold
+    'logotext2': 'healpix',  # orange, light
+    'logotext3': ':docs',   # white,  light
+    'astropy_project_menubar': False
+    }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
