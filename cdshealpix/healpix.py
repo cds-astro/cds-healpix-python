@@ -75,6 +75,7 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     else:
         return ipix
 
+def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     """Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -87,6 +88,10 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
+    dx : float, optional
+        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+    dy : float, optional
+        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
 
     Returns
     -------
@@ -109,6 +114,12 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    if dx < 0 or dx > 1:
+        raise ValueError("dx must be between [0, 1]")
+
+    if dy < 0 or dy > 1:
+        raise ValueError("dy must be between [0, 1]")
+
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
@@ -118,11 +129,11 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     lon = np.zeros(size_skycoords)
     lat = np.zeros(size_skycoords)
 
-    cdshealpix.healpix_to_lonlat(depth, ipix, lon, lat)
+    cdshealpix.healpix_to_lonlat(depth, ipix, dx, dy, lon, lat)
 
     return lon * u.rad, lat * u.rad
 
-def healpix_to_skycoord(ipix, depth):
+def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
     """Get the sky coordinates of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -137,6 +148,10 @@ def healpix_to_skycoord(ipix, depth):
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
+    dx : float, optional
+        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+    dy : float, optional
+        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
 
     Returns
     -------
@@ -156,7 +171,7 @@ def healpix_to_skycoord(ipix, depth):
     >>> depth = 12
     >>> skycoord = healpix_to_skycoord(ipix, depth)
     """
-    lon, lat = healpix_to_lonlat(ipix, depth)
+    lon, lat = healpix_to_lonlat(ipix, depth, dx, dy)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def vertices(ipix, depth):
@@ -546,7 +561,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     return ipix, depth, full
 
 def healpix_to_xy(ipix, depth):
-    """
+    r"""
     Project the center of a HEALPix cell to the xy-HEALPix plane
 
     Parameters
@@ -577,7 +592,7 @@ def healpix_to_xy(ipix, depth):
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
-    
+
     x = np.zeros(ipix.shape, dtype=np.float64)
     y = np.zeros(ipix.shape, dtype=np.float64)
     cdshealpix.healpix_to_xy(ipix, depth, x, y)
@@ -585,7 +600,7 @@ def healpix_to_xy(ipix, depth):
     return x, y
 
 def lonlat_to_xy(lon, lat):
-    """
+    r"""
     Project sky coordinates to the HEALPix space
 
     Parameters
@@ -625,7 +640,7 @@ def lonlat_to_xy(lon, lat):
     return x, y
 
 def xy_to_lonlat(x, y):
-    """
+    r"""
     Project coordinates from the HEALPix space to the sky coordinate space.
 
     Parameters
