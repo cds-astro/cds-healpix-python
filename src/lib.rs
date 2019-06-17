@@ -33,18 +33,27 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         depth: u8,
         lon: &PyArrayDyn<f64>,
         lat: &PyArrayDyn<f64>,
-        ipix: &PyArrayDyn<u64>)
+        ipix: &PyArrayDyn<u64>,
+        dx: &PyArrayDyn<f64>,
+        dy: &PyArrayDyn<f64>)
     -> PyResult<()> {
         let lon = lon.as_array();
         let lat = lat.as_array();
         let mut ipix = ipix.as_array_mut();
+        let mut dx = dx.as_array_mut();
+        let mut dy = dy.as_array_mut();
         
         let layer = healpix::nested::get_or_create(depth);
         Zip::from(&mut ipix)
+            .and(&mut dx)
+            .and(&mut dy)
             .and(&lon)
             .and(&lat)
-            .par_apply(|p, &lon, &lat| {
-                *p = layer.hash(lon, lat);
+            .par_apply(|p, x, y, &lon, &lat| {
+                let r = layer.hash_with_dxdy(lon, lat);
+                *p = r.0;
+                *x = r.1;
+                *y = r.2;
             });
 
         Ok(())

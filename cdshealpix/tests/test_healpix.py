@@ -23,10 +23,11 @@ def test_lonlat_to_healpix(size):
     lon = np.random.rand(size) * 360 * u.deg
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
-    ipixels = lonlat_to_healpix(lon=lon, lat=lat, depth=depth)
+    ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, depth=depth, return_offsets=True)
     
     npix = 12 * 4**(depth)
     assert(((ipixels >= 0) & (ipixels < npix)).all())
+    assert(((dx >= 0) & (dx <= 1)).all())
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
 def test_healpix_to_lonlat(size):

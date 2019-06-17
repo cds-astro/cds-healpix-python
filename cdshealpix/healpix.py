@@ -11,7 +11,7 @@ def _check_ipixels(data, depth):
     if (data >= npix).any() or (data < 0).any():
         raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
 
-def lonlat_to_healpix(lon, lat, depth):
+def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     """Get the HEALPix indexes that contains specific sky coordinates
 
     The depth of the returned HEALPix cell indexes must be specified. This 
@@ -26,6 +26,10 @@ def lonlat_to_healpix(lon, lat, depth):
         The latitudes of the sky coordinates.
     depth : int
         The depth of the returned HEALPix cell indexes.
+    return_offsets : bool, optional
+        If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
+        indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
+        passed are located on the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
 
     Returns
     -------
@@ -61,11 +65,16 @@ def lonlat_to_healpix(lon, lat, depth):
     num_ipix = lon.shape
     # Allocation of the array containing the resulting ipixels
     ipix = np.empty(num_ipix, dtype=np.uint64)
+    dx = np.empty(num_ipix, dtype=np.float64)
+    dy = np.empty(num_ipix, dtype=np.float64)
 
-    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix)
-    return ipix
+    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix, dx, dy)
 
-def healpix_to_lonlat(ipix, depth):
+    if return_offsets:
+        return ipix, dx, dy
+    else:
+        return ipix
+
     """Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
