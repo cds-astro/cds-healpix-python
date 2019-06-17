@@ -538,7 +538,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
 def healpix_to_xy(ipix, depth):
     """
-    Project the center of a HEALPix cell to the XY-healpix plane
+    Project the center of a HEALPix cell to the xy-HEALPix plane
 
     Parameters
     ----------
@@ -550,9 +550,9 @@ def healpix_to_xy(ipix, depth):
     Returns
     -------
     x, y: (`numpy.array`, `numpy.array`)
-        The position of the HEALPix centers in the XY-HEALPix plane.
+        The position of the HEALPix centers in the xy-HEALPix plane.
         :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
-    
+
     Examples
     --------
     >>> from cdshealpix import healpix_to_xy
@@ -574,3 +574,89 @@ def healpix_to_xy(ipix, depth):
     cdshealpix.healpix_to_xy(ipix, depth, x, y)
 
     return x, y
+
+def lonlat_to_xy(lon, lat):
+    """
+    Project sky coordinates to the HEALPix space
+
+    Parameters
+    ----------
+    lon : `astropy.units.Quantity`
+        The longitudes of the sky coordinates.
+    lat : `astropy.units.Quantity`
+        The latitudes of the sky coordinates.
+
+    Returns
+    -------
+    x, y: (`numpy.array`, `numpy.array`)
+        The position of the (``lon``, ``lat``) coordinates in the HEALPix space.
+        :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
+
+    Examples
+    --------
+    >>> from cdshealpix import lonlat_to_xy
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> lon = [10, 25] * u.deg
+    >>> lat = [5, 10] * u.deg
+    >>> x, y = lonlat_to_xy(lon, lat)
+    """
+    lon = np.atleast_1d(lon.to_value(u.rad))
+    lat = np.atleast_1d(lat.to_value(u.rad))
+
+    if lon.shape != lat.shape:
+        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+
+    num_coords = lon.shape
+    # Allocation of the array containing the resulting ipixels
+    x = np.empty(num_coords, dtype=np.float64)
+    y = np.empty(num_coords, dtype=np.float64)
+
+    cdshealpix.lonlat_to_xy(lon, lat, x, y)
+    return x, y
+
+def xy_to_lonlat(x, y):
+    """
+    Project coordinates from the HEALPix space to the sky coordinate space.
+
+    Parameters
+    ----------
+    x : `numpy.array`
+        Position on the X axis of the HEALPix plane, :math:`x \in [0, 8[`
+    y : `numpy.array`
+        Position on the Y axis of the HEALPix plane, :math:`y \in [-2, 2]`
+
+    Returns
+    -------
+    (lon, lat) : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+        The coordinates on the sky
+
+    Examples
+    --------
+    >>> from cdshealpix import xy_to_lonlat
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> x = np.array([0.5, 1.5])
+    >>> y = np.array([0.5, 0.5])
+    >>> lon, lat = xy_to_lonlat(x, y)
+    """
+    x = np.atleast_1d(x.astype(np.float64))
+    y = np.atleast_1d(y.astype(np.float64))
+
+    if x.shape != y.shape:
+        raise ValueError("X and Y shapes do not match")
+
+    if ((x < 0) | (x >= 8)).any():
+        raise ValueError("X must be in [0, 8[")
+
+    if ((y < -2) | (y > 2)).any():
+        raise ValueError("Y must be in [-2, 2]")
+
+    num_coords = x.shape
+
+    # Allocation of the array containing the resulting ipixels
+    lon = np.empty(num_coords, dtype=np.float64)
+    lat = np.empty(num_coords, dtype=np.float64)
+
+    cdshealpix.xy_to_lonlat(x, y, lon, lat)
+    return lon * u.rad, lat * u.rad

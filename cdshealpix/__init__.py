@@ -4,6 +4,8 @@ from .healpix import lonlat_to_healpix, \
     healpix_to_lonlat, \
     healpix_to_skycoord, \
     healpix_to_xy, \
+    lonlat_to_xy, \
+    xy_to_lonlat, \
     vertices, \
     vertices_skycoord, \
     neighbours, \
@@ -17,6 +19,8 @@ __all__ = [
     'healpix_to_lonlat',
     'healpix_to_skycoord',
     'healpix_to_xy',
+    'lonlat_to_xy',
+    'xy_to_lonlat',
     'vertices',
     'vertices_skycoord',
     'neighbours',

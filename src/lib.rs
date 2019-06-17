@@ -100,6 +100,58 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(())
     }
 
+    /// wrapper of `lonlat_to_xy`
+    #[pyfn(m, "lonlat_to_xy")]
+    fn lonlat_to_xy(_py: Python,
+        lon: &PyArrayDyn<f64>,
+        lat: &PyArrayDyn<f64>,
+        x: &PyArrayDyn<f64>,
+        y: &PyArrayDyn<f64>)
+    -> PyResult<()> {
+        let mut x = x.as_array_mut();
+        let mut y = y.as_array_mut();
+        let lon = lon.as_array();
+        let lat = lat.as_array();
+
+        Zip::from(&lon)
+            .and(&lat)
+            .and(&mut x)
+            .and(&mut y)
+            .par_apply(|&l, &b, hpx, hpy| {
+                let (x, y) = healpix::proj(l, b);
+                *hpx = x;
+                *hpy = y;
+            });
+
+        Ok(())
+    }
+
+        /// wrapper of `xy_to_lonlat`
+    #[pyfn(m, "xy_to_lonlat")]
+    fn xy_to_lonlat(_py: Python,
+        x: &PyArrayDyn<f64>,
+        y: &PyArrayDyn<f64>,
+        lon: &PyArrayDyn<f64>,
+        lat: &PyArrayDyn<f64>)
+    -> PyResult<()> {
+        let x = x.as_array();
+        let y = y.as_array();
+        let mut lon = lon.as_array_mut();
+        let mut lat = lat.as_array_mut();
+
+        Zip::from(&x)
+            .and(&y)
+            .and(&mut lon)
+            .and(&mut lat)
+            .par_apply(|&hpx, &hpy, l, b| {
+                let r = healpix::unproj(hpx, hpy);
+                *l = r.0;
+                *b = r.1;
+            });
+
+        Ok(())
+    }
+
     /// wrapper of `vertices`
     #[pyfn(m, "vertices")]
     fn vertices(_py: Python,

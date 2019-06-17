@@ -7,6 +7,8 @@ import astropy.units as u
 from ..healpix import lonlat_to_healpix, \
  healpix_to_lonlat, \
  healpix_to_xy, \
+ lonlat_to_xy, \
+ xy_to_lonlat, \
  healpix_to_skycoord, \
  vertices, \
  neighbours, \
@@ -201,3 +203,29 @@ def test_healpix_to_xy_expection():
     
     with pytest.raises(ValueError):
         healpix_to_xy(np.array([-5]), 12)
+
+
+def assert_equal_array(first, second, tol=1e-8):
+    assert ((first - second) < tol).all()
+
+@pytest.mark.parametrize("lon, lat, expected_x, expected_y", [
+    (np.array([0., 0.78539816, 1.57079633]) * u.rad,
+     np.array([-0.72972766, 0., 0.72972766]) * u.rad,
+     np.array([0., 1., 2.]),
+     np.array([-1., 0., 1.]))
+])
+def test_lonlat_to_xy(lon, lat, expected_x, expected_y):
+    x, y = lonlat_to_xy(lon, lat)
+    assert_equal_array(x, expected_x)
+    assert_equal_array(y, expected_y)
+
+@pytest.mark.parametrize("x, y, expected_lon, expected_lat", [
+    (np.array([0., 1., 2.]),
+     np.array([-1., 0., 1.]),
+     np.array([0., 0.78539816, 1.57079633]) * u.rad,
+     np.array([-0.72972766, 0., 0.72972766]) * u.rad)
+])
+def test_xy_to_lonlat(x, y, expected_lon, expected_lat):
+    lon, lat = xy_to_lonlat(x, y)
+    assert_equal_array(lon.to_value(u.rad), expected_lon.to_value(u.rad))
+    assert_equal_array(lat.to_value(u.rad), expected_lat.to_value(u.rad))
