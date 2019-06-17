@@ -8,6 +8,7 @@ from ..healpix import lonlat_to_healpix, \
  healpix_to_lonlat, \
  healpix_to_xy, \
  lonlat_to_xy, \
+ skycoord_to_healpix, \
  xy_to_lonlat, \
  healpix_to_skycoord, \
  vertices, \
@@ -24,6 +25,11 @@ def test_lonlat_to_healpix(size):
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
     ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, depth=depth, return_offsets=True)
+    ipixels, dx, dy = skycoord_to_healpix(
+        SkyCoord(lon, lat, frame="icrs"),
+        depth=depth,
+        return_offsets=True,
+    )
     
     npix = 12 * 4**(depth)
     assert(((ipixels >= 0) & (ipixels < npix)).all())

@@ -12,7 +12,7 @@ def _check_ipixels(data, depth):
         raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
 
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
-    """Get the HEALPix indexes that contains specific sky coordinates
+    r"""Get the HEALPix indexes that contains specific sky coordinates
 
     The depth of the returned HEALPix cell indexes must be specified. This 
     method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__ 
@@ -75,8 +75,49 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     else:
         return ipix
 
+def skycoord_to_healpix(skycoord, depth, return_offsets=False):
+    r"""Get the HEALPix indexes that contains specific sky coordinates
+
+    The depth of the returned HEALPix cell indexes must be specified.
+    This method is wrapped around the
+    `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__
+    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+
+    Parameters
+    ----------
+    skycoord : `astropy.coordinates.SkyCoord`
+        The sky coordinates.
+    depth : int
+        The depth of the returned HEALPix cell indexes.
+    return_offsets : bool, optional
+        If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
+        indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
+        passed are located in the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
+
+    Returns
+    -------
+    ipix : `numpy.array`
+        A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
+
+    Raises
+    ------
+    ValueError
+        When the number of longitudes and latitudes given do not match.
+
+    Examples
+    --------
+    >>> from cdshealpix import skycoord_to_healpix
+    >>> import astropy.units as u
+    >>> from astropy.coordinates import SkyCoord
+    >>> import numpy as np
+    >>> skycoord = SkyCoord([0, 50, 25] * u.deg, [6, -12, 45] * u.deg, frame="icrs")
+    >>> depth = 12
+    >>> ipix = skycoord_to_healpix(skycoord, depth)
+    """
+    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, depth, return_offsets)
+
 def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
-    """Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
+    r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
     It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
@@ -134,7 +175,7 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     return lon * u.rad, lat * u.rad
 
 def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
-    """Get the sky coordinates of the center of some HEALPix cells at a given depth.
+    r"""Get the sky coordinates of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
     It is the equivalent of `healpix_to_lonlat` except that it returns `astropy.coordinates.SkyCoord` instead
