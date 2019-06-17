@@ -215,7 +215,7 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
     lon, lat = healpix_to_lonlat(ipix, depth, dx, dy)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def vertices(ipix, depth):
+def vertices(ipix, depth, step=1):
     """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given depth.
 
     This method returns the 4 vertices of each cell in `ipix`.
@@ -228,6 +228,11 @@ def vertices(ipix, depth):
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
+    step : int, optional
+        The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
+        it will only return the vertices of the cell. 2 means that it will returns the vertices of
+        the cell plus one more vertex per edge (the middle of it). More generally, the number
+        of vertices returned is ``4 * step``.
 
     Returns
     -------
@@ -251,19 +256,22 @@ def vertices(ipix, depth):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    if step < 1:
+        raise ValueError("The number of step must be >= 1")
+
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     
     # Allocation of the array containing the resulting coordinates
-    lon = np.zeros(ipix.shape + (4,))
-    lat = np.zeros(ipix.shape + (4,))
+    lon = np.zeros(ipix.shape + (4 * step,))
+    lat = np.zeros(ipix.shape + (4 * step,))
     
-    cdshealpix.vertices(depth, ipix, lon, lat)
+    cdshealpix.vertices(depth, ipix, step, lon, lat)
 
     return lon * u.rad, lat * u.rad
 
-def vertices_skycoord(ipix, depth):
+def vertices_skycoord(ipix, depth, step=1):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
 
     This method returns the 4 vertices of each cell in `ipix`.
@@ -276,6 +284,11 @@ def vertices_skycoord(ipix, depth):
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
+    step : int, optional
+        The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
+        it will only return the vertices of the cell. 2 means that it will returns the vertices of
+        the cell plus one more vertex per edge (the middle of it). More generally, the number
+        of vertices returned is ``4 * step``.
 
     Returns
     -------
@@ -296,7 +309,7 @@ def vertices_skycoord(ipix, depth):
     >>> depth = 12
     >>> vertices = vertices(ipix, depth)
     """
-    lon, lat = vertices(ipix, depth)
+    lon, lat = vertices(ipix, depth, step)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
 def neighbours(ipix, depth):
