@@ -1,4 +1,4 @@
-from . import cdshealpix # noqa
+from .. import cdshealpix # noqa
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord, Angle

@@ -45,6 +45,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.githubpages',
+    'sphinx.ext.autosummary',
     # Extension for plotting image in the doc
     'matplotlib.sphinxext.plot_directive',
     # To support Numpy docstrings, we use this extension:

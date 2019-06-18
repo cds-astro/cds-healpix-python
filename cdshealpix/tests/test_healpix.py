@@ -4,7 +4,7 @@ import numpy as np
 from astropy.coordinates import Angle, SkyCoord
 import astropy.units as u
 
-from ..healpix import lonlat_to_healpix, \
+from ..nested import lonlat_to_healpix, \
  healpix_to_lonlat, \
  healpix_to_xy, \
  lonlat_to_xy, \
