@@ -18,6 +18,8 @@ from ..nested import lonlat_to_healpix, \
  elliptical_cone_search, \
  external_neighbours
 
+from .. import to_ring, from_ring
+
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
 def test_lonlat_to_healpix(size):
     depth = np.random.randint(30)
@@ -236,3 +238,24 @@ def test_xy_to_lonlat(x, y, expected_lon, expected_lat):
     lon, lat = xy_to_lonlat(x, y)
     assert_equal_array(lon.to_value(u.rad), expected_lon.to_value(u.rad))
     assert_equal_array(lat.to_value(u.rad), expected_lat.to_value(u.rad))
+
+### Test to_ring & from_ring
+@pytest.mark.parametrize("pix, depth, expected_ring_pix", [
+    (np.arange(12), 0, np.arange(12)),
+    (4, 1, 15),
+    (np.array([4, 5, 6, 7]), 1, np.array([15, 7, 6, 1])),
+    (np.array([28, 29, 30, 31]), 1, np.array([34, 26, 25, 18]))
+])
+def test_to_ring(pix, depth, expected_ring_pix):
+    ring_pix = to_ring(pix, depth)
+    assert (ring_pix == expected_ring_pix).all()
+
+@pytest.mark.parametrize("pix, depth, expected_nested_pix", [
+    (np.arange(12), 0, np.arange(12)),
+    (15, 1, 4),
+    (np.array([15, 7, 6, 1]), 1, np.array([4, 5, 6, 7])),
+    (np.array([34, 26, 25, 18]), 1, np.array([28, 29, 30, 31]))
+])
+def test_from_ring(pix, depth, expected_nested_pix):
+    nested_pix = from_ring(pix, depth)
+    assert (nested_pix == expected_nested_pix).all()

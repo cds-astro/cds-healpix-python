@@ -175,13 +175,13 @@ You do not have to recompile the dynamic library every time if you just work on 
 
 ### Running the tests
 
-For running the tests :
+For running the tests + benchmarks:
 
 ```shell
-python -m pytest -v cdshealpix/tests/test_healpix.py
+python -m pytest -v cdshealpix
 ```
 
-For running the benchmarks :
+For running only the benchmarks :
 
 ```shell
 python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py

@@ -79,14 +79,14 @@ You do not have to recompile the dynamic library every time if you just work on 
 Running the tests
 -----------------
 
-For running the tests:
+For running the tests + benchmarks:
 
 .. code-block:: bash
 
-    python -m pytest -v cdshealpix/tests/test_healpix.py
+    python -m pytest -v cdshealpix
 
 
-For running the benchmarks:
+For running only the benchmarks:
 
 .. code-block:: bash
 

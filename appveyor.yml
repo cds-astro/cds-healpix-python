@@ -78,7 +78,8 @@ build_script:
 
 test_script:
   # Run the tests
-  - python -m pytest -v "cdshealpix\tests\test_healpix.py"
+  - python -m pytest -v "cdshealpix\tests\test_nested_healpix.py" 
+  - python -m pytest -v "cdshealpix\tests\test_ring_healpix.py"
   # Install the dependencies for executing the API tests
   - python -m pip install sphinx numpydoc sphinxcontrib-bibtex
   # Use of the healpix branch mocpy version (def of from_healpix_cells)

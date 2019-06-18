@@ -6,6 +6,17 @@ This is the API for the cdshealpix_ Python package.
 This package is a wrapper around the Rust `cdshealpix <https://crates.io/crates/cdshealpix>`__  crate.
 The functions currently implemented by `cdshealpix <https://github.com/cds-astro/cds-healpix-python>`__ are the following:
 
+cdshealpix
+~~~~~~~~~~
+
+.. automodule:: cdshealpix
+
+    .. autosummary::
+        :toctree: stubs
+
+        to_ring
+        from_ring
+
 cdshealpix.nested
 ~~~~~~~~~~~~~~~~~
 
