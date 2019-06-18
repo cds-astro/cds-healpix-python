@@ -73,7 +73,7 @@ def from_ring(ipix, depth):
 
     Examples
     --------
-    >>> from cdshealpix import to_ring
+    >>> from cdshealpix import from_ring
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
