@@ -546,6 +546,45 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(())
     }
 
+    ////////////////////////////
+    // Bilinear interpolation //
+    ////////////////////////////
+    #[pyfn(m, "bilinear_interpolation")]
+    fn bilinear_interpolation(_py: Python,
+        depth: u8,
+        lon: &PyArrayDyn<f64>,
+        lat: &PyArrayDyn<f64>,
+        ipix: &PyArrayDyn<u64>,
+        weights: &PyArrayDyn<f64>)
+    -> PyResult<()> {
+        let lon = lon.as_array();
+        let lat = lat.as_array();
+
+        let mut ipix = ipix.as_array_mut();
+        let mut weights = weights.as_array_mut();
+
+        let layer = healpix::nested::get_or_create(depth);
+        Zip::from(ipix.genrows_mut())
+            .and(weights.genrows_mut())
+            .and(&lon)
+            .and(&lat)
+            .par_apply(|mut pix, mut w, &l, &b| {
+                let [(p1, w1), (p2, w2), (p3, w3), (p4, w4)] = layer.bilinear_interpolation(l, b);
+
+                pix[0] = p1;
+                pix[1] = p2;
+                pix[2] = p3;
+                pix[3] = p4;
+
+                w[0] = w1;
+                w[1] = w2;
+                w[2] = w3;
+                w[3] = w4;
+            });
+
+        Ok(())
+    }
+
     Ok(())
 }
 

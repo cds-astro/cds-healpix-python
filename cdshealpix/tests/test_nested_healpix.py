@@ -16,7 +16,8 @@ from ..nested import lonlat_to_healpix, \
  cone_search, \
  polygon_search, \
  elliptical_cone_search, \
- external_neighbours
+ external_neighbours, \
+ bilinear_interpolation
 
 from .. import to_ring, from_ring
 
@@ -200,7 +201,6 @@ def test_external_neighbours(depth, ipix, expected_border_cells, expected_corner
      np.array([1.], dtype=np.float64))
 ])
 def test_healpix_to_xy(ipix, depth, expected_x, expected_y):
-    healpix_to_xy(ipix, depth)
     x, y = healpix_to_xy(ipix, depth)
 
     assert (x == expected_x).all()
@@ -212,7 +212,6 @@ def test_healpix_to_xy_expection():
     
     with pytest.raises(ValueError):
         healpix_to_xy(np.array([-5]), 12)
-
 
 def assert_equal_array(first, second, tol=1e-8):
     assert ((first - second) < tol).all()
@@ -259,3 +258,27 @@ def test_to_ring(pix, depth, expected_ring_pix):
 def test_from_ring(pix, depth, expected_nested_pix):
     nested_pix = from_ring(pix, depth)
     assert (nested_pix == expected_nested_pix).all()
+
+@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
+def test_from_vs_to_ring(size):
+    depth = np.random.randint(30)
+    nside = 1 << depth
+
+    ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype="uint64")
+    ring = to_ring(ipix=ipixels, depth=depth)
+    ipixels_result = from_ring(ipix=ring, depth=depth)
+    assert((ipixels == ipixels_result).all())
+
+@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
+def test_bilinear_interpolation(depth):
+    size = 1000
+
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
+
+    ipix, weights = bilinear_interpolation(lon, lat, depth)
+    #idx = (weights.sum(axis=1) < 0.98) | (weights.sum(axis=1) > 1.02)
+    
+    assert ((weights >= 0.0) & (weights <= 1.0)).all()
+    assert weights.sum() == ipix.shape[0]
+    assert ((ipix >= 0) & (ipix < 12 * (4 ** depth))).all()

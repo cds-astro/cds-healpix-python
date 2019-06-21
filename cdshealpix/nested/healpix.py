@@ -738,3 +738,64 @@ def xy_to_lonlat(x, y):
 
     cdshealpix.xy_to_lonlat(x, y, lon, lat)
     return lon * u.rad, lat * u.rad
+
+def bilinear_interpolation(lon, lat, depth):
+    r"""
+    Compute the HEALPix bilinear interpolation from sky coordinates
+
+    For each (``lon``, ``lat``) sky position given, this function
+    returns the 4 HEALPix cells that share the nearest cross of the position.
+
+    +-----+-----+
+    |(1)  |(2)  |
+    |    x|     |
+    +-----+-----+
+    |(3)  |(4)  |
+    |     |     |
+    +-----+-----+
+
+    If ``x`` is the position, then the 4 annotated HEALPix cells will be returned
+    along with their weights. These 4 weights sum up to 1.
+
+    Parameters
+    ----------
+    lon : `astropy.units.Quantity`
+        The longitudes of the sky coordinates.
+    lat : `astropy.units.Quantity`
+        The latitudes of the sky coordinates.
+    depth : int
+        The depth of the HEALPix cells
+
+    Returns
+    -------
+    pixels, weights: (`numpy.array`, `numpy.array`)
+        :math:`N x 4` arrays where N is the number of ``lon`` (and ``lat``) given.
+        For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
+        a specific weight. The 4 weights sum up to 1.
+
+    Examples
+    --------
+    >>> from cdshealpix import bilinear_interpolation
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> lon = [10, 25] * u.deg
+    >>> lat = [5, 10] * u.deg
+    >>> depth = 5
+    >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
+    """
+    lon = np.atleast_1d(lon.to_value(u.rad))
+    lat = np.atleast_1d(lat.to_value(u.rad))
+
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    if lon.shape != lat.shape:
+        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+
+    num_coords = lon.shape
+
+    ipix = np.empty(num_coords + (4,), dtype=np.uint64)
+    weights = np.empty(num_coords + (4,), dtype=np.float64)
+
+    cdshealpix.bilinear_interpolation(depth, lon, lat, ipix, weights)
+    return ipix, weights
