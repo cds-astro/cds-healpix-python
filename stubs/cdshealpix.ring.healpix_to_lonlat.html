@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>cdshealpix.ring.healpix_to_lonlat &#8212; cdshealpix  documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="cdshealpix.ring.healpix_to_skycoord" href="cdshealpix.ring.healpix_to_skycoord.html" />
+    <link rel="prev" title="cdshealpix.ring.skycoord_to_healpix" href="cdshealpix.ring.skycoord_to_healpix.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../index.html"><span id="logotext1">cds</span><span id="logotext2">healpix</span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="cdshealpix.ring.healpix_to_skycoord.html" title="cdshealpix.ring.healpix_to_skycoord">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="cdshealpix.ring.skycoord_to_healpix.html" title="cdshealpix.ring.skycoord_to_healpix">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../index.html">cdshealpix  documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../api.html" accesskey="U">API</a> &#187;</li>
+      
+      <li>cdshealpix.ring.healpix_to_lonlat</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cdshealpix-ring-healpix-to-lonlat">
+<h1>cdshealpix.ring.healpix_to_lonlat<a class="headerlink" href="#cdshealpix-ring-healpix-to-lonlat" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="cdshealpix.ring.healpix_to_lonlat">
+<code class="sig-prename descclassname">cdshealpix.ring.</code><code class="sig-name descname">healpix_to_lonlat</code><span class="sig-paren">(</span><em class="sig-param">ipix</em>, <em class="sig-param">nside</em>, <em class="sig-param">dx=0.5</em>, <em class="sig-param">dy=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.ring.healpix_to_lonlat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.</p>
+<p>This method does the opposite transformation of <a class="reference internal" href="cdshealpix.ring.lonlat_to_healpix.html#cdshealpix.ring.lonlat_to_healpix" title="cdshealpix.ring.lonlat_to_healpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonlat_to_healpix</span></code></a>.
+It’s wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center">center</a>
+method from the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.16)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
+</dd>
+<dt><strong>nside</strong><span class="classifier">int</span></dt><dd><p>The nside of the HEALPix cells.</p>
+</dd>
+<dt><strong>dx</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1]\)</span> along the X axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dx=0.5</span></code></p>
+</dd>
+<dt><strong>dy</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1]\)</span> along the Y axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dy=0.5</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>lon, lat</strong><span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev613)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev613)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt><dd><p>The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>When the HEALPix cell indexes given have values out of <span class="math notranslate nohighlight">\([0, 12\)</span> x <span class="math notranslate nohighlight">\(N_{side} ^ 2[\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cdshealpix.ring</span> <span class="k">import</span> <span class="n">healpix_to_lonlat</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ipix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">42</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depth</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">healpix_to_lonlat</span><span class="p">(</span><span class="n">ipix</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">depth</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">cdshealpix.ring.healpix_to_lonlat</a></li>
+</ul>
+
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cdshealpix.ring.skycoord_to_healpix.html"
+                        title="previous chapter">cdshealpix.ring.skycoord_to_healpix</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cdshealpix.ring.healpix_to_skycoord.html"
+                        title="next chapter">cdshealpix.ring.healpix_to_skycoord</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/stubs/cdshealpix.ring.healpix_to_lonlat.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<form action="../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../_sources/stubs/cdshealpix.ring.healpix_to_lonlat.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

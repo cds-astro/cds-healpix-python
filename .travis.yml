@@ -8,7 +8,7 @@ env:
     - TWINE_USERNAME=bmatthieu3
     - DOCKER_IMAGE_LINUX_32=daald/ubuntu32:xenial
     - DOCKER_CONTAINER_LINUX_32=linux32_container
-
+    - DOCKER_CONTAINER_DEPLOY_DOC=deploy_doc
 # Define the order of the stages
 stages:
   - test
@@ -27,7 +27,7 @@ jobs:
       name: "Python3 linux_x86"
       os: linux
       env:
-        - PIP=pip
+        - PIP=pip3
         - PYTHON=python3
       script: ./travis/testing.sh
       # - linux 32bit
@@ -66,12 +66,37 @@ jobs:
     - name: "Build docs"
       os: linux
       env:
-        - PIP=pip
+        - PIP=pip3
         - PYTHON=python3
       script: ./travis/build_docs.sh
     #### DEPLOYING STAGE ####
     - stage: deploy
-      name: "manylinux1_x86_64"
+      name: "Update doc to gh-pages"
+      os: linux
+      services:
+        - docker
+      before_install:
+        - docker pull ubuntu
+        - >
+          docker run
+          --volume ${PWD}:/mnt/cdshealpix
+          --name "${DOCKER_CONTAINER_DEPLOY_DOC}"
+          --rm
+          --interactive
+          --tty
+          --detach
+          ubuntu
+      script:
+        - >
+          docker exec 
+          --interactive
+          --tty
+          --env GH_EMAIL="${GH_EMAIL}"
+          --env GH_NAME="${GH_NAME}"
+          --env GH_TOKEN="${GH_TOKEN}"
+          "${DOCKER_CONTAINER_DEPLOY_DOC}"
+          sh -c "cd /mnt/cdshealpix && ./travis/deploy_doc.sh"
+    - name: "manylinux1_x86_64"
       # Job generating the wheels for Linux 32-bit platforms
       os: linux
       sudo: required
