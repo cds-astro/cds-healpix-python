@@ -1,23 +1,22 @@
 import cdshealpix
-print(cdshealpix.__version__)
-from cdshealpix import elliptical_cone_search_lonlat
+
+from cdshealpix import elliptical_cone_search
 import astropy.units as u
 from astropy.coordinates import Angle, SkyCoord
 import numpy as np
 
-elliptical_cone = elliptical_cone_search_lonlat(
+ipix, depth, fully_covered = elliptical_cone_search(
     lon=0 * u.deg,
     lat=0 * u.deg,
     a=Angle(50, unit="deg"),
     b=Angle(5, unit="deg"),
     pa=Angle(30, unit="deg"),
-    depth=10,
-    depth_delta=0
+    depth=10
 )
 
 from mocpy import MOC, WCS
 
-moc = MOC.from_cells(elliptical_cone)
+moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
 import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))

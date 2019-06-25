@@ -1,38 +1,68 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Welcome to cdshealpix’s documentation! &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="_static/js/copybutton.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Install" href="install.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
 
   </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="#"><span id="logotext1">cds</span><span id="logotext2">healpix</span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="genindex.html">Index</a></li>
+    <li><a title="Module Index" href="py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="install.html" title="Install">
+	  next &raquo;
+	</a>
+      </li>
+      <li>
+	<a href="#">cdshealpix  documentation</a>
+	 &#187;
+      </li>
+      
+       
+    </ul>
+</div>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          
-
           <div class="body" role="main">
             
   <div class="section" id="welcome-to-cdshealpix-s-documentation">
@@ -58,11 +88,11 @@
 </div>
 <p><a class="reference internal" href="api.html#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a> is a Python wrapper around the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
 <p><a class="reference internal" href="api.html#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a> is deployed to the PyPI server as the <a class="reference external" href="https://pypi.org/project/cdshealpix/">cdshealpix</a> named pip package and
-is available for Python 2.7, 3.4, 3.5 (not for windows archs), 3.6 and 3.7 through the following architectures:</p>
+is available for Python 3.5, 3.6 and 3.7 through the following architectures:</p>
 <ul class="simple">
-<li>Linux i686/x86_64</li>
-<li>Windows 32/64 bits</li>
-<li>MacOS</li>
+<li><p>Linux i686/x86_64</p></li>
+<li><p>Windows 32/64 bits</p></li>
+<li><p>MacOS</p></li>
 </ul>
 <div class="section" id="what-is-healpix">
 <h2>What is HEALPix ?<a class="headerlink" href="#what-is-healpix" title="Permalink to this headline">¶</a></h2>
@@ -71,131 +101,94 @@ This partionning is hierarchical meaning that each cell has a depth associated t
 Possible depths are in <span class="math notranslate nohighlight">\([0, 29]\)</span>. A cell of depth <span class="math notranslate nohighlight">\(N\)</span> can be subdivided into
 its four children of depth <span class="math notranslate nohighlight">\(N+1\)</span>:</p>
 <ul class="simple">
-<li>At the depth <span class="math notranslate nohighlight">\(0\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12\)</span> cells of equal areas.</li>
-<li>At the depth <span class="math notranslate nohighlight">\(1\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4\)</span> cells.</li>
-<li>…</li>
-<li>At the depth <span class="math notranslate nohighlight">\(N\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4^{N}\)</span> cells.</li>
-<li>…</li>
-<li>At the depth <span class="math notranslate nohighlight">\(29\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4^{29}\)</span> cells.</li>
+<li><p>At the depth <span class="math notranslate nohighlight">\(0\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12\)</span> cells of equal areas.</p></li>
+<li><p>At the depth <span class="math notranslate nohighlight">\(1\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4\)</span> cells.</p></li>
+<li><p>…</p></li>
+<li><p>At the depth <span class="math notranslate nohighlight">\(N\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4^{N}\)</span> cells.</p></li>
+<li><p>…</p></li>
+<li><p>At the depth <span class="math notranslate nohighlight">\(29\)</span>, the sky is fractionned into <span class="math notranslate nohighlight">\(12 \times 4^{29}\)</span> cells.</p></li>
 </ul>
 <p>The HEALPix nested scheme relies on the following papers that you can check it out if you want to know
 more about HEALPix:</p>
 <ul class="simple">
-<li><a class="reference internal" href="#gorski-2004by" id="id1">[GHB+05]</a></li>
-<li><a class="reference internal" href="#calabretta-2004vi" id="id2">[Cal04]</a></li>
-<li><a class="reference internal" href="#mnras-381-865c" id="id3">[CalabrettaRoukema07]</a></li>
-<li><a class="reference internal" href="#a-a-580a-132r" id="id4">[ReineckeHivon15]</a></li>
+<li><p><a class="reference internal" href="#gorski-2004by" id="id1">[GHB+05]</a></p></li>
+<li><p><a class="reference internal" href="#calabretta-2004vi" id="id2">[Cal04]</a></p></li>
+<li><p><a class="reference internal" href="#mnras-381-865c" id="id3">[CalabrettaRoukema07]</a></p></li>
+<li><p><a class="reference internal" href="#a-a-580a-132r" id="id4"><span>[2015A&amp;A…580A.132R]</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="bibtex-bibliography-index-0"><table class="docutils citation" frame="void" id="calabretta-2004vi" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[Cal04]</a></td><td>Mark&nbsp;R. Calabretta. Mapping on the HEALPix grid. <em>Submitted to: Astron. Astrophys.</em>, 2004. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0412607">arXiv:astro-ph/0412607</a>.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="gorski-2004by" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[GHB+05]</a></td><td>K.&nbsp;M. Gorski, Eric Hivon, A.&nbsp;J. Banday, B.&nbsp;D. Wandelt, F.&nbsp;K. Hansen, M.&nbsp;Reinecke, and M.&nbsp;Bartelman. HEALPix - A Framework for high resolution discretization, and fast analysis of data distributed on the sphere. <em>Astrophys. J.</em>, 622:759–771, 2005. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0409513">arXiv:astro-ph/0409513</a>, <a class="reference external" href="https://doi.org/10.1086/427976">doi:10.1086/427976</a>.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="mnras-381-865c" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[CalabrettaRoukema07]</a></td><td>M.&nbsp;R. Calabretta and B.&nbsp;F. Roukema. Mapping on the HEALPix grid. <em>\mnras </em>, 381:865–872, October 2007. <a class="reference external" href="https://doi.org/10.1111/j.1365-2966.2007.12297.x">doi:10.1111/j.1365-2966.2007.12297.x</a>.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="a-a-580a-132r" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[ReineckeHivon15]</a></td><td>M.&nbsp;Reinecke and E.&nbsp;Hivon. Efficient data structures for masks on 2D grids. <em>\aap </em>, 580:A132, Aug 2015. <a class="reference external" href="https://arxiv.org/abs/1505.04632">arXiv:1505.04632</a>, <a class="reference external" href="https://doi.org/10.1051/0004-6361/201526549">doi:10.1051/0004-6361/201526549</a>.</td></tr>
-</tbody>
-</table>
+<p id="bibtex-bibliography-index-0"><dl class="citation">
+<dt class="label" id="calabretta-2004vi"><span class="brackets"><a class="fn-backref" href="#id2">Cal04</a></span></dt>
+<dd><p>Mark R. Calabretta. Mapping on the HEALPix grid. <em>Submitted to: Astron. Astrophys.</em>, 2004. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0412607">arXiv:astro-ph/0412607</a>.</p>
+</dd>
+<dt class="label" id="gorski-2004by"><span class="brackets"><a class="fn-backref" href="#id1">GHB+05</a></span></dt>
+<dd><p>K. M. Gorski, Eric Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelman. HEALPix - A Framework for high resolution discretization, and fast analysis of data distributed on the sphere. <em>Astrophys. J.</em>, 622:759–771, 2005. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0409513">arXiv:astro-ph/0409513</a>, <a class="reference external" href="https://doi.org/10.1086/427976">doi:10.1086/427976</a>.</p>
+</dd>
+<dt class="label" id="mnras-381-865c"><span class="brackets"><a class="fn-backref" href="#id3">CalabrettaRoukema07</a></span></dt>
+<dd><p>M. R. Calabretta and B. F. Roukema. Mapping on the HEALPix grid. <em>\mnras </em>, 381:865–872, October 2007. <a class="reference external" href="https://doi.org/10.1111/j.1365-2966.2007.12297.x">doi:10.1111/j.1365-2966.2007.12297.x</a>.</p>
+</dd>
+<dt class="label" id="a-a-580a-132r"><span class="brackets"><a class="fn-backref" href="#id4">ReineckeHivon15</a></span></dt>
+<dd><p>M. Reinecke and E. Hivon. Efficient data structures for masks on 2D grids. <em>\aap </em>, 580:A132, Aug 2015. <a class="reference external" href="https://arxiv.org/abs/1505.04632">arXiv:1505.04632</a>, <a class="reference external" href="https://doi.org/10.1051/0004-6361/201526549">doi:10.1051/0004-6361/201526549</a>.</p>
+</dd>
+</dl>
 </p>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 
 
           </div>
-          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">cdshealpix</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li><a class="reference internal" href="#">Welcome to cdshealpix’s documentation!</a><ul>
+<li><a class="reference internal" href="#what-is-healpix">What is HEALPix ?</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="install.html" title="next chapter">Install</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
 
-
-
-
-
-
-
-
+  <h4>Next topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="next chapter">Install</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2019, François-Xavier Pineau, Matthieu Baumann.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
+<footer class="footer">
+  <p class="pull-right">
+    <a href="_sources/index.rst.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.1.2. &nbsp;
+  </p>
+</footer>
   </body>
 </html>
