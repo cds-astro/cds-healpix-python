@@ -204,8 +204,8 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
     #[pyfn(m, "healpix_to_xy_ring")]
     fn healpix_to_xy_ring(_py: Python,
-        ipix: &PyArrayDyn<u64>,
         nside: u32,
+        ipix: &PyArrayDyn<u64>,
         x: &PyArrayDyn<f64>,
         y: &PyArrayDyn<f64>)
     -> PyResult<()> {

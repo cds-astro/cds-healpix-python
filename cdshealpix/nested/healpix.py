@@ -769,7 +769,7 @@ def bilinear_interpolation(lon, lat, depth):
     Returns
     -------
     pixels, weights: (`numpy.array`, `numpy.array`)
-        :math:`N x 4` arrays where N is the number of ``lon`` (and ``lat``) given.
+        :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
         For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
         a specific weight. The 4 weights sum up to 1.
 

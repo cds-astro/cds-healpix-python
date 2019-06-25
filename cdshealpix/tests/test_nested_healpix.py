@@ -277,7 +277,6 @@ def test_bilinear_interpolation(depth):
     lat = (np.random.rand(size) * 178 - 89) * u.deg
 
     ipix, weights = bilinear_interpolation(lon, lat, depth)
-    #idx = (weights.sum(axis=1) < 0.98) | (weights.sum(axis=1) > 1.02)
     
     assert ((weights >= 0.0) & (weights <= 1.0)).all()
     assert weights.sum() == ipix.shape[0]

@@ -44,7 +44,24 @@ cdshealpix.nested
         polygon_search
         elliptical_cone_search
 
+        bilinear_interpolation
+
 cdshealpix.ring
 ~~~~~~~~~~~~~~~
+
+.. automodule:: cdshealpix.ring
+
+    .. autosummary::
+        :toctree: stubs
+
+        lonlat_to_healpix
+        skycoord_to_healpix
+
+        healpix_to_lonlat
+        healpix_to_skycoord
+        healpix_to_xy
+
+        vertices
+        vertices_skycoord
 
 .. _cdshealpix: https://github.com/cds-astro/cds-healpix-python

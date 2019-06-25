@@ -27,6 +27,6 @@ linux32 --32bit i386 sh -c '
     python3 setup.py build_rust &&
     # Move the dynamic lib to the python package folder
     find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \; &&
-    python3 -m pytest -v cdshealpix/tests/test_nested_healpix.py
-    # python3 -m pytest -v cdshealpix/tests/test_ring_healpix.py
+    python3 -m pytest -v cdshealpix/tests/test_nested_healpix.py &&
+    python3 -m pytest -v cdshealpix/tests/test_ring_healpix.py
 '
