@@ -120,12 +120,12 @@ jobs:
         # We use docker for generating the wheels for Linux.
         - docker
       script: ./travis/deploy.sh
-    - name: "MacOS"
+    - name: "OSX"
       os: osx
       sudo: required
       language: generic
       env:
-        - CIBW_SKIP=cp27-* cp34-*
+        - CIBW_SKIP="cp27-* cp34-*"
         - PIP=pip2
         - PYTHON=python2
       script: ./travis/deploy.sh
