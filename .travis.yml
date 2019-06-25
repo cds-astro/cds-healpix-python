@@ -71,6 +71,31 @@ jobs:
       script: ./travis/build_docs.sh
     #### DEPLOYING STAGE ####
     - stage: deploy
+      name: "Update doc to gh-pages"
+      os: linux
+      services:
+        - docker
+      before_install:
+        - docker pull ubuntu
+        - >
+          docker run
+          --volume ${PWD}:/mnt/cdshealpix
+          --name "${DOCKER_CONTAINER_DEPLOY_DOC}"
+          --rm
+          --interactive
+          --tty
+          --detach
+          ubuntu
+      script:
+        - >
+          docker exec 
+          --interactive
+          --tty
+          --env GH_EMAIL="${GH_EMAIL}"
+          --env GH_NAME="${GH_NAME}"
+          --env GH_TOKEN="${GH_TOKEN}"
+          "${DOCKER_CONTAINER_DEPLOY_DOC}"
+          sh -c "cd /mnt/cdshealpix && ./travis/deploy_doc.sh"
       name: "manylinux1_x86_64"
       # Job generating the wheels for Linux 32-bit platforms
       os: linux
