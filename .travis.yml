@@ -8,7 +8,7 @@ env:
     - TWINE_USERNAME=bmatthieu3
     - DOCKER_IMAGE_LINUX_32=daald/ubuntu32:xenial
     - DOCKER_CONTAINER_LINUX_32=linux32_container
-
+    - DOCKER_CONTAINER_DEPLOY_DOC=deploy_doc
 # Define the order of the stages
 stages:
   - test
