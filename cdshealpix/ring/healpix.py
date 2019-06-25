@@ -143,7 +143,7 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     Raises
     ------
     ValueError
-        When the HEALPix cell indexes given have values out of :math:`[0, 12 * N_{side} ^ 2[`.
+        When the HEALPix cell indexes given have values out of :math:`[0, 12` x :math:`N_{side} ^ 2[`.
 
     Examples
     --------
@@ -202,7 +202,7 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
     Raises
     ------
     ValueError
-        When the HEALPix cell indexes given have values out of :math:`[0, 12 * N_{side} ^ 2[`.
+        When the HEALPix cell indexes given have values out of :math:`[0, 12` x :math:`N_{side} ^ 2[`.
 
     Examples
     --------
@@ -279,10 +279,14 @@ def vertices(ipix, nside, step=1):
         The sky coordinates of the 4 vertices of the HEALPix cells. `lon` and `lat` are each `~astropy.units.Quantity` instances
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
 
+    Warnings
+    --------
+    ``step`` is currently not implemented for the ring scheme. Therefore it is set to 1 by default.
+
     Raises
     ------
     ValueError
-        When the HEALPix cell indexes given have values out of :math:`[0, 12 * N_{side} ^ 2[`.
+        When the HEALPix cell indexes given have values out of :math:`[0, 12` x :math:`N_{side} ^ 2[`.
 
     Examples
     --------
@@ -337,7 +341,7 @@ def vertices_skycoord(ipix, nside, step=1):
     Raises
     ------
     ValueError
-        When the HEALPix cell indexes given have values out of :math:`[0, 12 * N_{side} ^ 2[`.
+        When the HEALPix cell indexes given have values out of :math:`[0, 12` x :math:`N_{side} ^ 2[`.
 
     Examples
     --------
