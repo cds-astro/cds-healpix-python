@@ -27,7 +27,7 @@ jobs:
       name: "Python3 linux_x86"
       os: linux
       env:
-        - PIP=pip
+        - PIP=pip3
         - PYTHON=python3
       script: ./travis/testing.sh
       # - linux 32bit
@@ -66,7 +66,7 @@ jobs:
     - name: "Build docs"
       os: linux
       env:
-        - PIP=pip
+        - PIP=pip3
         - PYTHON=python3
       script: ./travis/build_docs.sh
     #### DEPLOYING STAGE ####
@@ -96,7 +96,7 @@ jobs:
           --env GH_TOKEN="${GH_TOKEN}"
           "${DOCKER_CONTAINER_DEPLOY_DOC}"
           sh -c "cd /mnt/cdshealpix && ./travis/deploy_doc.sh"
-      name: "manylinux1_x86_64"
+    - name: "manylinux1_x86_64"
       # Job generating the wheels for Linux 32-bit platforms
       os: linux
       sudo: required
