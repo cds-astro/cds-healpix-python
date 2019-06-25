@@ -90,7 +90,7 @@ def test_vertices_lonlat(size):
     depth = np.random.randint(30)
     nside = 1 << depth
 
-    ipixels = np.random.randint(12 * (nside ** 2), size=size)
+    ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype=np.uint64)
 
     lon, lat = vertices(ipix=ipixels, nside=nside)
     assert(lon.shape == lat.shape)
