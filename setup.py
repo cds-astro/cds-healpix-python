@@ -1,7 +1,7 @@
 import os
 import sys
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools_rust import RustExtension
 
 PYTHON_MAJOR_VERSION = sys.version_info[0]
@@ -21,6 +21,7 @@ def get_package_dependencies():
 setup(
     name="cdshealpix",
     version=__version__,
+    packages=find_packages(),
     # setuptools_rust new parameter
     rust_extensions=[RustExtension(
         # Package name
@@ -35,8 +36,8 @@ setup(
         features=['numpy/python{}'.format(PYTHON_MAJOR_VERSION)],
         # Add the --release option when building the rust code
         debug=False)],
-    packages=["cdshealpix"],
-    package_dir={'cdshealpix': 'cdshealpix'},
+    provides=['cdshealpix'],
+    #package_dir={'cdshealpix': 'cdshealpix'},
     # include the file containing the prototypes
     # package_data={'cdshealpix': ['bindings.h']},
     install_requires=get_package_dependencies(),
