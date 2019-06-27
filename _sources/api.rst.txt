@@ -9,6 +9,13 @@ The functions currently implemented by `cdshealpix <https://github.com/cds-astro
 cdshealpix
 ~~~~~~~~~~
 
+The HEALPix cells can be represented following two schema.
+The nested and the ring one.
+
+Here are two methods in the ``cdshealpix`` base module allowing to
+convert HEALPix cells represented in the nested scheme into cells
+represented in the ring scheme and vice versa.
+
 .. automodule:: cdshealpix
 
     .. autosummary::
@@ -21,6 +28,10 @@ cdshealpix.nested
 ~~~~~~~~~~~~~~~~~
 
 .. automodule:: cdshealpix.nested
+
+    .. figure:: nested.png
+
+        The HEALPix cells at :math:`depth=1` represented in the nested scheme
 
     .. autosummary::
         :toctree: stubs
@@ -49,7 +60,19 @@ cdshealpix.nested
 cdshealpix.ring
 ~~~~~~~~~~~~~~~
 
+The ring scheme HEALPix methods take a ``nside`` parameter instead
+of a ``depth`` one.
+``nside`` refers to the number of cells being contained in the side
+of a base cell (i.e. the 12 cells at the ``depth`` 0).
+While in the nested scheme, ``nside`` is a power of two
+(because :math:`N_{side} = 2 ^ {depth}`), in the ring scheme,
+``nside`` does not necessary have to be a power of two!
+
 .. automodule:: cdshealpix.ring
+
+    .. figure:: ring.png
+
+        The HEALPix cells at :math:`N_{side}=2` represented in the ring scheme
 
     .. autosummary::
         :toctree: stubs
