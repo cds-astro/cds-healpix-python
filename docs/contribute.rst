@@ -23,9 +23,26 @@ If you want to contribute you first must download Rustup:
 
 and follow the installation instructions.
 
-Rustup will allow you to compile the dynamic library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded from python by the CFFI package.
+Rustup will allow you to compile the shared library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded and called from python.
 
-Then you can create a new virtual environment (using the virtualenv package) cdshealpix-env specifying the version of python you need:
+.. warning::
+    For the moment, ``cdshealpix`` relies on the nightly version of the 
+    Rust compiler. This is something that will be changed soon as we would
+    prefer cdshealpix to rely on the stable version instead.
+    
+    For changing your Rust version to the nightly one, please run:
+
+    .. code-block:: bash
+
+        rustup default nightly
+
+    Remember that you can go back to the stable version by running:
+
+    .. code-block:: bash
+
+        rustup default stable
+
+Then you can create a new virtual environment (using the virtualenv package) by specifying the version of python you need. Let is call it ``cdshealpix-env``.
 
 .. code-block:: bash
 
@@ -48,12 +65,12 @@ Install all the python dependencies for contributing:
 
 At this moment you have correctly set up your development environment. When you will be done with your developments, remember to deactivate your environment by typing ```deactivate```.
 
-The next step tells you how to generate the dynamic library associated with `cdshealpix`.
+The next step tells you how to generate the shared library associated with `cdshealpix`.
 
 Dynamic library compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The generation of the dynamic library is managed by [setuptools_rust](https://github.com/PyO3/setuptools-rust). Just go to the root of your cloned repo:
+The generation of the shared library is managed by [setuptools_rust](https://github.com/PyO3/setuptools-rust). Just go to the root of your cloned repo:
 
 .. code-block:: bash
 
@@ -64,10 +81,10 @@ and run this command:
 
 .. code-block:: bash
 
-    python setup.py build_rust
+    python setup.py build
 
 
-The generated dynamic library will be located in a build/ folder. Just copy it into the root of the python code.
+The generated .so will be located in a build/lib folder. Just copy it from build/lib to cdshealpix:
 
 .. code-block:: bash
 
@@ -97,11 +114,11 @@ Working on the documentation
 
 To work on the documentation you have to install a few more packages:
 
-- `sphinx <http://www.sphinx-doc.org/en/master/>`__: responsible for building the documentation in HTML
-- `numpydoc <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`__ allowing to write the API documentation using numpy docstrings
-- `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`__ allowing the definition of bibtex references
-- `mocpy <https://mocpy.readthedocs.io/en/latest/>`__ is used for generating nice plots of the HEALPix cells obtained
-- `matplotlib <https://matplotlib.org/>`__ is used by `mocpy` for plotting purposes
+- `sphinx <http://www.sphinx-doc.org/en/master/>`__ is responsible for building the documentation in HTML.
+- `numpydoc <https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html>`__ defines a very convenient way to write API documentation by introducing the numpy docstring format.
+- `sphinxcontrib-bibtex <https://sphinxcontrib-bibtex.readthedocs.io/en/latest/>`__ allows to add bibtex references to the documentation.
+- `mocpy <https://mocpy.readthedocs.io/en/latest/>`__ is used to generate plots of the HEALPix cells obtained.
+- `matplotlib <https://matplotlib.org/>`__ is used by `mocpy` for plotting purposes.
 
 These packages can be installed via pip but are already referred in `requirements-dev.txt`. So if you did a: 
 
