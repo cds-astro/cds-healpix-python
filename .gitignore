@@ -1,10 +1,11 @@
 /target
 **/*.rs.bk
 *.pyc
-/cdshealpix/cdshealpix.cpython-36m-x86_64-linux-gnu.so
+/cdshealpix/*.so
 Cargo.lock
 build/
 cdshealpix.egg-info/
 docs/_build
 docs/_templates
 publish_docs.sh
+.idea
