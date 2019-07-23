@@ -9,8 +9,8 @@ import numpy as np
 def _check_ipixels(data, nside):
     npix = 12 * (nside ** 2)
     if (data >= npix).any() or (data < 0).any():
-        raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
-
+        valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
+        raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
 
 def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
     r"""Get the HEALPix indexes that contains specific sky coordinates
@@ -155,8 +155,8 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     --------
     >>> from cdshealpix.ring import healpix_to_lonlat
     >>> import numpy as np
-    >>> ipix = np.array([42, 6, 10])
-    >>> depth = np.array([12, 20])
+    >>> ipix = np.array([42, 6, 10], dtype=np.uint64)
+    >>> depth = np.array([2, 12])
     >>> nside = 2 ** depth
     >>> lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], nside[np.newaxis, :])
     """
@@ -224,9 +224,9 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
     >>> from cdshealpix.ring import healpix_to_skycoord
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
-    >>> depth = np.array([12, 20])
+    >>> depth = 12
     >>> nside = 2 ** depth
-    >>> skycoord = healpix_to_skycoord(ipix[:, np.newaxis], nside[np.newaxis, :])
+    >>> skycoord = healpix_to_skycoord(ipix, nside)
     """
     lon, lat = healpix_to_lonlat(ipix, nside, dx, dy)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
