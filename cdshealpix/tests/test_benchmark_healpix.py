@@ -10,6 +10,34 @@ from ..nested import lonlat_to_healpix, \
  neighbours, \
  cone_search
 
+@pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")
+def test_lonlat_to_healpix_broadcast(benchmark):
+    size = 10000
+    depth = np.random.randint(low=0, high=29, size=10)
+
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
+
+    ipixels = benchmark(lonlat_to_healpix,
+        lon=lon[:, np.newaxis],
+        lat=lat[:, np.newaxis],
+        depth=depth[np.newaxis, :])
+
+@pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")
+def test_lonlat_to_healpix_astropy_broadcast(benchmark):
+    depth = np.random.randint(low=0, high=29, size=10)
+    nside = 2 ** depth
+
+    size = 10000
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
+
+    ipixels = benchmark(astropy_healpix.core.lonlat_to_healpix,
+        lon=lon[:, np.newaxis],
+        lat=lat[:, np.newaxis],
+        nside=nside[np.newaxis, :],
+        order='nested')
+
 @pytest.mark.benchmark(group="lonlat_to_healpix")
 def test_lonlat_to_healpix(benchmark):
     size = 10000
@@ -29,6 +57,26 @@ def test_lonlat_to_healpix_astropy(benchmark):
 
     ipixels = benchmark(astropy_healpix.core.lonlat_to_healpix, lon=lon, lat=lat, nside=nside, order='nested')
 
+@pytest.mark.benchmark(group="healpix_to_lonlat_broadcast")
+def test_healpix_to_lonlat_broadcast(benchmark):
+    size = 1000
+    depth = np.random.randint(low=0, high=29, size=10)
+    ipixels = np.random.randint(12 * 4 ** np.min(depth), size=size)
+
+    lon, lat = benchmark(healpix_to_lonlat, ipix=ipixels[:, np.newaxis], depth=depth[np.newaxis, :])
+
+@pytest.mark.benchmark(group="healpix_to_lonlat_broadcast")
+def test_healpix_to_lonlat_astropy_broadcast(benchmark):
+    size = 1000
+    depth = np.random.randint(low=0, high=29, size=10)
+    nside = 2 ** depth
+    ipixels = np.random.randint(12 * 4 ** np.min(depth), size=size)
+
+    lon, lat = benchmark(astropy_healpix.core.healpix_to_lonlat,
+        healpix_index=ipixels[:, np.newaxis],
+        nside=nside[np.newaxis, :],
+        order='nested')
+
 @pytest.mark.benchmark(group="healpix_to_lonlat")
 def test_healpix_to_lonlat(benchmark):
     size = 10000
@@ -44,7 +92,10 @@ def test_healpix_to_lonlat_astropy(benchmark):
     nside = 1 << depth
     ipixels = np.random.randint(12 * 4 ** (depth), size=size)
 
-    lon, lat = benchmark(astropy_healpix.core.healpix_to_lonlat, healpix_index=ipixels, nside=nside, order='nested')
+    lon, lat = benchmark(astropy_healpix.core.healpix_to_lonlat,
+        healpix_index=ipixels,
+        nside=nside,
+        order='nested')
 
 def test_healpix_to_skycoord():
     skycoord = healpix_to_skycoord(ipix=[0, 2, 4], depth=0)

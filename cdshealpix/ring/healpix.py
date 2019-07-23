@@ -25,7 +25,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
         The longitudes of the sky coordinates.
     lat : `astropy.units.Quantity`
         The latitudes of the sky coordinates.
-    nside : int
+    nside : `numpy.array`
         The nside of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -49,26 +49,32 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
     >>> import numpy as np
     >>> lon = [0, 50, 25] * u.deg
     >>> lat = [6, -12, 45] * u.deg
-    >>> depth = 12
-    >>> ipix = lonlat_to_healpix(lon, lat, (1 << depth))
+    >>> depth = np.array([12, 14])
+    >>> nside = 2 ** depth
+    >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], nside[np.newaxis, :])
     """
-    # Handle the case of an uniq lon, lat tuple given by creating a
-    # 1d numpy array from the 0d astropy quantities.
+    # Check arrays
     lon = np.atleast_1d(lon.to_value(u.rad))
     lat = np.atleast_1d(lat.to_value(u.rad))
+    nside = np.atleast_1d(nside)
 
-    if nside < 1 or nside > (1 << 29):
+    if (nside < 1).any() or (nside > (1 << 29)).any():
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
 
+    # Broadcasting
+    lon, lat, nside = np.broadcast_arrays(lon, lat, nside)
+
+    # Allocation of the array containing the resulting coordinates    
     num_ipix = lon.shape
-    # Allocation of the array containing the resulting ipixels
     ipix = np.empty(num_ipix, dtype=np.uint64)
     dx = np.empty(num_ipix, dtype=np.float64)
     dy = np.empty(num_ipix, dtype=np.float64)
 
+    # Call the Rust extension
+    nside = nside.astype(np.uint32)
     cdshealpix.lonlat_to_healpix_ring(nside, lon, lat, ipix, dx, dy)
 
     if return_offsets:
@@ -88,7 +94,7 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False):
     ----------
     skycoord : `astropy.coordinates.SkyCoord`
         The sky coordinates.
-    nside : int
+    nside : `numpy.array`
         The nside of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -128,7 +134,7 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     ----------
     ipix : `numpy.array`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    nside : int
+    nside : `numpy.array`
         The nside of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -150,10 +156,14 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     >>> from cdshealpix.ring import healpix_to_lonlat
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
-    >>> depth = 12
-    >>> lon, lat = healpix_to_lonlat(ipix, 1 << depth)
+    >>> depth = np.array([12, 20])
+    >>> nside = 2 ** depth
+    >>> lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], nside[np.newaxis, :])
     """
-    if nside < 1 or nside > (1 << 29):
+    # Check arrays
+    ipix = np.atleast_1d(ipix)
+    nside = np.atleast_1d(nside)
+    if (nside < 1).any() or (nside > (1 << 29)).any():
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
 
     if dx < 0 or dx > 1:
@@ -162,14 +172,19 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     if dy < 0 or dy > 1:
         raise ValueError("dy must be between [0, 1]")
 
-    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, nside=nside)
-    ipix = ipix.astype(np.uint64)
+
+    # Broadcasting
+    ipix, nside = np.broadcast_arrays(ipix, nside)
 
     size_skycoords = ipix.shape
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(size_skycoords)
     lat = np.zeros(size_skycoords)
+
+    # Call the Rust extension
+    nside = nside.astype(np.uint32)
+    ipix = ipix.astype(np.uint64)
 
     cdshealpix.healpix_to_lonlat_ring(nside, ipix, dx, dy, lon, lat)
     return lon * u.rad, lat * u.rad
@@ -187,7 +202,7 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
     ----------
     ipix : `numpy.array`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    nside : int
+    nside : `numpy.array`
         The nside of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -209,8 +224,9 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
     >>> from cdshealpix.ring import healpix_to_skycoord
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
-    >>> depth = 12
-    >>> skycoord = healpix_to_skycoord(ipix, 1 << depth)
+    >>> depth = np.array([12, 20])
+    >>> nside = 2 ** depth
+    >>> skycoord = healpix_to_skycoord(ipix[:, np.newaxis], nside[np.newaxis, :])
     """
     lon, lat = healpix_to_lonlat(ipix, nside, dx, dy)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
@@ -223,7 +239,7 @@ def healpix_to_xy(ipix, nside):
     ----------
     ipix : `numpy.array`
         The HEALPix cells which centers will be projected
-    nside : int
+    nside : `numpy.array`
         The nside of the HEALPix cells
 
     Returns
@@ -237,19 +253,30 @@ def healpix_to_xy(ipix, nside):
     >>> from cdshealpix.ring import healpix_to_xy
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> depth = 0
+    >>> depth = np.array([0, 10])
+    >>> nside = 2 ** depth
     >>> ipix = np.arange(12)
-    >>> x, y = healpix_to_xy(ipix, 1 << depth)
+    >>> x, y = healpix_to_xy(ipix[:, np.newaxis], nside[np.newaxis, :])
     """
-    if nside < 1 or nside > (1 << 29):
+    # Check arrays
+    ipix = np.atleast_1d(ipix)
+    nside = np.atleast_1d(nside)
+
+    if (nside < 1).any() or (nside > (1 << 29)).any():
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
 
-    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, nside=nside)
-    ipix = ipix.astype(np.uint64)
 
+    # Broadcasting
+    ipix, nside = np.broadcast_arrays(ipix, nside)
+
+    # Allocation for the resulting arrays
     x = np.zeros(ipix.shape, dtype=np.float64)
     y = np.zeros(ipix.shape, dtype=np.float64)
+
+    # Call the Rust extension
+    ipix = ipix.astype(np.uint64)
+    nside = nside.astype(np.uint32)
     cdshealpix.healpix_to_xy_ring(nside, ipix, x, y)
 
     return x, y

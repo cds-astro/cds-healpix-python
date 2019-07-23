@@ -64,7 +64,7 @@ def test_healpix_to_xy_robust(size):
     depth = np.random.randint(30)
     nside = 1 << depth
 
-    ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype="uint64")
+    ipixels = np.random.randint(low=0, high=12 * (nside ** 2), size=size, dtype=np.uint64)
     x, y = healpix_to_xy(ipix=ipixels, nside=nside)
     assert(x.shape == y.shape)
 
