@@ -10,11 +10,13 @@ import numpy as np
 def _check_ipixels(data, depth):
     if isinstance(depth, int):
         npix = 12 * 4 ** (depth)
+        valid_ipix = [0, npix]
     else:
         npix = np.array(12 * 4 ** depth.astype(np.uint64))
+        valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
 
     if (data >= npix).any() or (data < 0).any():
-        raise ValueError("The input HEALPix indices contain values out of [0, 12 * 4 ^ (depth)]")
+        raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
 
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     r"""Get the HEALPix indexes that contains specific sky coordinates
