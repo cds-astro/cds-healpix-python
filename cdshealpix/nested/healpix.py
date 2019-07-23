@@ -6,10 +6,15 @@ import numpy as np
 
 # Raise a ValueError exception if the input 
 # HEALPix cells array contains invalid values
+# data and depth must have the same shape
 def _check_ipixels(data, depth):
-    npix = 12 * 4 ** (depth)
+    if isinstance(depth, int):
+        npix = 12 * 4 ** (depth)
+    else:
+        npix = np.array(12 * 4 ** depth.astype(np.uint64))
+
     if (data >= npix).any() or (data < 0).any():
-        raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
+        raise ValueError("The input HEALPix indices contain values out of [0, 12 * 4 ^ (depth)]")
 
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     r"""Get the HEALPix indexes that contains specific sky coordinates
@@ -24,7 +29,7 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
         The longitudes of the sky coordinates.
     lat : `astropy.units.Quantity`
         The latitudes of the sky coordinates.
-    depth : int
+    depth : `numpy.array`
         The depth of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -48,26 +53,32 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
     >>> import numpy as np
     >>> lon = [0, 50, 25] * u.deg
     >>> lat = [6, -12, 45] * u.deg
-    >>> depth = 12
-    >>> ipix = lonlat_to_healpix(lon, lat, depth)
+    >>> depth = np.array([5, 6])
+    >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], depth[np.newaxis, :])
     """
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
     lon = np.atleast_1d(lon.to_value(u.rad))
     lat = np.atleast_1d(lat.to_value(u.rad))
+    depth = np.atleast_1d(depth)
 
-    if depth < 0 or depth > 29:
+    if (depth < 0).any() or (depth > 29).any():
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
 
+    # Broadcasting arrays
+    lon, lat, depth = np.broadcast_arrays(lon, lat, depth)
+
+    # Allocation of the arrays storing the results
     num_ipix = lon.shape
-    # Allocation of the array containing the resulting ipixels
     ipix = np.empty(num_ipix, dtype=np.uint64)
     dx = np.empty(num_ipix, dtype=np.float64)
     dy = np.empty(num_ipix, dtype=np.float64)
 
+    # Call the Rust extension
+    depth = depth.astype(np.uint8)
     cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix, dx, dy)
 
     if return_offsets:
@@ -87,7 +98,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False):
     ----------
     skycoord : `astropy.coordinates.SkyCoord`
         The sky coordinates.
-    depth : int
+    depth : `numpy.array`
         The depth of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -127,8 +138,8 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     ----------
     ipix : `numpy.array`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
-        The depth of the HEALPix cells.
+    depth : `numpy.array`
+        The HEALPix cell depth given as a `np.uint8` numpy array.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
     dy : float, optional
@@ -149,10 +160,14 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     >>> from cdshealpix import healpix_to_lonlat
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
-    >>> depth = 12
-    >>> lon, lat = healpix_to_lonlat(ipix, depth)
+    >>> depth = np.array([12, 20])
+    >>> lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], depth[np.newaxis, :])
     """
-    if depth < 0 or depth > 29:
+    # Check arrays
+    ipix = np.atleast_1d(ipix)
+    depth = np.atleast_1d(depth)
+
+    if (depth < 0).any() or (depth > 29).any():
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if dx < 0 or dx > 1:
@@ -161,15 +176,18 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     if dy < 0 or dy > 1:
         raise ValueError("dy must be between [0, 1]")
 
-    ipix = np.atleast_1d(ipix)
-    _check_ipixels(data=ipix, depth=depth)
-    ipix = ipix.astype(np.uint64)
+    _check_ipixels(ipix, depth)
 
-    size_skycoords = ipix.shape
+    # Broadcasting
+    ipix, depth = np.broadcast_arrays(ipix, depth)
+
     # Allocation of the array containing the resulting coordinates
-    lon = np.zeros(size_skycoords)
-    lat = np.zeros(size_skycoords)
+    lon = np.empty(ipix.shape)
+    lat = np.empty(ipix.shape)
 
+    # Call the Rust extension
+    ipix = ipix.astype(np.uint64)
+    depth = depth.astype(np.uint8)
     cdshealpix.healpix_to_lonlat(depth, ipix, dx, dy, lon, lat)
 
     return lon * u.rad, lat * u.rad
@@ -187,7 +205,7 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
     ----------
     ipix : `numpy.array`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
+    depth : `numpy.array`
         The depth of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -622,7 +640,7 @@ def healpix_to_xy(ipix, depth):
     ----------
     ipix : `numpy.array`
         The HEALPix cells which centers will be projected
-    depth : int
+    depth : `numpy.array`
         The depth of the HEALPix cells
 
     Returns
@@ -636,19 +654,29 @@ def healpix_to_xy(ipix, depth):
     >>> from cdshealpix import healpix_to_xy
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> depth = 0
+    >>> depth = np.array([0, 2])
     >>> ipix = np.arange(12)
-    >>> x, y = healpix_to_xy(ipix, depth)
+    >>> x, y = healpix_to_xy(ipix[:, np.newaxis], depth[np.newaxis, :])
     """
-    if depth < 0 or depth > 29:
+    # Check arrays
+    ipix = np.atleast_1d(ipix)
+    depth = np.atleast_1d(depth)
+
+    if (depth < 0).any() or (depth > 29).any():
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    ipix = np.atleast_1d(ipix)
-    _check_ipixels(data=ipix, depth=depth)
-    ipix = ipix.astype(np.uint64)
+    _check_ipixels(ipix, depth)
 
+    # Broadcasting
+    ipix, depth = np.broadcast_arrays(ipix, depth)
+
+    # Allocation of the array containing the resulting coordinates    
     x = np.zeros(ipix.shape, dtype=np.float64)
     y = np.zeros(ipix.shape, dtype=np.float64)
+
+    # Call the Rust extension
+    ipix = ipix.astype(np.uint64)
+    depth = depth.astype(np.uint8)
     cdshealpix.healpix_to_xy(ipix, depth, x, y)
 
     return x, y

@@ -68,7 +68,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of `lonlat_to_healpix`
     #[pyfn(m, "lonlat_to_healpix")]
     fn lonlat_to_healpix(_py: Python,
-        depth: u8,
+        depth: &PyArrayDyn<u8>,
         lon: &PyArrayDyn<f64>,
         lat: &PyArrayDyn<f64>,
         ipix: &PyArrayDyn<u64>,
@@ -77,18 +77,19 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     -> PyResult<()> {
         let lon = lon.as_array();
         let lat = lat.as_array();
+        let depth = depth.as_array();
         let mut ipix = ipix.as_array_mut();
         let mut dx = dx.as_array_mut();
         let mut dy = dy.as_array_mut();
 
-        let layer = healpix::nested::get_or_create(depth);
         Zip::from(&mut ipix)
             .and(&mut dx)
             .and(&mut dy)
             .and(&lon)
             .and(&lat)
-            .par_apply(|p, x, y, &lon, &lat| {
-                let r = layer.hash_with_dxdy(lon, lat);
+            .and(&depth)
+            .par_apply(|p, x, y, &lon, &lat, &d| {
+                let r = healpix::nested::hash_with_dxdy(d, lon, lat);
                 *p = r.0;
                 *x = r.1;
                 *y = r.2;
@@ -99,7 +100,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
     #[pyfn(m, "lonlat_to_healpix_ring")]
     fn lonlat_to_healpix_ring(_py: Python,
-        nside: u32,
+        nside: &PyArrayDyn<u32>,
         lon: &PyArrayDyn<f64>,
         lat: &PyArrayDyn<f64>,
         ipix: &PyArrayDyn<u64>,
@@ -108,6 +109,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     -> PyResult<()> {
         let lon = lon.as_array();
         let lat = lat.as_array();
+        let nside = nside.as_array();
         let mut ipix = ipix.as_array_mut();
         let mut dx = dx.as_array_mut();
         let mut dy = dy.as_array_mut();
@@ -117,8 +119,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             .and(&mut dy)
             .and(&lon)
             .and(&lat)
-            .par_apply(|p, x, y, &lon, &lat| {
-                let r = healpix::ring::hash_with_dxdy(nside, lon, lat);
+            .and(&nside)
+            .par_apply(|p, x, y, &lon, &lat, &n| {
+                let r = healpix::ring::hash_with_dxdy(n, lon, lat);
                 *p = r.0;
                 *x = r.1;
                 *y = r.2;
@@ -130,7 +133,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of `healpix_to_lonlat`
     #[pyfn(m, "healpix_to_lonlat")]
     fn healpix_to_lonlat(_py: Python,
-        depth: u8,
+        depth: &PyArrayDyn<u8>,
         ipix: &PyArrayDyn<u64>,
         dx: f64,
         dy: f64,
@@ -140,22 +143,24 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lon = lon.as_array_mut();
         let mut lat = lat.as_array_mut();
         let ipix = ipix.as_array();
+        let depth = depth.as_array();
 
-        let layer = healpix::nested::get_or_create(depth);
         Zip::from(&ipix)
+            .and(&depth)
             .and(&mut lon)
             .and(&mut lat)
-            .par_apply(|&p, lon, lat| {
-                let (l, b) = layer.sph_coo(p, dx, dy);
+            .par_apply(|&p, &d, lon, lat| {
+                let (l, b) = healpix::nested::sph_coo(d, p, dx, dy);
                 *lon = l;
                 *lat = b;
             });
 
         Ok(())
     }
+
     #[pyfn(m, "healpix_to_lonlat_ring")]
     fn healpix_to_lonlat_ring(_py: Python,
-        nside: u32,
+        nside: &PyArrayDyn<u32>,
         ipix: &PyArrayDyn<u64>,
         dx: f64,
         dy: f64,
@@ -165,12 +170,14 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lon = lon.as_array_mut();
         let mut lat = lat.as_array_mut();
         let ipix = ipix.as_array();
+        let nside = nside.as_array();
 
         Zip::from(&ipix)
+            .and(&nside)
             .and(&mut lon)
             .and(&mut lat)
-            .par_apply(|&p, lon, lat| {
-                let (l, b) = healpix::ring::sph_coo(nside, p, dx, dy);
+            .par_apply(|&p, &n, lon, lat| {
+                let (l, b) = healpix::ring::sph_coo(n, p, dx, dy);
                 *lon = l;
                 *lat = b;
             });
@@ -182,19 +189,21 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     #[pyfn(m, "healpix_to_xy")]
     fn healpix_to_xy(_py: Python,
         ipix: &PyArrayDyn<u64>,
-        depth: u8,
+        depth: &PyArrayDyn<u8>,
         x: &PyArrayDyn<f64>,
         y: &PyArrayDyn<f64>)
     -> PyResult<()> {
         let mut x = x.as_array_mut();
         let mut y = y.as_array_mut();
         let ipix = ipix.as_array();
+        let depth = depth.as_array();
 
-        let layer = healpix::nested::get_or_create(depth);
         Zip::from(&ipix)
+            .and(&depth)
             .and(&mut x)
             .and(&mut y)
-            .par_apply(|&p, hpx, hpy| {
+            .par_apply(|&p, &d, hpx, hpy| {
+                let layer = healpix::nested::get_or_create(d);
                 let (x, y) = layer.center_of_projected_cell(p);
                 *hpx = x;
                 *hpy = y;
@@ -204,7 +213,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
     #[pyfn(m, "healpix_to_xy_ring")]
     fn healpix_to_xy_ring(_py: Python,
-        nside: u32,
+        nside: &PyArrayDyn<u32>,
         ipix: &PyArrayDyn<u64>,
         x: &PyArrayDyn<f64>,
         y: &PyArrayDyn<f64>)
@@ -212,12 +221,14 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut x = x.as_array_mut();
         let mut y = y.as_array_mut();
         let ipix = ipix.as_array();
+        let nside = nside.as_array();
 
         Zip::from(&ipix)
+            .and(&nside)
             .and(&mut x)
             .and(&mut y)
-            .par_apply(|&p, hpx, hpy| {
-                let (x, y) = healpix::ring::center_of_projected_cell(nside, p);
+            .par_apply(|&p, &n, hpx, hpy| {
+                let (x, y) = healpix::ring::center_of_projected_cell(n, p);
                 *hpx = x;
                 *hpy = y;
             });
