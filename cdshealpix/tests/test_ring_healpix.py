@@ -43,17 +43,17 @@ def test_lonlat_to_healpix_accurate(lon, lat, expected_ipix):
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000])
 def test_healpix_to_lonlat(size):
-    depth = np.random.randint(30)
+    depth = np.random.randint(30, dtype=np.uint32)
     nside = 1 << depth
 
-    ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype="uint64")
+    ipixels = np.random.randint(12 * nside * nside, size=size, dtype=np.uint64)
     lon, lat = healpix_to_lonlat(ipix=ipixels, nside=nside)
     assert(lon.shape == lat.shape)
 
 @pytest.mark.parametrize("nside", np.arange(start=1, stop=11))
 def test_healpix_vs_lonlat(nside):
     size = 1000
-    ipixels = np.random.randint(12 * nside * nside, size=size, dtype="uint64")
+    ipixels = np.random.randint(12 * nside * nside, size=size, dtype=np.uint64)
     lon, lat = healpix_to_lonlat(ipix=ipixels, nside=nside, dx=0.5, dy=0.5)
 
     ipixels_result, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, nside=nside, return_offsets=True)
@@ -61,10 +61,10 @@ def test_healpix_vs_lonlat(nside):
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_healpix_to_xy_robust(size):
-    depth = np.random.randint(30)
+    depth = np.random.randint(30, dtype=np.uint32)
     nside = 1 << depth
 
-    ipixels = np.random.randint(low=0, high=12 * (nside ** 2), size=size, dtype=np.uint64)
+    ipixels = np.random.randint(low=0, high=12 * nside * nside, size=size, dtype=np.uint64)
     x, y = healpix_to_xy(ipix=ipixels, nside=nside)
     assert(x.shape == y.shape)
 
