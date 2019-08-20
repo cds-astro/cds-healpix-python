@@ -47,7 +47,7 @@ def test_healpix_to_lonlat(size):
     lon, lat = healpix_to_lonlat(ipix=ipixels, depth=depth)
     assert(lon.shape == lat.shape)
 
-def test_healpix_to_lonlat_on_brocasted_arrays():
+def test_healpix_to_lonlat_on_broadcasted_arrays():
     depth = 12
     x = np.arange(1000000)
     healpix_to_lonlat(ipix=x, depth=depth)
@@ -60,6 +60,15 @@ def test_healpix_to_lonlat_on_brocasted_arrays():
 
     b = np.broadcast_to(3, (3, 4, 5))
     healpix_to_lonlat(ipix=b, depth=depth)
+
+def test_healpix_to_lonlat_on_broadcasted_arrays2():
+    level = np.arange(2)
+    nside = 2**level
+
+    ipix = np.arange(3)
+
+    lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], level[np.newaxis, :])
+    assert(lon.shape == lat.shape and lon.shape == (3, 2))
 
 def test_invalid_depth_exception():
     size = 10000
