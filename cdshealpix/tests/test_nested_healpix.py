@@ -290,3 +290,27 @@ def test_bilinear_interpolation(depth):
     assert ((weights >= 0.0) & (weights <= 1.0)).all()
     assert weights.sum() == ipix.shape[0]
     assert ((ipix >= 0) & (ipix < 12 * (4 ** depth))).all()
+
+
+@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
+def test_bilinear_interpolation(depth):
+    size = 1000
+
+    lon = np.random.rand(size) * 360 * u.deg
+    lat = (np.random.rand(size) * 178 - 89) * u.deg
+
+    ipix, weights = bilinear_interpolation(lon, lat, depth)
+    
+    assert ((weights >= 0.0) & (weights <= 1.0)).all()
+    assert weights.sum() == ipix.shape[0]
+    assert ((ipix >= 0) & (ipix < 12 * (4 ** depth))).all()
+
+@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
+def test_bilinear_interpolation2(depth):
+    lon = [10, 25, np.nan] * u.deg
+    lat = [5, 10, 45] * u.deg
+    depth = 5
+
+    ipix, weights = bilinear_interpolation(lon, lat, depth)
+
+

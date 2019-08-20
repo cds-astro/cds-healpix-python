@@ -798,10 +798,10 @@ def bilinear_interpolation(lon, lat, depth):
 
     Returns
     -------
-    pixels, weights: (`numpy.array`, `numpy.array`)
+    pixels, weights: (`numpy.ma.masked_array`, `numpy.ma.masked_array`)
         :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
         For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
-        a specific weight. The 4 weights sum up to 1.
+        a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.
 
     Examples
     --------
@@ -824,8 +824,28 @@ def bilinear_interpolation(lon, lat, depth):
 
     num_coords = lon.shape
 
-    ipix = np.empty(num_coords + (4,), dtype=np.uint64)
-    weights = np.empty(num_coords + (4,), dtype=np.float64)
+    # Retrieve nan and infinite values
+    mask_lon_invalid = np.isnan(lon) | ~np.isfinite(lon)
+    mask_lat_invalid = np.isnan(lat) | ~np.isfinite(lat)
+    mask_invalid = mask_lon_invalid | mask_lat_invalid
 
-    cdshealpix.bilinear_interpolation(depth, lon, lat, ipix, weights)
-    return ipix, weights
+    mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
+
+    ipix = np.empty(shape=num_coords + (4,), dtype=np.uint64)
+    weights = np.empty(shape=num_coords + (4,), dtype=np.float64)
+
+    # Replace nan values with 0
+    lon = np.nan_to_num(lon)
+    lat = np.nan_to_num(lat)
+
+    # Call the rust bilinear interpolation code
+    cdshealpix.bilinear_interpolation(
+        depth,
+        lon, lat,
+        ipix, weights
+    )
+
+    ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
+    weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
+
+    return ipix_masked_array, weights_masked_array
