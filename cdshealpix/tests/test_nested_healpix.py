@@ -35,8 +35,8 @@ def test_lonlat_to_healpix(size):
     )
 
     npix = 12 * 4**(depth)
-    assert(((ipixels >= 0) & (ipixels < npix)).all())
-    assert(((dx >= 0) & (dx <= 1)).all())
+    assert ((ipixels >= 0) & (ipixels < npix)).all()
+    assert ((dx >= 0) & (dx <= 1)).all()
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
 def test_healpix_to_lonlat(size):
@@ -45,7 +45,7 @@ def test_healpix_to_lonlat(size):
     ipixels = np.random.randint(12 * 4 ** depth, size=size, dtype=np.uint64)
 
     lon, lat = healpix_to_lonlat(ipix=ipixels, depth=depth)
-    assert(lon.shape == lat.shape)
+    assert lon.shape == lat.shape
 
 def test_healpix_to_lonlat_on_broadcasted_arrays():
     depth = 12
@@ -68,7 +68,7 @@ def test_healpix_to_lonlat_on_broadcasted_arrays2():
     ipix = np.arange(3)
 
     lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], level[np.newaxis, :])
-    assert(lon.shape == lat.shape and lon.shape == (3, 2))
+    assert lon.shape == lat.shape and lon.shape == (3, 2)
 
 def test_invalid_depth_exception():
     size = 10000
@@ -110,7 +110,7 @@ def test_invalid_ipix_exception(depth):
 def test_healpix_to_skycoord():
     ipix = np.array([0, 2, 4])
     skycoord = healpix_to_skycoord(ipix=ipix, depth=0)
-    assert(skycoord.icrs.ra.shape == skycoord.icrs.dec.shape)
+    assert skycoord.icrs.ra.shape == skycoord.icrs.dec.shape
 
 def test_vertices_lonlat():
     depth = 12
@@ -118,8 +118,8 @@ def test_vertices_lonlat():
     ipixels = np.random.randint(12 * 4 ** depth, size=size)
 
     lon, lat = vertices(ipix=ipixels, depth=depth)
-    assert(lon.shape == lat.shape)
-    assert(lon.shape == (size, 4))
+    assert lon.shape == lat.shape
+    assert lon.shape == (size, 4)
 
 def test_neighbours():
     depth = 0
@@ -127,10 +127,10 @@ def test_neighbours():
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
     neigh = neighbours(ipix=ipixels, depth=depth)
-    assert(neigh.shape == (size, 9))
+    assert neigh.shape == (size, 9)
 
     npix = 12 * 4**(depth)
-    assert(((neigh >= -1) & (neigh < npix)).all())
+    assert ((neigh >= -1) & (neigh < npix)).all()
 
 def test_cone_search():
     lon = np.random.rand(1)[0] * 360 * u.deg
@@ -141,8 +141,8 @@ def test_cone_search():
     ipix, depth, fully_covered = cone_search(lon=lon, lat=lat, radius=radius, depth=max_depth, flat=True)
 
     npix = 12 * 4 ** (max_depth)
-    assert(((depth >= 0) & (depth <= max_depth)).all())
-    assert(((ipix >= 0) & (ipix < npix)).all())
+    assert ((depth >= 0) & (depth <= max_depth)).all()
+    assert ((ipix >= 0) & (ipix < npix)).all()
 
     with pytest.raises(Exception):
         cone_search([5, 4] * u.deg, [5, 4] * u.deg, 15 * u.deg, 12)
@@ -160,8 +160,8 @@ def test_polygon_search(size):
         ipix, depth, fully_covered = polygon_search(lon=lon, lat=lat, depth=max_depth)
 
         npix = 12 * 4 ** (max_depth)
-        assert(((depth >= 0) & (depth <= max_depth)).all())
-        assert(((ipix >= 0) & (ipix < npix)).all())
+        assert ((depth >= 0) & (depth <= max_depth)).all()
+        assert ((ipix >= 0) & (ipix < npix)).all()
 
 def test_polygon_search_not_enough_vertices_exception():
     # 4 total vertices but only 2 distincts. This should fail
@@ -182,8 +182,8 @@ def test_elliptical_cone_search():
     ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
 
     npix = 12 * 4 ** (max_depth)
-    assert(((depth >= 0) & (depth <= max_depth)).all())
-    assert(((ipix >= 0) & (ipix < npix)).all())
+    assert ((depth >= 0) & (depth <= max_depth)).all()
+    assert ((ipix >= 0) & (ipix < npix)).all()
 
 @pytest.mark.parametrize("depth,ipix,expected_border_cells,expected_corner_cells", [
     (0, 0, np.array([90, 91, 94, 95, 26, 27, 30, 31, 53, 55, 61, 63, 69, 71, 77, 79]), np.array([143, -1, 47, -1])),
@@ -195,8 +195,8 @@ def test_elliptical_cone_search():
 def test_external_neighbours(depth, ipix, expected_border_cells, expected_corner_cells):
     delta_depth = 2
     ipix_border_cells, ipix_corner_cells = external_neighbours(ipix, depth, delta_depth)
-    assert((expected_border_cells == ipix_border_cells).all())
-    assert((expected_corner_cells == ipix_corner_cells).all())
+    assert (expected_border_cells == ipix_border_cells).all()
+    assert (expected_corner_cells == ipix_corner_cells).all()
 
 @pytest.mark.parametrize("ipix, depth, expected_x, expected_y", [
     (np.arange(12), 0,
@@ -276,7 +276,7 @@ def test_from_vs_to_ring(size):
     ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype="uint64")
     ring = to_ring(ipix=ipixels, depth=depth)
     ipixels_result = from_ring(ipix=ring, depth=depth)
-    assert((ipixels == ipixels_result).all())
+    assert (ipixels == ipixels_result).all() 
 
 @pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
 def test_bilinear_interpolation(depth):

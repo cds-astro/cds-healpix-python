@@ -31,7 +31,7 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
         The longitudes of the sky coordinates.
     lat : `astropy.units.Quantity`
         The latitudes of the sky coordinates.
-    depth : `numpy.array`
+    depth : `numpy.ndarray`
         The depth of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -40,7 +40,7 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
 
     Returns
     -------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
 
     Raises
@@ -100,7 +100,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False):
     ----------
     skycoord : `astropy.coordinates.SkyCoord`
         The sky coordinates.
-    depth : `numpy.array`
+    depth : `numpy.ndarray`
         The depth of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -109,7 +109,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False):
 
     Returns
     -------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
 
     Raises
@@ -138,9 +138,9 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : `numpy.array`
+    depth : `numpy.ndarray`
         The HEALPix cell depth given as a `np.uint8` numpy array.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -205,9 +205,9 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : `numpy.array`
+    depth : `numpy.ndarray`
         The depth of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -244,7 +244,7 @@ def vertices(ipix, depth, step=1):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
@@ -300,7 +300,7 @@ def vertices_skycoord(ipix, depth, step=1):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
@@ -341,14 +341,14 @@ def neighbours(ipix, depth):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
 
     Returns
     -------
-    neighbours : `numpy.array`
+    neighbours : `numpy.ndarray`
         A :math:`N` x :math:`9` `np.int64` numpy array containing the neighbours of each cell.
         The :math:`5^{th}` element corresponds to the index of HEALPix cell from which the neighbours are evaluated.
         All its 8 neighbours occup the remaining elements of the line.
@@ -391,7 +391,7 @@ def external_neighbours(ipix, depth, delta_depth):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The healpix cells from which the external neighbours will be computed
     depth : int
         The depth of the input healpix cells
@@ -400,7 +400,7 @@ def external_neighbours(ipix, depth, delta_depth):
 
     Returns
     -------
-    external_border_cells, external_corner_cells : (`numpy.array`, `numpy.array`)
+    external_border_cells, external_corner_cells : (`numpy.ndarray`, `numpy.ndarray`)
         external_border_cells will store the pixels located at the external borders of `ipix`.
         It will be of shape: (N, 4 * 2 ** (`delta_depth`)) for N input pixels and because each cells have 4 borders.
         external_corner_cells will store the pixels located at the external corners of `ipix`
@@ -446,7 +446,7 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
 
     Returns
     -------
-    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
         A tuple containing 3 numpy arrays of identical size:
 
         * `ipix` stores HEALPix cell indices.
@@ -497,7 +497,7 @@ def polygon_search(lon, lat, depth, flat=False):
 
     Returns
     -------
-    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
         A tuple containing 3 numpy arrays of identical size:
 
         * `ipix` stores HEALPix cell indices.
@@ -573,7 +573,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
     Returns
     -------
-    ipix, depth, fully_covered : (`numpy.array`, `numpy.array`, `numpy.array`)
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
         A tuple containing 3 numpy arrays of identical size:
 
         * `ipix` stores HEALPix cell indices.
@@ -640,14 +640,14 @@ def healpix_to_xy(ipix, depth):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cells which centers will be projected
-    depth : `numpy.array`
+    depth : `numpy.ndarray`
         The depth of the HEALPix cells
 
     Returns
     -------
-    x, y: (`numpy.array`, `numpy.array`)
+    x, y: (`numpy.ndarray`, `numpy.ndarray`)
         The position of the HEALPix centers in the xy-HEALPix plane.
         :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
 
@@ -696,7 +696,7 @@ def lonlat_to_xy(lon, lat):
 
     Returns
     -------
-    x, y: (`numpy.array`, `numpy.array`)
+    x, y: (`numpy.ndarray`, `numpy.ndarray`)
         The position of the (``lon``, ``lat``) coordinates in the HEALPix space.
         :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
 
@@ -729,9 +729,9 @@ def xy_to_lonlat(x, y):
 
     Parameters
     ----------
-    x : `numpy.array`
+    x : `numpy.ndarray`
         Position on the X axis of the HEALPix plane, :math:`x \in [0, 8[`
-    y : `numpy.array`
+    y : `numpy.ndarray`
         Position on the Y axis of the HEALPix plane, :math:`y \in [-2, 2]`
 
     Returns

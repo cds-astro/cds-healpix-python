@@ -15,14 +15,14 @@ def to_ring(ipix, depth):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes in the NESTED scheme.
     depth : int
         The depth of the HEALPix cells.
 
     Returns
     -------
-    ipix_ring : `numpy.array`
+    ipix_ring : `numpy.ndarray`
         The corresponding HEALPix cells in the RING scheme.
 
     Raises
@@ -56,14 +56,14 @@ def from_ring(ipix, depth):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes in the RING scheme.
     depth : int
         The depth of the HEALPix cells.
 
     Returns
     -------
-    ipix_nested : `numpy.array`
+    ipix_nested : `numpy.ndarray`
         The corresponding HEALPix cells in the NESTED scheme.
 
     Raises

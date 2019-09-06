@@ -25,8 +25,8 @@ def test_lonlat_to_healpix(size):
     )
 
     npix = 12 * nside ** 2
-    assert(((ipixels >= 0) & (ipixels < npix)).all())
-    assert(((dx >= 0) & (dx <= 1)).all())
+    assert ((ipixels >= 0) & (ipixels < npix)).all()
+    assert ((dx >= 0) & (dx <= 1)).all()
 
 @pytest.mark.parametrize("lon, lat, expected_ipix", [
     (5*u.deg, 5*u.deg, 12),
@@ -38,8 +38,8 @@ def test_lonlat_to_healpix_accurate(lon, lat, expected_ipix):
     ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, nside=nside, return_offsets=True)
 
     assert ipixels == expected_ipix
-    assert(((dx >= 0) & (dx <= 1)).all())
-    assert(((dy >= 0) & (dy <= 1)).all())
+    assert ((dx >= 0) & (dx <= 1)).all()
+    assert ((dy >= 0) & (dy <= 1)).all()
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000])
 def test_healpix_to_lonlat(size):
@@ -48,7 +48,7 @@ def test_healpix_to_lonlat(size):
 
     ipixels = np.random.randint(12 * nside * nside, size=size, dtype=np.uint64)
     lon, lat = healpix_to_lonlat(ipix=ipixels, nside=nside)
-    assert(lon.shape == lat.shape)
+    assert lon.shape == lat.shape
 
 @pytest.mark.parametrize("nside", np.arange(start=1, stop=11))
 def test_healpix_vs_lonlat(nside):
@@ -57,7 +57,7 @@ def test_healpix_vs_lonlat(nside):
     lon, lat = healpix_to_lonlat(ipix=ipixels, nside=nside, dx=0.5, dy=0.5)
 
     ipixels_result, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, nside=nside, return_offsets=True)
-    assert((ipixels == ipixels_result).all())
+    assert (ipixels == ipixels_result).all()
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_healpix_to_xy_robust(size):
@@ -66,7 +66,7 @@ def test_healpix_to_xy_robust(size):
 
     ipixels = np.random.randint(low=0, high=12 * nside * nside, size=size, dtype=np.uint64)
     x, y = healpix_to_xy(ipix=ipixels, nside=nside)
-    assert(x.shape == y.shape)
+    assert x.shape == y.shape
 
 @pytest.mark.parametrize("ipix, depth, expected_x, expected_y", [
     (np.arange(12), 0,
@@ -93,5 +93,5 @@ def test_vertices_lonlat(size):
     ipixels = np.random.randint(12 * (nside ** 2), size=size, dtype=np.uint64)
 
     lon, lat = vertices(ipix=ipixels, nside=nside)
-    assert(lon.shape == lat.shape)
-    assert(lon.shape == (size, 4))
+    assert lon.shape == lat.shape
+    assert lon.shape == (size, 4)
