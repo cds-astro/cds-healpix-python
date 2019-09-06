@@ -85,9 +85,9 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.16)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
 </dd>
-<dt><strong>depth</strong><span class="classifier">int</span></dt><dd><p>The depth of the HEALPix cells.</p>
+<dt><strong>depth</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell depth given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint8</span></code> numpy array.</p>
 </dd>
 <dt><strong>dx</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1]\)</span> along the X axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dx=0.5</span></code></p>
 </dd>
@@ -97,7 +97,7 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>lon, lat</strong><span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev793)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev793)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt><dd><p>The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.</p>
+<dt><strong>lon, lat</strong><span class="classifier">(<a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>, <a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a>)</span></dt><dd><p>The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.</p>
 </dd>
 </dl>
 </dd>
@@ -112,8 +112,8 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="k">import</span> <span class="n">healpix_to_lonlat</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ipix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">42</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">depth</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">healpix_to_lonlat</span><span class="p">(</span><span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">healpix_to_lonlat</span><span class="p">(</span><span class="n">ipix</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">depth</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -160,7 +160,7 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.1.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.2.0. &nbsp;
   </p>
 </footer>
   </body>

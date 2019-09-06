@@ -112,9 +112,9 @@ along with their weights. These 4 weights sum up to 1.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev793)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The longitudes of the sky coordinates.</p>
+<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The longitudes of the sky coordinates.</p>
 </dd>
-<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev793)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The latitudes of the sky coordinates.</p>
+<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The latitudes of the sky coordinates.</p>
 </dd>
 <dt><strong>depth</strong><span class="classifier">int</span></dt><dd><p>The depth of the HEALPix cells</p>
 </dd>
@@ -122,9 +122,9 @@ along with their weights. These 4 weights sum up to 1.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>pixels, weights: (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.16)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.16)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
+<dt>pixels, weights: (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
 For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
-a specific weight. The 4 weights sum up to 1.</p>
+a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.</p>
 </dd>
 </dl>
 </dd>
@@ -183,7 +183,7 @@ a specific weight. The 4 weights sum up to 1.</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.1.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.2.0. &nbsp;
   </p>
 </footer>
   </body>
