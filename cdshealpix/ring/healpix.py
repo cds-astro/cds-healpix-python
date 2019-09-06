@@ -25,7 +25,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
         The longitudes of the sky coordinates.
     lat : `astropy.units.Quantity`
         The latitudes of the sky coordinates.
-    nside : `numpy.array`
+    nside : `numpy.ndarray`
         The nside of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -34,7 +34,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
 
     Returns
     -------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
 
     Raises
@@ -94,7 +94,7 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False):
     ----------
     skycoord : `astropy.coordinates.SkyCoord`
         The sky coordinates.
-    nside : `numpy.array`
+    nside : `numpy.ndarray`
         The nside of the returned HEALPix cell indexes.
     return_offsets : bool, optional
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
@@ -103,7 +103,7 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False):
 
     Returns
     -------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         A numpy array containing all the HEALPix cell indexes stored as `np.uint64`.
 
     Raises
@@ -132,9 +132,9 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    nside : `numpy.array`
+    nside : `numpy.ndarray`
         The nside of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -200,9 +200,9 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    nside : `numpy.array`
+    nside : `numpy.ndarray`
         The nside of the HEALPix cells.
     dx : float, optional
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
@@ -237,14 +237,14 @@ def healpix_to_xy(ipix, nside):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cells which centers will be projected
-    nside : `numpy.array`
+    nside : `numpy.ndarray`
         The nside of the HEALPix cells
 
     Returns
     -------
-    x, y: (`numpy.array`, `numpy.array`)
+    x, y: (`numpy.ndarray`, `numpy.ndarray`)
         The position of the HEALPix centers in the xy-HEALPix plane.
         :math:`x \in [0, 8[` and :math:`y \in [-2, 2]`
 
@@ -290,7 +290,7 @@ def vertices(ipix, nside, step=1):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     nside : int
         The nside of the HEALPix cells.
@@ -349,7 +349,7 @@ def vertices_skycoord(ipix, nside, step=1):
 
     Parameters
     ----------
-    ipix : `numpy.array`
+    ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     nside : int
         The nside of the HEALPix cells.
