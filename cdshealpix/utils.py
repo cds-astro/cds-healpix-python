@@ -10,7 +10,7 @@ def _check_ipixels(data, depth):
         raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
 
 
-def to_ring(ipix, depth):
+def to_ring(ipix, depth, num_threads=0):
     """Convert HEALPix cells from the NESTED to the RING scheme
 
     Parameters
@@ -19,6 +19,10 @@ def to_ring(ipix, depth):
         The HEALPix cell indexes in the NESTED scheme.
     depth : int
         The depth of the HEALPix cells.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -47,11 +51,13 @@ def to_ring(ipix, depth):
     
     # Allocation of the array containing the cells under the RING scheme
     ipix_ring = np.zeros(ipix.shape, dtype=np.uint64)
-    cdshealpix.to_ring(depth, ipix, ipix_ring)
+
+    num_threads = np.uint16(num_threads)
+    cdshealpix.to_ring(depth, ipix, ipix_ring, num_threads)
 
     return ipix_ring
 
-def from_ring(ipix, depth):
+def from_ring(ipix, depth, num_threads=0):
     """Convert HEALPix cells from the RING to the NESTED scheme
 
     Parameters
@@ -60,6 +66,10 @@ def from_ring(ipix, depth):
         The HEALPix cell indexes in the RING scheme.
     depth : int
         The depth of the HEALPix cells.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -88,6 +98,8 @@ def from_ring(ipix, depth):
     
     # Allocation of the array containing the cells under the NESTED scheme
     ipix_nested = np.zeros(ipix.shape, dtype=np.uint64)
-    cdshealpix.from_ring(depth, ipix, ipix_nested)
+
+    num_threads = np.uint16(num_threads)
+    cdshealpix.from_ring(depth, ipix, ipix_nested, num_threads)
 
     return ipix_nested

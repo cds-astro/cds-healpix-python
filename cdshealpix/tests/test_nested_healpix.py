@@ -17,8 +17,8 @@ from ..nested import lonlat_to_healpix, \
  polygon_search, \
  elliptical_cone_search, \
  external_neighbours, \
- bilinear_interpolation, \
- bilinear_interpolation_nthreads
+ bilinear_interpolation
+
 
 from .. import to_ring, from_ring
 
@@ -291,21 +291,6 @@ def test_bilinear_interpolation(depth):
     assert ((weights >= 0.0) & (weights <= 1.0)).all()
     assert weights.sum() == ipix.shape[0]
     assert ((ipix >= 0) & (ipix < 12 * (4 ** depth))).all()
-
-@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20])
-def test_bilinear_interpolation_nthreads(depth):
-    size = 100000000
-
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
-
-    ipix, weights = bilinear_interpolation_nthreads(lon, lat, depth, 3)
-    #ipix, weights = bilinear_interpolation(lon, lat, depth)
-
-    assert ((weights >= 0.0) & (weights <= 1.0)).all()
-    assert weights.sum() == ipix.shape[0]
-    assert ((ipix >= 0) & (ipix < 12 * (4 ** depth))).all()
-
 
 @pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
 def test_bilinear_interpolation(depth):

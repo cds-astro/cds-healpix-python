@@ -12,7 +12,7 @@ def _check_ipixels(data, nside):
         valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
         raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
 
-def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
+def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
     The ``nside`` of the returned HEALPix cell indexes must be specified. This 
@@ -31,6 +31,10 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
         indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
         passed are located on the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -75,14 +79,15 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False):
 
     # Call the Rust extension
     nside = nside.astype(np.uint32)
-    cdshealpix.lonlat_to_healpix_ring(nside, lon, lat, ipix, dx, dy)
+    num_threads = np.uint16(num_threads)
+    cdshealpix.lonlat_to_healpix_ring(nside, lon, lat, ipix, dx, dy, num_threads)
 
     if return_offsets:
         return ipix, dx, dy
     else:
         return ipix
 
-def skycoord_to_healpix(skycoord, nside, return_offsets=False):
+def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
     The ``nside`` of the returned HEALPix cell indexes must be specified.
@@ -100,6 +105,10 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False):
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
         indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
         passed are located in the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -121,9 +130,9 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, 1 << depth)
     """
-    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, nside, return_offsets)
+    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, nside, return_offsets, num_threads)
 
-def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
+def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -140,6 +149,10 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
     dy : float, optional
         The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -185,11 +198,12 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5):
     # Call the Rust extension
     nside = nside.astype(np.uint32)
     ipix = ipix.astype(np.uint64)
+    num_threads = np.uint16(num_threads)
 
-    cdshealpix.healpix_to_lonlat_ring(nside, ipix, dx, dy, lon, lat)
+    cdshealpix.healpix_to_lonlat_ring(nside, ipix, dx, dy, lon, lat, num_threads)
     return lon * u.rad, lat * u.rad
 
-def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
+def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells at a given nside.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -208,6 +222,10 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
     dy : float, optional
         The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -228,10 +246,10 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5):
     >>> nside = 2 ** depth
     >>> skycoord = healpix_to_skycoord(ipix, nside)
     """
-    lon, lat = healpix_to_lonlat(ipix, nside, dx, dy)
+    lon, lat = healpix_to_lonlat(ipix, nside, dx, dy, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def healpix_to_xy(ipix, nside):
+def healpix_to_xy(ipix, nside, num_threads=0):
     r"""
     Project the center of a HEALPix cell to the xy-HEALPix plane
 
@@ -241,6 +259,10 @@ def healpix_to_xy(ipix, nside):
         The HEALPix cells which centers will be projected
     nside : `numpy.ndarray`
         The nside of the HEALPix cells
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -277,11 +299,12 @@ def healpix_to_xy(ipix, nside):
     # Call the Rust extension
     ipix = ipix.astype(np.uint64)
     nside = nside.astype(np.uint32)
-    cdshealpix.healpix_to_xy_ring(nside, ipix, x, y)
+    num_threads = np.uint16(num_threads)
+    cdshealpix.healpix_to_xy_ring(nside, ipix, x, y, num_threads)
 
     return x, y
 
-def vertices(ipix, nside, step=1):
+def vertices(ipix, nside, step=1, num_threads=0):
     """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given nside.
 
     This method returns the 4 vertices of each cell in `ipix`.
@@ -299,6 +322,10 @@ def vertices(ipix, nside, step=1):
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
         the cell plus one more vertex per edge (the middle of it). More generally, the number
         of vertices returned is ``4 * step``.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -336,8 +363,9 @@ def vertices(ipix, nside, step=1):
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(ipix.shape + (4 * step,))
     lat = np.zeros(ipix.shape + (4 * step,))
+    num_threads = np.uint16(num_threads)
 
-    cdshealpix.vertices_ring(nside, ipix, step, lon, lat)
+    cdshealpix.vertices_ring(nside, ipix, step, lon, lat, num_threads)
     return lon * u.rad, lat * u.rad
 
 def vertices_skycoord(ipix, nside, step=1):

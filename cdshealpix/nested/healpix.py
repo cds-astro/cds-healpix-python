@@ -18,7 +18,7 @@ def _check_ipixels(data, depth):
     if (data >= npix).any() or (data < 0).any():
         raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
 
-def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
+def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
     The depth of the returned HEALPix cell indexes must be specified. This 
@@ -37,6 +37,10 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
         indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
         passed are located on the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -81,14 +85,15 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False):
 
     # Call the Rust extension
     depth = depth.astype(np.uint8)
-    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix, dx, dy)
+    num_threads = np.uint16(num_threads)
+    cdshealpix.lonlat_to_healpix(depth, lon, lat, ipix, dx, dy, num_threads)
 
     if return_offsets:
         return ipix, dx, dy
     else:
         return ipix
 
-def skycoord_to_healpix(skycoord, depth, return_offsets=False):
+def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
     The depth of the returned HEALPix cell indexes must be specified.
@@ -106,6 +111,10 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False):
         If set to `True`, returns a tuple made of 3 elements, the HEALPix cell
         indexes and the dx, dy arrays telling where the (``lon``, ``lat``) coordinates
         passed are located in the cells. ``dx`` and ``dy`` are :math:`\in [0, 1]`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -127,9 +136,9 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, depth)
     """
-    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, depth, return_offsets)
+    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, depth, return_offsets, num_threads)
 
-def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
+def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -146,6 +155,10 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
     dy : float, optional
         The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -190,11 +203,13 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5):
     # Call the Rust extension
     ipix = ipix.astype(np.uint64)
     depth = depth.astype(np.uint8)
-    cdshealpix.healpix_to_lonlat(depth, ipix, dx, dy, lon, lat)
+    num_threads = np.uint16(num_threads)
+
+    cdshealpix.healpix_to_lonlat(depth, ipix, dx, dy, lon, lat, num_threads)
 
     return lon * u.rad, lat * u.rad
 
-def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
+def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
@@ -213,6 +228,10 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
         The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
     dy : float, optional
         The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -232,10 +251,10 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5):
     >>> depth = 12
     >>> skycoord = healpix_to_skycoord(ipix, depth)
     """
-    lon, lat = healpix_to_lonlat(ipix, depth, dx, dy)
+    lon, lat = healpix_to_lonlat(ipix, depth, dx, dy, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def vertices(ipix, depth, step=1):
+def vertices(ipix, depth, step=1, num_threads=0):
     """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given depth.
 
     This method returns the 4 vertices of each cell in `ipix`.
@@ -253,6 +272,10 @@ def vertices(ipix, depth, step=1):
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
         the cell plus one more vertex per edge (the middle of it). More generally, the number
         of vertices returned is ``4 * step``.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -286,12 +309,13 @@ def vertices(ipix, depth, step=1):
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(ipix.shape + (4 * step,))
     lat = np.zeros(ipix.shape + (4 * step,))
-    
-    cdshealpix.vertices(depth, ipix, step, lon, lat)
+    num_threads = np.uint16(num_threads)
+
+    cdshealpix.vertices(depth, ipix, step, lon, lat, num_threads)
 
     return lon * u.rad, lat * u.rad
 
-def vertices_skycoord(ipix, depth, step=1):
+def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
 
     This method returns the 4 vertices of each cell in `ipix`.
@@ -309,6 +333,10 @@ def vertices_skycoord(ipix, depth, step=1):
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
         the cell plus one more vertex per edge (the middle of it). More generally, the number
         of vertices returned is ``4 * step``.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -329,10 +357,10 @@ def vertices_skycoord(ipix, depth, step=1):
     >>> depth = 12
     >>> vertices = vertices(ipix, depth)
     """
-    lon, lat = vertices(ipix, depth, step)
+    lon, lat = vertices(ipix, depth, step, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
-def neighbours(ipix, depth):
+def neighbours(ipix, depth, num_threads=0):
     """Get the neighbouring cells of some HEALPix cells at a given depth.
 
     This method returns a :math:`N` x :math:`9` `np.uint64` numpy array containing the neighbours of each cell of the :math:`N` sized `ipix` array.
@@ -345,6 +373,10 @@ def neighbours(ipix, depth):
         The HEALPix cell indexes given as a `np.uint64` numpy array.
     depth : int
         The depth of the HEALPix cells.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -375,11 +407,12 @@ def neighbours(ipix, depth):
     
     # Allocation of the array containing the neighbours
     neighbours = np.zeros(ipix.shape + (9,), dtype=np.int64)
-    cdshealpix.neighbours(depth, ipix, neighbours)
+    num_threads = np.uint16(num_threads)
+    cdshealpix.neighbours(depth, ipix, neighbours, num_threads)
 
     return neighbours
 
-def external_neighbours(ipix, depth, delta_depth):
+def external_neighbours(ipix, depth, delta_depth, num_threads=0):
     """
     Get the neighbours of specific healpix cells
 
@@ -397,6 +430,10 @@ def external_neighbours(ipix, depth, delta_depth):
         The depth of the input healpix cells
     delta_depth : int
         The depth of the returned external neighbours will be equal to: `depth` + `delta_depth`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -418,7 +455,8 @@ def external_neighbours(ipix, depth, delta_depth):
     edge_cells = np.zeros(ipix.shape + (num_external_cells_on_edges,), dtype=np.uint64)
     corner_cells = np.zeros(ipix.shape + (4,), dtype=np.int64)
 
-    cdshealpix.external_neighbours(depth, delta_depth, ipix, corner_cells, edge_cells)
+    num_threads = np.uint16(num_threads)
+    cdshealpix.external_neighbours(depth, delta_depth, ipix, corner_cells, edge_cells, num_threads)
 
     return edge_cells, corner_cells
 
@@ -634,7 +672,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
     return ipix, depth, full
 
-def healpix_to_xy(ipix, depth):
+def healpix_to_xy(ipix, depth, num_threads=0):
     r"""
     Project the center of a HEALPix cell to the xy-HEALPix plane
 
@@ -644,6 +682,10 @@ def healpix_to_xy(ipix, depth):
         The HEALPix cells which centers will be projected
     depth : `numpy.ndarray`
         The depth of the HEALPix cells
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -679,11 +721,13 @@ def healpix_to_xy(ipix, depth):
     # Call the Rust extension
     ipix = ipix.astype(np.uint64)
     depth = depth.astype(np.uint8)
-    cdshealpix.healpix_to_xy(ipix, depth, x, y)
+    num_threads = np.uint16(num_threads)
+
+    cdshealpix.healpix_to_xy(ipix, depth, x, y, num_threads)
 
     return x, y
 
-def lonlat_to_xy(lon, lat):
+def lonlat_to_xy(lon, lat, num_threads=0):
     r"""
     Project sky coordinates to the HEALPix space
 
@@ -693,6 +737,10 @@ def lonlat_to_xy(lon, lat):
         The longitudes of the sky coordinates.
     lat : `astropy.units.Quantity`
         The latitudes of the sky coordinates.
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -719,11 +767,12 @@ def lonlat_to_xy(lon, lat):
     # Allocation of the array containing the resulting ipixels
     x = np.empty(num_coords, dtype=np.float64)
     y = np.empty(num_coords, dtype=np.float64)
+    num_threads = np.uint16(num_threads)
 
-    cdshealpix.lonlat_to_xy(lon, lat, x, y)
+    cdshealpix.lonlat_to_xy(lon, lat, x, y, num_threads)
     return x, y
 
-def xy_to_lonlat(x, y):
+def xy_to_lonlat(x, y, num_threads=0):
     r"""
     Project coordinates from the HEALPix space to the sky coordinate space.
 
@@ -733,6 +782,10 @@ def xy_to_lonlat(x, y):
         Position on the X axis of the HEALPix plane, :math:`x \in [0, 8[`
     y : `numpy.ndarray`
         Position on the Y axis of the HEALPix plane, :math:`y \in [-2, 2]`
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -765,11 +818,13 @@ def xy_to_lonlat(x, y):
     # Allocation of the array containing the resulting ipixels
     lon = np.empty(num_coords, dtype=np.float64)
     lat = np.empty(num_coords, dtype=np.float64)
+    num_threads = np.uint16(num_threads)
 
-    cdshealpix.xy_to_lonlat(x, y, lon, lat)
+    cdshealpix.xy_to_lonlat(x, y, lon, lat, num_threads)
     return lon * u.rad, lat * u.rad
 
-def bilinear_interpolation(lon, lat, depth):
+
+def bilinear_interpolation(lon, lat, depth, num_threads=0):
     r"""
     Compute the HEALPix bilinear interpolation from sky coordinates
 
@@ -795,6 +850,10 @@ def bilinear_interpolation(lon, lat, depth):
         The latitudes of the sky coordinates.
     depth : int
         The depth of the HEALPix cells
+    num_threads : int, optional
+        Specifies the number of threads to use for the computation. Default to 0 means
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+        or the number of logical CPUs (otherwise)
 
     Returns
     -------
@@ -837,94 +896,14 @@ def bilinear_interpolation(lon, lat, depth):
     # Replace nan values with 0
     lon = np.nan_to_num(lon)
     lat = np.nan_to_num(lat)
+    num_threads = np.uint16(num_threads)
 
     # Call the rust bilinear interpolation code
     cdshealpix.bilinear_interpolation(
         depth,
         lon, lat,
-        ipix, weights
-    )
-
-    ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
-    weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
-
-    return ipix_masked_array, weights_masked_array
-
-def bilinear_interpolation_nthreads(lon, lat, depth, nthreads):
-    r"""
-    Compute the HEALPix bilinear interpolation from sky coordinates
-
-    For each (``lon``, ``lat``) sky position given, this function
-    returns the 4 HEALPix cells that share the nearest cross of the position.
-
-    +-----+-----+
-    |(1)  |(2)  |
-    |    x|     |
-    +-----+-----+
-    |(3)  |(4)  |
-    |     |     |
-    +-----+-----+
-
-    If ``x`` is the position, then the 4 annotated HEALPix cells will be returned
-    along with their weights. These 4 weights sum up to 1.
-
-    Parameters
-    ----------
-    lon : `astropy.units.Quantity`
-        The longitudes of the sky coordinates.
-    lat : `astropy.units.Quantity`
-        The latitudes of the sky coordinates.
-    depth : int
-        The depth of the HEALPix cells
-
-    Returns
-    -------
-    pixels, weights: (`numpy.ma.masked_array`, `numpy.ma.masked_array`)
-        :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
-        For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
-        a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.
-
-    Examples
-    --------
-    >>> from cdshealpix import bilinear_interpolation
-    >>> import astropy.units as u
-    >>> import numpy as np
-    >>> lon = [10, 25] * u.deg
-    >>> lat = [5, 10] * u.deg
-    >>> depth = 5
-    >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
-    """
-    lon = np.atleast_1d(lon.to_value(u.rad))
-    lat = np.atleast_1d(lat.to_value(u.rad))
-
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
-    if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
-
-    num_coords = lon.shape
-
-    # Retrieve nan and infinite values
-    mask_lon_invalid = np.isnan(lon) | ~np.isfinite(lon)
-    mask_lat_invalid = np.isnan(lat) | ~np.isfinite(lat)
-    mask_invalid = mask_lon_invalid | mask_lat_invalid
-
-    mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
-
-    ipix = np.empty(shape=num_coords + (4,), dtype=np.uint64)
-    weights = np.empty(shape=num_coords + (4,), dtype=np.float64)
-
-    # Replace nan values with 0
-    lon = np.nan_to_num(lon)
-    lat = np.nan_to_num(lat)
-
-    # Call the rust bilinear interpolation code
-    cdshealpix.bilinear_interpolation_nthreads(
-        depth,
-        lon, lat,
         ipix, weights,
-        np.uint16(nthreads) 
+        num_threads
     )
 
     ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
