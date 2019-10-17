@@ -1,20 +1,19 @@
+#![cfg(feature = "rayon")]
+#![feature(specialization)]
+
 extern crate healpix;
 
 extern crate ndarray;
-extern crate ndarray_parallel;
 
 extern crate numpy;
 extern crate pyo3;
 
 use ndarray::{Array1, Zip};
-use ndarray_parallel::prelude::*;
-use ndarray_parallel::rayon as rayon;
 
 use numpy::{IntoPyArray, PyArrayDyn, PyArray1};
 use pyo3::prelude::{pymodule, Py, PyModule, PyResult, Python};
 
 use healpix::compass_point::{MainWind, Cardinal, Ordinal};
-
 
 /// This uses rust-numpy for numpy interoperability between
 /// Python and Rust.
@@ -25,9 +24,8 @@ use healpix::compass_point::{MainWind, Cardinal, Ordinal};
 /// ndarray also offers a way to zip arrays (immutably and mutably) and
 /// operate on them element-wisely. This is done in parallel using the
 /// ndarray-parallel crate that offers the par_apply method on zipped arrays.
-
 #[pymodule]
-fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
+fn cdshealpix(py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of to_ring and from_ring
     #[pyfn(m, "to_ring")]
     fn to_ring(_py: Python,
