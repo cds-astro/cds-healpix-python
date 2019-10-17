@@ -849,3 +849,85 @@ def bilinear_interpolation(lon, lat, depth):
     weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
 
     return ipix_masked_array, weights_masked_array
+
+def bilinear_interpolation_nthreads(lon, lat, depth, nthreads):
+    r"""
+    Compute the HEALPix bilinear interpolation from sky coordinates
+
+    For each (``lon``, ``lat``) sky position given, this function
+    returns the 4 HEALPix cells that share the nearest cross of the position.
+
+    +-----+-----+
+    |(1)  |(2)  |
+    |    x|     |
+    +-----+-----+
+    |(3)  |(4)  |
+    |     |     |
+    +-----+-----+
+
+    If ``x`` is the position, then the 4 annotated HEALPix cells will be returned
+    along with their weights. These 4 weights sum up to 1.
+
+    Parameters
+    ----------
+    lon : `astropy.units.Quantity`
+        The longitudes of the sky coordinates.
+    lat : `astropy.units.Quantity`
+        The latitudes of the sky coordinates.
+    depth : int
+        The depth of the HEALPix cells
+
+    Returns
+    -------
+    pixels, weights: (`numpy.ma.masked_array`, `numpy.ma.masked_array`)
+        :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
+        For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
+        a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.
+
+    Examples
+    --------
+    >>> from cdshealpix import bilinear_interpolation
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> lon = [10, 25] * u.deg
+    >>> lat = [5, 10] * u.deg
+    >>> depth = 5
+    >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
+    """
+    lon = np.atleast_1d(lon.to_value(u.rad))
+    lat = np.atleast_1d(lat.to_value(u.rad))
+
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    if lon.shape != lat.shape:
+        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+
+    num_coords = lon.shape
+
+    # Retrieve nan and infinite values
+    mask_lon_invalid = np.isnan(lon) | ~np.isfinite(lon)
+    mask_lat_invalid = np.isnan(lat) | ~np.isfinite(lat)
+    mask_invalid = mask_lon_invalid | mask_lat_invalid
+
+    mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
+
+    ipix = np.empty(shape=num_coords + (4,), dtype=np.uint64)
+    weights = np.empty(shape=num_coords + (4,), dtype=np.float64)
+
+    # Replace nan values with 0
+    lon = np.nan_to_num(lon)
+    lat = np.nan_to_num(lat)
+
+    # Call the rust bilinear interpolation code
+    cdshealpix.bilinear_interpolation_nthreads(
+        depth,
+        lon, lat,
+        ipix, weights,
+        np.uint16(nthreads) 
+    )
+
+    ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
+    weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
+
+    return ipix_masked_array, weights_masked_array
