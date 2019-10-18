@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
@@ -16,7 +16,7 @@ requires = ["setuptools", "wheel", "setuptools-rust"]
 
 [lib]
 name = "cdshealpix"
-path = "src/lib.rs"
+#path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
