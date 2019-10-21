@@ -1,15 +1,13 @@
-#![cfg(feature = "rayon")]
-#![feature(specialization)]
-
+#[cfg(feature = "rayon")]
 extern crate healpix;
 
 extern crate ndarray;
 
 extern crate numpy;
 extern crate pyo3;
+extern crate rayon;
 
 use ndarray::{Array1, Zip};
-
 use numpy::{IntoPyArray, PyArrayDyn, PyArray1};
 use pyo3::prelude::{pymodule, Py, PyModule, PyResult, Python};
 
@@ -25,7 +23,7 @@ use healpix::compass_point::{MainWind, Cardinal, Ordinal};
 /// operate on them element-wisely. This is done in parallel using the
 /// ndarray-parallel crate that offers the par_apply method on zipped arrays.
 #[pymodule]
-fn cdshealpix(py: Python, m: &PyModule) -> PyResult<()> {
+fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of to_ring and from_ring
     #[pyfn(m, "to_ring")]
     fn to_ring(_py: Python,

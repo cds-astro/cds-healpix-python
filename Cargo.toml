@@ -22,10 +22,15 @@ crate-type = ["cdylib"]
 [dependencies]
 # The cdshealpix rust crate
 healpix = { package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust', branch = 'master' }
-ndarray = "0.13.0"
 numpy = "0.7.0"
-rayon = "*"
+rayon = "1.2.0"
 
 [dependencies.pyo3]
 version = "0.8.1"
 features = ["extension-module"]
+
+[dependencies.ndarray]
+version = "0.13.0"
+default-features = false # do not include the default features, and optionally
+                         # cherry-pick individual features
+features = ["rayon"]
