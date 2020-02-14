@@ -383,7 +383,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     fn vertices_ring(_py: Python,
         nside: u32,
         ipix: &PyArrayDyn<u64>,
-        step: usize,
+        _step: usize,
         lon: &PyArrayDyn<f64>,
         lat: &PyArrayDyn<f64>,
         nthreads: u16)

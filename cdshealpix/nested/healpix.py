@@ -513,7 +513,7 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     lat = lat.to_value(u.rad)
     radius = radius.to_value(u.rad)
 
-    ipix, depth, full = cdshealpix.cone_search(depth, depth_delta, lon, lat, radius, flat)
+    ipix, depth, full = cdshealpix.cone_search(np.uint8(depth), np.uint8(depth_delta), np.float64(lon), np.float64(lat), np.float64(radius), np.bool(flat))
     return ipix, depth, full
 
 def polygon_search(lon, lat, depth, flat=False):
