@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -77,7 +77,7 @@
 <h1>cdshealpix.nested.bilinear_interpolation<a class="headerlink" href="#cdshealpix-nested-bilinear-interpolation" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="cdshealpix.nested.bilinear_interpolation">
-<code class="sig-prename descclassname">cdshealpix.nested.</code><code class="sig-name descname">bilinear_interpolation</code><span class="sig-paren">(</span><em class="sig-param">lon</em>, <em class="sig-param">lat</em>, <em class="sig-param">depth</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.nested.bilinear_interpolation" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">cdshealpix.nested.</code><code class="sig-name descname">bilinear_interpolation</code><span class="sig-paren">(</span><em class="sig-param">lon</em>, <em class="sig-param">lat</em>, <em class="sig-param">depth</em>, <em class="sig-param">num_threads=0</em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.nested.bilinear_interpolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the HEALPix bilinear interpolation from sky coordinates</p>
 <p>For each (<code class="docutils literal notranslate"><span class="pre">lon</span></code>, <code class="docutils literal notranslate"><span class="pre">lat</span></code>) sky position given, this function
 returns the 4 HEALPix cells that share the nearest cross of the position.</p>
@@ -112,17 +112,21 @@ along with their weights. These 4 weights sum up to 1.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The longitudes of the sky coordinates.</p>
+<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The longitudes of the sky coordinates.</p>
 </dd>
-<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.0.dev946)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The latitudes of the sky coordinates.</p>
+<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="http://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v4.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>The latitudes of the sky coordinates.</p>
 </dd>
 <dt><strong>depth</strong><span class="classifier">int</span></dt><dd><p>The depth of the HEALPix cells</p>
+</dd>
+<dt><strong>num_threads</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of threads to use for the computation. Default to 0 means
+it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
+or the number of logical CPUs (otherwise)</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>pixels, weights: (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
+<dt>pixels, weights: (<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.18)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.18)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
 For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
 a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.</p>
 </dd>
@@ -130,7 +134,7 @@ a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked v
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="k">import</span> <span class="n">bilinear_interpolation</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">bilinear_interpolation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">lon</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
@@ -183,7 +187,7 @@ a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked v
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.4.1. &nbsp;
   </p>
 </footer>
   </body>

@@ -45,7 +45,7 @@ more about HEALPix:
 - :cite:`Gorski:2004by`
 - :cite:`Calabretta:2004vi`
 - :cite:`2007MNRAS.381..865C`
-- :cite:`2015A&A...580A.132R`
+- :cite:`DataStructure2DGrid`
 
 References
 ----------

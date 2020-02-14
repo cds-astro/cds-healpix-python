@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -90,10 +90,10 @@ represented in the ring scheme and vice versa.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.to_ring.html#cdshealpix.to_ring" title="cdshealpix.to_ring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_ring</span></code></a>(ipix, depth)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.to_ring.html#cdshealpix.to_ring" title="cdshealpix.to_ring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_ring</span></code></a>(ipix, depth[, num_threads])</p></td>
 <td><p>Convert HEALPix cells from the NESTED to the RING scheme</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.from_ring.html#cdshealpix.from_ring" title="cdshealpix.from_ring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_ring</span></code></a>(ipix, depth)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.from_ring.html#cdshealpix.from_ring" title="cdshealpix.from_ring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_ring</span></code></a>(ipix, depth[, num_threads])</p></td>
 <td><p>Convert HEALPix cells from the RING to the NESTED scheme</p></td>
 </tr>
 </tbody>
@@ -117,28 +117,28 @@ represented in the ring scheme and vice versa.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.skycoord_to_healpix.html#cdshealpix.nested.skycoord_to_healpix" title="cdshealpix.nested.skycoord_to_healpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skycoord_to_healpix</span></code></a>(skycoord, depth[, …])</p></td>
 <td><p>Get the HEALPix indexes that contains specific sky coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_lonlat.html#cdshealpix.nested.healpix_to_lonlat" title="cdshealpix.nested.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a>(ipix, depth[, dx, dy])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_lonlat.html#cdshealpix.nested.healpix_to_lonlat" title="cdshealpix.nested.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a>(ipix, depth[, dx, dy, …])</p></td>
 <td><p>Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_skycoord.html#cdshealpix.nested.healpix_to_skycoord" title="cdshealpix.nested.healpix_to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_skycoord</span></code></a>(ipix, depth[, dx, dy])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_skycoord.html#cdshealpix.nested.healpix_to_skycoord" title="cdshealpix.nested.healpix_to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_skycoord</span></code></a>(ipix, depth[, dx, dy, …])</p></td>
 <td><p>Get the sky coordinates of the center of some HEALPix cells at a given depth.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_xy.html#cdshealpix.nested.healpix_to_xy" title="cdshealpix.nested.healpix_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_xy</span></code></a>(ipix, depth)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_xy.html#cdshealpix.nested.healpix_to_xy" title="cdshealpix.nested.healpix_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_xy</span></code></a>(ipix, depth[, num_threads])</p></td>
 <td><p>Project the center of a HEALPix cell to the xy-HEALPix plane</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.lonlat_to_xy.html#cdshealpix.nested.lonlat_to_xy" title="cdshealpix.nested.lonlat_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonlat_to_xy</span></code></a>(lon, lat)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.lonlat_to_xy.html#cdshealpix.nested.lonlat_to_xy" title="cdshealpix.nested.lonlat_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonlat_to_xy</span></code></a>(lon, lat[, num_threads])</p></td>
 <td><p>Project sky coordinates to the HEALPix space</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.xy_to_lonlat.html#cdshealpix.nested.xy_to_lonlat" title="cdshealpix.nested.xy_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_to_lonlat</span></code></a>(x, y)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.xy_to_lonlat.html#cdshealpix.nested.xy_to_lonlat" title="cdshealpix.nested.xy_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xy_to_lonlat</span></code></a>(x, y[, num_threads])</p></td>
 <td><p>Project coordinates from the HEALPix space to the sky coordinate space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.vertices.html#cdshealpix.nested.vertices" title="cdshealpix.nested.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>(ipix, depth[, step])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.vertices.html#cdshealpix.nested.vertices" title="cdshealpix.nested.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>(ipix, depth[, step, num_threads])</p></td>
 <td><p>Get the longitudes and latitudes of the vertices of some HEALPix cells at a given depth.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.vertices_skycoord.html#cdshealpix.nested.vertices_skycoord" title="cdshealpix.nested.vertices_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices_skycoord</span></code></a>(ipix, depth[, step])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.vertices_skycoord.html#cdshealpix.nested.vertices_skycoord" title="cdshealpix.nested.vertices_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices_skycoord</span></code></a>(ipix, depth[, step, …])</p></td>
 <td><p>Get the sky coordinates of the vertices of some HEALPix cells at a given depth.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.neighbours.html#cdshealpix.nested.neighbours" title="cdshealpix.nested.neighbours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbours</span></code></a>(ipix, depth)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.neighbours.html#cdshealpix.nested.neighbours" title="cdshealpix.nested.neighbours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbours</span></code></a>(ipix, depth[, num_threads])</p></td>
 <td><p>Get the neighbouring cells of some HEALPix cells at a given depth.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.external_neighbours.html#cdshealpix.nested.external_neighbours" title="cdshealpix.nested.external_neighbours"><code class="xref py py-obj docutils literal notranslate"><span class="pre">external_neighbours</span></code></a>(ipix, depth, delta_depth)</p></td>
@@ -153,7 +153,7 @@ represented in the ring scheme and vice versa.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.elliptical_cone_search.html#cdshealpix.nested.elliptical_cone_search" title="cdshealpix.nested.elliptical_cone_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elliptical_cone_search</span></code></a>(lon, lat, a, b, pa, depth)</p></td>
 <td><p>Get the HEALPix cells contained in an elliptical cone at a given depth.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.bilinear_interpolation.html#cdshealpix.nested.bilinear_interpolation" title="cdshealpix.nested.bilinear_interpolation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bilinear_interpolation</span></code></a>(lon, lat, depth)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.bilinear_interpolation.html#cdshealpix.nested.bilinear_interpolation" title="cdshealpix.nested.bilinear_interpolation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bilinear_interpolation</span></code></a>(lon, lat, depth[, …])</p></td>
 <td><p>Compute the HEALPix bilinear interpolation from sky coordinates</p></td>
 </tr>
 </tbody>
@@ -184,16 +184,16 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
 <tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.skycoord_to_healpix.html#cdshealpix.ring.skycoord_to_healpix" title="cdshealpix.ring.skycoord_to_healpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skycoord_to_healpix</span></code></a>(skycoord, nside[, …])</p></td>
 <td><p>Get the HEALPix indexes that contains specific sky coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_lonlat.html#cdshealpix.ring.healpix_to_lonlat" title="cdshealpix.ring.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a>(ipix, nside[, dx, dy])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_lonlat.html#cdshealpix.ring.healpix_to_lonlat" title="cdshealpix.ring.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a>(ipix, nside[, dx, dy, …])</p></td>
 <td><p>Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_skycoord.html#cdshealpix.ring.healpix_to_skycoord" title="cdshealpix.ring.healpix_to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_skycoord</span></code></a>(ipix, nside[, dx, dy])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_skycoord.html#cdshealpix.ring.healpix_to_skycoord" title="cdshealpix.ring.healpix_to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_skycoord</span></code></a>(ipix, nside[, dx, dy, …])</p></td>
 <td><p>Get the sky coordinates of the center of some HEALPix cells at a given nside.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_xy.html#cdshealpix.ring.healpix_to_xy" title="cdshealpix.ring.healpix_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_xy</span></code></a>(ipix, nside)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_xy.html#cdshealpix.ring.healpix_to_xy" title="cdshealpix.ring.healpix_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_xy</span></code></a>(ipix, nside[, num_threads])</p></td>
 <td><p>Project the center of a HEALPix cell to the xy-HEALPix plane</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.vertices.html#cdshealpix.ring.vertices" title="cdshealpix.ring.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>(ipix, nside[, step])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.vertices.html#cdshealpix.ring.vertices" title="cdshealpix.ring.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>(ipix, nside[, step, num_threads])</p></td>
 <td><p>Get the longitudes and latitudes of the vertices of some HEALPix cells at a given nside.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.ring.vertices_skycoord.html#cdshealpix.ring.vertices_skycoord" title="cdshealpix.ring.vertices_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices_skycoord</span></code></a>(ipix, nside[, step])</p></td>
@@ -249,7 +249,7 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 2.4.1. &nbsp;
   </p>
 </footer>
   </body>
