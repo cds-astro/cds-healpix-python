@@ -573,13 +573,17 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .par_apply(|mut c, mut e, &p| {
                     let external_edges = layer.external_edge_struct(p, delta_depth);
 
-                    c[0] = to_i64(external_edges.get_corner(&Cardinal::S));
-                    c[1] = to_i64(external_edges.get_corner(&Cardinal::E));
-                    c[2] = to_i64(external_edges.get_corner(&Cardinal::N));
-                    c[3] = to_i64(external_edges.get_corner(&Cardinal::W));
+                    c[0] = external_edges.get_corner(&Cardinal::S)
+                        .map_or_else(|| -1_i64, |val| val as i64);
+                    c[1] = external_edges.get_corner(&Cardinal::E)
+                        .map_or_else(|| -1_i64, |val| val as i64);
+                    c[2] = external_edges.get_corner(&Cardinal::N)
+                        .map_or_else(|| -1_i64, |val| val as i64);
+                    c[3] = external_edges.get_corner(&Cardinal::W)
+                        .map_or_else(|| -1_i64, |val| val as i64);
 
                     // TODO: investigate why it does not abort when adding this line...
-                    println!("");
+                    //println!("");
 
                     let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
                     let mut offset = 0;
