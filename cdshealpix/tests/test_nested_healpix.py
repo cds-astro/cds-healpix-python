@@ -148,7 +148,6 @@ def test_cone_search():
     with pytest.raises(Exception):
         cone_search([5, 4] * u.deg, [5, 4] * u.deg, 15 * u.deg, depth=12)
 
-"""
 @pytest.mark.parametrize("size", [0, 1, 2, 3, 5, 6, 9])
 def test_polygon_search(size):
     max_depth = 12
@@ -313,5 +312,5 @@ def test_bilinear_interpolation2(depth):
     depth = 5
 
     ipix, weights = bilinear_interpolation(lon, lat, depth)
-"""
+
 

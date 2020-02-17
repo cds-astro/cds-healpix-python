@@ -436,15 +436,23 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .par_apply(|mut n, &p| {
                     let map = healpix::nested::neighbours(depth, p, true);
 
-                    n[0] = to_ref_i64(map.get(MainWind::S));
-                    n[1] = to_ref_i64(map.get(MainWind::SE));
-                    n[2] = to_ref_i64(map.get(MainWind::E));
-                    n[3] = to_ref_i64(map.get(MainWind::SW));
+                    n[0] = map.get(MainWind::S)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[1] = map.get(MainWind::SE)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[2] = map.get(MainWind::E)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[3] = map.get(MainWind::SW)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
                     n[4] = p as i64;
-                    n[5] = to_ref_i64(map.get(MainWind::NE));
-                    n[6] = to_ref_i64(map.get(MainWind::W));
-                    n[7] = to_ref_i64(map.get(MainWind::NW));
-                    n[8] = to_ref_i64(map.get(MainWind::N));
+                    n[5] = map.get(MainWind::NE)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[6] = map.get(MainWind::W)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[7] = map.get(MainWind::NW)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
+                    n[8] = map.get(MainWind::N)
+                        .map_or_else(|| -1_i64, |&val| val as i64);
                 })
         );
         
@@ -476,9 +484,14 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             get_cells(bmoc)
         };
 
-        (ipix.into_pyarray(py).to_owned(),
-        depth.into_pyarray(py).to_owned(),
-        fully_covered.into_pyarray(py).to_owned())
+        (
+            ipix.into_pyarray(py)
+                .to_owned(),
+            depth.into_pyarray(py)
+                .to_owned(),
+            fully_covered.into_pyarray(py)
+                .to_owned()
+        )
     }
 
     /// Elliptical cone search
@@ -509,9 +522,14 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             get_cells(bmoc)
         };
 
-        (ipix.into_pyarray(py).to_owned(),
-        depth.into_pyarray(py).to_owned(),
-        fully_covered.into_pyarray(py).to_owned())
+        (
+            ipix.into_pyarray(py)
+                .to_owned(),
+            depth.into_pyarray(py)
+                .to_owned(),
+            fully_covered.into_pyarray(py)
+                .to_owned()
+        )
     }
 
     /// Polygon search
@@ -545,9 +563,14 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
             get_cells(bmoc)
         };
 
-        (ipix.into_pyarray(py).to_owned(),
-        depth.into_pyarray(py).to_owned(),
-        fully_covered.into_pyarray(py).to_owned())
+        (
+            ipix.into_pyarray(py)
+                .to_owned(),
+            depth.into_pyarray(py)
+                .to_owned(),
+            fully_covered.into_pyarray(py)
+                .to_owned()
+        )
     }
 
     #[pyfn(m, "external_neighbours")]
@@ -581,9 +604,6 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                         .map_or_else(|| -1_i64, |val| val as i64);
                     c[3] = external_edges.get_corner(&Cardinal::W)
                         .map_or_else(|| -1_i64, |val| val as i64);
-
-                    // TODO: investigate why it does not abort when adding this line...
-                    //println!("");
 
                     let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
                     let mut offset = 0;
@@ -661,20 +681,6 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
   
     Ok(())
-}
-
-/*fn to_i64(val: Option<u64>) -> i64 {
-    match val {
-        Some(val) => val as i64,
-        None => -1_i64,
-    }
-}*/
-
-fn to_ref_i64(val: Option<&u64>) -> i64 {
-    match val {
-        Some(&val) => val as i64,
-        None => -1_i64,
-    }
 }
 
 fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<u8>) {
