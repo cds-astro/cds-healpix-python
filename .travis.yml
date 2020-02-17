@@ -31,30 +31,6 @@ jobs:
         - PIP=pip3
         - PYTHON=python3
       script: ./travis/testing.sh
-#      # - linux 32bit
-#    - name: "Python3 linux_i686"
-#      os: linux
-#      services:
-#        - docker
-#      before_install:
-#        - docker pull "${DOCKER_IMAGE_LINUX_32}"
-#        - >
-#          docker run
-#          --volume ${PWD}:/mnt/cdshealpix
-#          --name "${DOCKER_CONTAINER_LINUX_32}"
-#          --rm
-#          --interactive
-#          --tty
-#          --detach
-#          "${DOCKER_IMAGE_LINUX_32}"
-#      before_script:
-#      script:
-#        - >
-#          docker exec 
-#          --interactive
-#          --tty
-#          "${DOCKER_CONTAINER_LINUX_32}"
-#          sh -c "cd /mnt/cdshealpix && ./travis/testing_py3_ubuntu_32.sh"
       # - MacOS
     - name: "Python3 OSX"
       os: osx
