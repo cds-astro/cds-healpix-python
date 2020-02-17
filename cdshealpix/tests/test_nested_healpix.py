@@ -22,7 +22,7 @@ from ..nested import lonlat_to_healpix, \
 
 from .. import to_ring, from_ring
 
-@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
+@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_lonlat_to_healpix(size):
     depth = np.random.randint(30)
     lon = np.random.rand(size) * 360 * u.deg
@@ -39,7 +39,7 @@ def test_lonlat_to_healpix(size):
     assert ((ipixels >= 0) & (ipixels < npix)).all()
     assert ((dx >= 0) & (dx <= 1)).all()
 
-@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000, 1000000])
+@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_healpix_to_lonlat(size):
     depth = np.random.randint(30)
     size = 10000
