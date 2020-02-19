@@ -164,6 +164,11 @@ def test_polygon_search(size):
         assert ((depth >= 0) & (depth <= max_depth)).all()
         assert ((ipix >= 0) & (ipix < npix)).all()
 
+# From https://github.com/cds-astro/cds-healpix-python/issues/10
+def test_polygon_search_issue10():
+    coords = SkyCoord([(353.8156714, -56.33202193), (6.1843286, -56.33202193), (5.27558041, -49.49378172), (354.72441959, -49.49378172)], unit=u.deg)
+    polygon_search(coords.ra, coords.dec, 12)
+
 def test_polygon_search_not_enough_vertices_exception():
     # 4 total vertices but only 2 distincts. This should fail
     with pytest.raises(Exception):
