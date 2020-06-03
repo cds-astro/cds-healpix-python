@@ -177,6 +177,16 @@ def test_polygon_search_not_enough_vertices_exception():
     # 4 total vertices and 3 distincts. This should pass
     polygon_search([1, 1, 2, 1] * u.deg, [1, 1, 3, 2] * u.deg, depth=12)
 
+# Following an error spotted by the hips2fits service that usually deal with big polygons
+def test_polygon_search_big_polygon():
+    ipix, _, _ = polygon_search(
+        [268.84102386, 299.40278164, 66.0951825,   96.66953469] * u.deg,
+        [-45.73283624, 38.47909742, 38.76894431, -45.43470273] * u.deg,
+        depth=0,
+        flat=True
+    )
+    assert (ipix == np.asarray([0, 3, 4, 5, 7, 8, 9, 10, 11])).all()
+
 def test_elliptical_cone_search():
     lon = 0 * u.deg
     lat = 0 * u.deg
