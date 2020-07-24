@@ -35,7 +35,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let ipix = ipix.as_array();
         let mut ipix_ring = ipix_ring.as_array_mut();
 
-        let layer = healpix::nested::get_or_create(depth);
+        let layer = healpix::nested::get(depth);
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
             Zip::from(&ipix)
@@ -57,7 +57,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let ipix_ring = ipix_ring.as_array();
         let mut ipix = ipix.as_array_mut();
 
-        let layer = healpix::nested::get_or_create(depth);
+        let layer = healpix::nested::get(depth);
         
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
@@ -228,7 +228,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&mut x)
                 .and(&mut y)
                 .par_apply(|&p, &d, hpx, hpy| {
-                    let layer = healpix::nested::get_or_create(d);
+                    let layer = healpix::nested::get(d);
                     let (x, y) = layer.center_of_projected_cell(p);
                     *hpx = x;
                     *hpy = y;
@@ -340,7 +340,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lon = lon.as_array_mut();
         let mut lat = lat.as_array_mut();
 
-        let layer = healpix::nested::get_or_create(depth);
+        let layer = healpix::nested::get(depth);
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
             if step == 1 {
@@ -587,7 +587,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut corners = corners.as_array_mut();
         let mut edges = edges.as_array_mut();
 
-        let layer = healpix::nested::get_or_create(depth);
+        let layer = healpix::nested::get(depth);
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
             Zip::from(corners.genrows_mut())
@@ -654,7 +654,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut ipix = ipix.as_array_mut();
         let mut weights = weights.as_array_mut();
     
-        let layer = healpix::nested::get_or_create(depth);
+        let layer = healpix::nested::get(depth);
 
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
