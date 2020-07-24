@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cdshealpix.nested.neighbours &#8212; cdshealpix  documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +14,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -85,7 +86,7 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
 </dd>
 <dt><strong>depth</strong><span class="classifier">int</span></dt><dd><p>The depth of the HEALPix cells.</p>
 </dd>
@@ -97,7 +98,7 @@ or the number of logical CPUs (otherwise)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>neighbours</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>A <span class="math notranslate nohighlight">\(N\)</span> x <span class="math notranslate nohighlight">\(9\)</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.int64</span></code> numpy array containing the neighbours of each cell.
+<dt><strong>neighbours</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>A <span class="math notranslate nohighlight">\(N\)</span> x <span class="math notranslate nohighlight">\(9\)</span> <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.int64</span></code> numpy array containing the neighbours of each cell.
 The <span class="math notranslate nohighlight">\(5^{th}\)</span> element corresponds to the index of HEALPix cell from which the neighbours are evaluated.
 All its 8 neighbours occup the remaining elements of the line.</p>
 </dd>
@@ -123,6 +124,7 @@ All its 8 neighbours occup the remaining elements of the line.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -162,7 +164,7 @@ All its 8 neighbours occup the remaining elements of the line.</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.0.4. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
   </p>
 </footer>
   </body>
