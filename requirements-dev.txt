@@ -1,4 +1,4 @@
-setuptools_rust
+maturin
 pytest_benchmark
 astropy_healpix
 healpy

@@ -7,13 +7,10 @@ set -e
 # Download the dependencies for compiling cdshealpix
 $PIP install -r requirements-dev.txt
 # Install Rust compiler
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 export PATH="$HOME/.cargo/bin:$PATH"
 # Generate the dynamic library from the cdshealpix Rust crate.
-# This will download the crate from crates.io and build it first.
-$PYTHON setup.py build_rust
-# Move the dynamic lib to the python package folder
-find build/lib/cdshealpix -name "*.so" -type f -exec cp {} ./cdshealpix \;
+maturin develop --release
 $PYTHON -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
 $PYTHON -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
 

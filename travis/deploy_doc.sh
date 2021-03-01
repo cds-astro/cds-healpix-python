@@ -21,7 +21,7 @@ rm -rf *
 
 git checkout cds-astro/master .
 
-curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 export PATH="$HOME/.cargo/bin:$PATH"
 
 ln -s /usr/bin/python3 /usr/bin/python
@@ -29,8 +29,7 @@ ln -s /usr/bin/python3 /usr/bin/python
 python -m pip install -U pip
 python -m pip install -r requirements-dev.txt
 
-python setup.py build_rust
-find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \;
+maturin develop --release
 
 cd docs
 make html

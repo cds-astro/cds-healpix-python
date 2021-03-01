@@ -6,12 +6,13 @@ set -e
 if [[ $TRAVIS_TAG ]]; then
     # Build and deploy if the tests pass and
     # the commit is tagged
+    ### Install Rust (no nighlty)
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
     ### Build the wheels ###
-    $PIP install cibuildwheel setuptools-rust
-    export CIBW_BEFORE_BUILD="pip install setuptools-rust && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y"
-    export CIBW_ENVIRONMENT='PATH="$HOME/.cargo/bin:$PATH"'
-    cibuildwheel --output-dir dist
+    $PIP install maturin
+    maturin build --release
+    # maturin publish --username <username> --password <password> --repository-url <registry>?
     ### Upload the wheels to PyPI ###
     $PIP install twine
-    $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ dist/*.whl --skip-existing
+    $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ target/wheels/*.whl --skip-existing
 fi

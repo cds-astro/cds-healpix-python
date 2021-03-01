@@ -18,15 +18,12 @@ linux32 --32bit i386 sh -c '
 linux32 --32bit i386 sh -c '
     # Download the dependencies for compiling cdshealpix
     pip3 install -r requirements.txt &&
-    pip3 install setuptools_rust pytest_benchmark
+    pip3 install maturin pytest_benchmark
     # Install Rust compiler
-    curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y &&
+    curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y &&
     export PATH="$HOME/.cargo/bin:$PATH" &&
     # Generate the dynamic library from the cdshealpix Rust crate.
-    # This will download the crate from crates.io and build it first.
-    python3 setup.py build_rust &&
-    # Move the dynamic lib to the python package folder
-    find build/ -name "*.so" -type f -exec cp {} ./cdshealpix \; &&
+    maturin develop --release &&
     python3 -m pytest -v cdshealpix/tests/test_nested_healpix.py &&
     python3 -m pytest -v cdshealpix/tests/test_ring_healpix.py
 '
