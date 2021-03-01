@@ -14,7 +14,7 @@ if [[ $TRAVIS_TAG ]]; then
     virtualenv cdshealpixenv
     source cdshealpixenv/bin/activate
     ### Install maturin and twine
-    $PIP install maturin twine
+    pip install maturin twine
     ### Build the wheels ###
     maturin build --release
     # maturin publish --username <username> --password <password> --repository-url <registry>?
