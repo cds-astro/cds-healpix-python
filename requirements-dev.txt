@@ -6,7 +6,7 @@ sphinx
 numpydoc
 astropy
 astropy_sphinx_theme
-sphinxcontrib-bibtex
+sphinxcontrib-bibtex<2.0.0
 matplotlib
 mocpy
 spherical-geometry
