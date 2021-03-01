@@ -8,11 +8,16 @@ if [[ $TRAVIS_TAG ]]; then
     # the commit is tagged
     ### Install Rust (no nighlty)
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+    ### Install virtualenv, maturin and twine
+    $PIP install virtualenv maturin twine
+    ### Create and activate a virtual env
+    virtualenv cdshealpixenv
+    source cdshealpixenv/bin/activate
     ### Build the wheels ###
-    $PIP install maturin
     maturin build --release
     # maturin publish --username <username> --password <password> --repository-url <registry>?
     ### Upload the wheels to PyPI ###
-    $PIP install twine
     $PYTHON -m twine upload --repository-url https://upload.pypi.org/legacy/ target/wheels/*.whl --skip-existing
+    ### Go back to the native python env
+    deactivate
 fi

@@ -18,7 +18,7 @@ see also [venv tuto](https://docs.python.org/3/tutorial/venv.html):
 # Install virtualenv (venv)
 pip install virtualenv
 # Create venv cdshealpix_tests
-virtualenv -p=python3 cdshealpix_tests
+virtualenv cdshealpix_tests
 # Activate the venv
 source cdshealpix_tests/bin/activate
 # Do your stuff, e.g:
