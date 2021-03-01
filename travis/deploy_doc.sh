@@ -21,14 +21,19 @@ rm -rf *
 
 git checkout cds-astro/master .
 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 export PATH="$HOME/.cargo/bin:$PATH"
 
 ln -s /usr/bin/python3 /usr/bin/python
 
-python -m pip install -U pip
-python -m pip install -r requirements-dev.txt
 
+python -m pip install -U pip
+### Install virtualenv, maturin and twine
+pip install virtualenv
+virtualenv cdshealpixenv
+source cdshealpixenv/bin/activate
+
+python -m pip install -r requirements-dev.txt
 maturin develop --release
 
 cd docs
@@ -42,3 +47,6 @@ touch .nojekyll
 git add --all
 git commit -am "doc update"
 git push cds-astro gh-pages
+
+deactivate
+

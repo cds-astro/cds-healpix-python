@@ -1,4 +1,4 @@
-dist: xenial   # required for Python >= 3.7
+dist: focal   # required for Python >= 3.7
 language: python
 python:
   - "3.7"
@@ -84,7 +84,7 @@ jobs:
         - docker
       script: ./travis/deploy.sh
     - name: "manylinux_i686"
-      # Job generating the wheels for Linux 64-bit platforms
+      # Job generating the wheels for Linux 32-bit platforms
       os: linux
       sudo: required
       env:

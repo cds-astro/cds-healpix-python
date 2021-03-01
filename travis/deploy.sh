@@ -7,7 +7,8 @@ if [[ $TRAVIS_TAG ]]; then
     # Build and deploy if the tests pass and
     # the commit is tagged
     ### Install Rust (no nighlty)
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    export PATH="$HOME/.cargo/bin:$PATH"
     ### Install virtualenv, maturin and twine
     $PIP install virtualenv
     ### Create and activate a virtual env
@@ -16,7 +17,7 @@ if [[ $TRAVIS_TAG ]]; then
     ### Install maturin and twine
     pip install maturin twine
     ### Build the wheels ###
-    maturin build --release
+    maturin build --release --no-sdist
     # maturin publish --username <username> --password <password> --repository-url <registry>?
     ### Upload the wheels to PyPI ###
     python -m twine upload --repository-url https://upload.pypi.org/legacy/ target/wheels/*.whl --skip-existing

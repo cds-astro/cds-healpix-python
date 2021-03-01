@@ -5,7 +5,7 @@ set -e
 
 ### Run the tests ###
 # Install Rust compiler
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 export PATH="$HOME/.cargo/bin:$PATH"
 
 $PIP install virtualenv

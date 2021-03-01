@@ -11,9 +11,6 @@ description = """
 Python cdshealpix package wrapping code of the cdshealpix crate.
 """
 
-[build-system]
-requires = ["setuptools", "wheel", "setuptools-rust"]
-
 [lib]
 name = "cdshealpix"
 #path = "src/lib.rs"
