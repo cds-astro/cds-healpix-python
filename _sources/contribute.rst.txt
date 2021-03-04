@@ -18,29 +18,12 @@ If you want to contribute you first must download Rustup:
 
 .. code-block:: bash
 
-    curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 
 and follow the installation instructions.
 
 Rustup will allow you to compile the shared library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded and called from python.
-
-.. warning::
-    For the moment, ``cdshealpix`` relies on the nightly version of the 
-    Rust compiler. This is something that will be changed soon as we would
-    prefer cdshealpix to rely on the stable version instead.
-    
-    For changing your Rust version to the nightly one, please run:
-
-    .. code-block:: bash
-
-        rustup default nightly
-
-    Remember that you can go back to the stable version by running:
-
-    .. code-block:: bash
-
-        rustup default stable
 
 Then you can create a new virtual environment (using the virtualenv package) by specifying the version of python you need. Let is call it ``cdshealpix-env``.
 

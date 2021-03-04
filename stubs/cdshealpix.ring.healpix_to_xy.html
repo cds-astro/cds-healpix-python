@@ -4,16 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cdshealpix.ring.healpix_to_xy &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
@@ -78,14 +77,14 @@
 <h1>cdshealpix.ring.healpix_to_xy<a class="headerlink" href="#cdshealpix-ring-healpix-to-xy" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="cdshealpix.ring.healpix_to_xy">
-<code class="sig-prename descclassname">cdshealpix.ring.</code><code class="sig-name descname">healpix_to_xy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ipix</span></em>, <em class="sig-param"><span class="n">nside</span></em>, <em class="sig-param"><span class="n">num_threads</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.ring.healpix_to_xy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">cdshealpix.ring.</span></code><code class="sig-name descname"><span class="pre">healpix_to_xy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nside</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.ring.healpix_to_xy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Project the center of a HEALPix cell to the xy-HEALPix plane</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cells which centers will be projected</p>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cells which centers will be projected</p>
 </dd>
-<dt><strong>nside</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The nside of the HEALPix cells</p>
+<dt><strong>nside</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The nside of the HEALPix cells</p>
 </dd>
 <dt><strong>num_threads</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of threads to use for the computation. Default to 0 means
 it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
@@ -95,7 +94,7 @@ or the number of logical CPUs (otherwise)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>x, y: (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</dt><dd><p>The position of the HEALPix centers in the xy-HEALPix plane.
+<dt>x, y: (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</dt><dd><p>The position of the HEALPix centers in the xy-HEALPix plane.
 <span class="math notranslate nohighlight">\(x \in [0, 8[\)</span> and <span class="math notranslate nohighlight">\(y \in [-2, 2]\)</span></p>
 </dd>
 </dl>
@@ -156,7 +155,7 @@ or the number of logical CPUs (otherwise)</p>
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.5.1. &nbsp;
   </p>
 </footer>
   </body>

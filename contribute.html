@@ -4,17 +4,15 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contributing &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -81,25 +79,11 @@
 <div class="section" id="setting-up-your-development-environment">
 <h3>Setting up your development environment<a class="headerlink" href="#setting-up-your-development-environment" title="Permalink to this headline">¶</a></h3>
 <p>If you want to contribute you first must download Rustup:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl https://sh.rustup.rs -sSf <span class="p">|</span> sh -s -- --default-toolchain nightly -y
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --proto <span class="s1">&#39;=https&#39;</span> --tlsv1.2 -sSf https://sh.rustup.rs <span class="p">|</span> sh
 </pre></div>
 </div>
 <p>and follow the installation instructions.</p>
 <p>Rustup will allow you to compile the shared library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded and called from python.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>For the moment, <code class="docutils literal notranslate"><span class="pre">cdshealpix</span></code> relies on the nightly version of the
-Rust compiler. This is something that will be changed soon as we would
-prefer cdshealpix to rely on the stable version instead.</p>
-<p>For changing your Rust version to the nightly one, please run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rustup default nightly
-</pre></div>
-</div>
-<p>Remember that you can go back to the stable version by running:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rustup default stable
-</pre></div>
-</div>
-</div>
 <p>Then you can create a new virtual environment (using the virtualenv package) by specifying the version of python you need. Let is call it <code class="docutils literal notranslate"><span class="pre">cdshealpix-env</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>virtualenv -p /usr/bin/python3 cdshealpix-env
 </pre></div>
@@ -218,7 +202,7 @@ make html
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.5.1. &nbsp;
   </p>
 </footer>
   </body>
