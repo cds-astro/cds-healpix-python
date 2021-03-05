@@ -1,6 +1,6 @@
 # See http://read-the-docs.readthedocs.io/en/latest/yaml-config.html
-requirements_file: requirements-dev.txt
+requirements_file: requirements-doc.txt
 
 python:
-   version: 3.5
+   version: 3.7
    setup_py_install: true

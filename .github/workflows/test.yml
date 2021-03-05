@@ -1,0 +1,233 @@
+# The starting point of this script are the links provided on the maturing doc:
+# * https://github.com/nanoporetech/fast-ctc-decode/blob/b226ea0f2b2f4f474eff47349703d57d2ea4801b/.github/workflows/publish.yml
+# * https://github.com/konstin/complex-manylinux-maturin-docker/blob/main/.github/workflows/build.yml
+
+# Description of the usage of virtual env:
+# * https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
+
+name: test-cdshealpix
+
+on: [push]
+
+
+# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
+# Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+jobs:
+  
+  # Linux is specific because of manylinux, we have to use a docker file 
+  test-linux64-wheels:
+    # Containers run in Linux
+    runs-on: ubuntu-latest
+    # Docker Hub image that 'build-linux-wheels' executes in.
+    # See https://github.com/pypa/manylinux for this particular container:
+    # * CPython 3.5, 3.6, 3.7, 3.8 and 3.9, installed in /opt/python/<python tag>-<abi tag>
+    container: quay.io/pypa/manylinux2014_x86_64
+    # We are now in CentOS 7 64 bits
+    steps:
+     # Checkout the project        
+     - name: "Checkout branch ${{ github.head_ref }}"
+       uses: actions/checkout@v2
+       with:
+         ref: ${{ github.head_ref }}
+     # We need to install rust in the docker image (else, cargo is already available in github action)  
+     - name: "Install Rust"
+       run: |
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+     # Test Rust code
+     #- name: Run rust wrapper tests
+     #  run: |
+     #    source $HOME/.cargo/env
+     #    cargo test --verbose -- --nocapture
+     # Build and install locally wheels for all pre-installed python version (in /opt/python/, see docker image comment)
+     # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
+     - name: "Build and test wheels"
+       run: |
+         source $HOME/.cargo/env
+         for PYBIN in /opt/python/cp3[6789]*/bin; do
+           echo "Loop on PYBIN: $PYBIN"
+           # With maturin develop, we have to use virtualenv
+           "${PYBIN}/pip" install virtualenv
+           "${PYBIN}/virtualenv" cdshealpixenv
+           source cdshealpixenv/bin/activate
+           # No we are in the virtual env
+           echo "INSTALL MATURIN"
+           pip install maturin
+           echo "MATURIN DEVELOP"
+           maturin develop --release
+           echo "INSTALL DEPENDENCIES"
+           pip install -r requirements-dev.txt
+           echo "PERFORM TESTS"
+           python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
+           python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+           echo "CLEAN"
+           pip freeze > requirements-uninstall.txt
+           pip uninstall -r requirements-uninstall.txt -y
+           deactivate
+           rm -r cdshealpixenv/
+         done
+
+  # Linux is specifi because of manylinux, we have to use a docker file 
+  test-linux32-wheels:
+    # Containers run in Linux
+    runs-on: ubuntu-latest
+    # Docker Hub image that 'build-linux-wheels' executes in.
+    # See https://github.com/pypa/manylinux for this particular container:
+    # * CPython 3.5, 3.6, 3.7, 3.8 and 3.9, installed in /opt/python/<python tag>-<abi tag>
+    container: quay.io/pypa/manylinux2014_i686
+    # We are now in CentOS 7 32 bits
+    steps:
+     # Checkout the project        
+     - name: "Checkout branch ${{ github.head_ref }}"
+       uses: actions/checkout@v2
+       with:
+         ref: ${{ github.head_ref }}
+     # We need to install rust in the docker image (else, cargo is already available in github action)  
+     - name: "Intsall Rust"
+       run: |
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host i686-unknown-linux-gnu -y
+     # Test Rust code
+     #- name: Run rust wrapper tests
+     #  run: |
+     #    source $HOME/.cargo/env
+     #    cargo test --verbose -- --nocapture
+     # Build wheels for all pre-installed python version (in /opt/python/, see docker image comment)
+     # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
+     - name: "Build and test wheels"
+       run: |
+         source $HOME/.cargo/env
+         for PYBIN in /opt/python/cp3[6789]*/bin; do
+           echo "Loop on PYBIN: $PYBIN"
+           # With maturin develop, we have to use virtualenv
+           "${PYBIN}/pip" install virtualenv
+           "${PYBIN}/virtualenv" cdshealpixenv
+           source cdshealpixenv/bin/activate
+           # No we are in the virtual env
+           echo "INSTALL MATURIN"
+           pip install maturin
+           echo "MATURIN DEVELOP"
+           maturin develop --release
+           echo "INSTALL DEPENDENCIES"
+           pip install -r requirements-dev.txt
+           echo "PERFORM TESTS"
+           python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
+           python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+           echo "CLEAN"
+           pip freeze > requirements-uninstall.txt
+           pip uninstall -r requirements-uninstall.txt -y
+           deactivate
+           rm -r cdshealpixenv/
+         done 
+
+  test-macos-wheels: 
+    runs-on: macOS-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+    steps:
+     # Checkout the project
+     - name: "Checkout branch ${{ github.head_ref }}"
+       uses: actions/checkout@v2
+       with:
+         ref: ${{ github.head_ref }}   
+     # Test Rust code
+     #- name: Run rust wrapper tests
+     #  run: cargo test --verbose -- --nocapture
+     # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+     - name: "Set up Python ${{ matrix.python-version }} on MacOS"
+       uses: actions/setup-python@v2
+       with:
+         python-version: ${{ matrix.python-version }}
+     # Test python code
+     - name: "Build and test wheel for Python ${{ matrix.python-version }} on MacOS"
+       run: |
+         # Install, create and activate a python virtualenv
+         pip install virtualenv 
+         virtualenv cdshealpixenv
+         source cdshealpixenv/bin/activate
+         # Install and use maturin
+         pip install maturin 
+         maturin develop --release
+         # Install dependencies
+         pip install -r requirements-dev.txt
+         # Run tests
+         python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
+         python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+         # Clean
+         #pip freeze > requirements-uninstall.txt
+         #pip uninstall -r requirements-uninstall.txt -y
+         deactivate
+         #rm -r cdshealpixenv/
+
+  test-windows-wheels:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+    steps:
+      # Checkout the project       
+      - name: "Checkout branch ${{ github.head_ref }}"
+        uses: actions/checkout@v2
+        with: 
+          ref: ${{ github.head_ref }}
+      # Test Rust code
+      #- name: Run rust wrapper tests
+      #  run: cargo test --verbose -- --nocapture
+      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+      - name: "Set up Python ${{ matrix.python-version }} on Windows"
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      # Test python code
+      - name: "Build and test wheel for Python ${{ matrix.python-version }} on Windows"
+        run: |
+          # Install, create and activate a python virtualenv
+          # See: https://mothergeo-py.readthedocs.io/en/latest/development/how-to/venv-win.html
+          pip install virtualenv
+          virtualenv cdshealpixenv
+          .\cdshealpixenv\Scripts\activate
+          # Install and use maturin
+          pip install maturin
+          maturin develop --release
+          # Install dependencies
+          pip install -r requirements-dev.txt
+          # Run tests
+          python -m pytest -v "cdshealpix\tests\test_nested_healpix.py"
+          python -m pytest -v "cdshealpix\tests\test_ring_healpix.py"
+          deactivate
+
+  # Build the doc and run the tests in the doc (only for python 3.6 on ubuntu)
+  test-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout branch ${{ github.head_ref }}"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - name: "Set up Python 3.6 on Ubuntu"
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - name: "Build and test doc"
+        run: |
+          # Install virtualenv     
+          pip install virtualenv
+          # Create and activate a new virtualenv
+          virtualenv cdshealpixenv
+          source cdshealpixenv/bin/activate
+          # Install maturin
+          pip install maturin
+          # Build and install cdshealpix
+          maturin develop --release
+          # Install dependencies needed to run benches
+          # TODO: CHECK IS ASTROPY IS NOT MISSING
+          pip install -r requirements-doc.txt
+          # Compile the docs and run the test examples
+          cd ./docs
+          # * Generate the HTML files
+          make html
+          # * Run the API test examples
+          make doctest
+          cd ..
+          # Switch of the virtualenv
+          deactivate
+

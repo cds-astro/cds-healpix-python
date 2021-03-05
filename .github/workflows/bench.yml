@@ -1,0 +1,45 @@
+# Benches are mostly usefull on the local machine to keep track of performances
+# evolutions (possible improvements, regressions, ...).
+# This scripts is nonetheless useful:
+# * to document how to setup and exec bench on a machine
+# * to automatically perform benches (but no comparison with previous one's)
+#
+# To understand this scripts, look at the comments in deploy.yml or test.yml.
+
+name: bench-cdshealpix
+on: [push]
+jobs:
+  runs-benches:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        #os: [windows-latest, macOS-latest, ubuntu-latest]
+        #python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [ubuntu-latest]
+        python-version: [3.6]
+    steps:
+    - name: "Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}"
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: "Checkout the branch ${{ github.head_ref }}"       
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+    - name: "Install virtual env, build project and run benches"
+      run: |
+         # Install virtualenv     
+         pip install virtualenv
+         # Create and activate a new virtualenv
+         virtualenv cdshealpixenv
+         source cdshealpixenv/bin/activate
+         # Install maturin
+         pip install maturin
+         # Build and install cdshealpix
+         maturin develop --release
+         # Install dependencies needed to run benches
+         pip install -r requirements-bench.txt
+         # Run benches
+         python3 -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
+         deactivate
+

@@ -8,7 +8,7 @@ lat = [20, 20, -20, -20] * u.deg
 depth = 7
 ipix, depth, fully_covered = polygon_search(lon, lat, depth)
 
-from mocpy import MOC, WCS
+from mocpy import MOC, World2ScreenMPL
 from astropy.coordinates import SkyCoord, Angle
 
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
@@ -16,7 +16,7 @@ moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
-with WCS(fig,
+with World2ScreenMPL(fig,
         fov=100 * u.deg,
         center=SkyCoord(0, 0, unit='deg', frame='icrs'),
         coordsys="icrs",

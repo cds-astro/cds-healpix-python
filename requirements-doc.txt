@@ -1,0 +1,8 @@
+maturin
+astropy
+sphinx
+numpydoc
+astropy_sphinx_theme
+sphinxcontrib-bibtex<2.0.0
+matplotlib
+mocpy

@@ -35,6 +35,6 @@ default-features = false # do not include the default features, and optionally
 features = ["rayon"]
 
 [package.metadata.maturin]
-# Python dependencies needed by cdshealpix
-requires-dist = ["astropy~=4.2"]
+# Python dependencies needed by cdshealpix requires-dist = ["astropy~=4.2"]
+requires-dist = ["astropy"]
 

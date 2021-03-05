@@ -1,12 +1,2 @@
-maturin
-pytest_benchmark
-astropy_healpix
-healpy
-sphinx
-numpydoc
 astropy
-astropy_sphinx_theme
-sphinxcontrib-bibtex<2.0.0
-matplotlib
-mocpy
-spherical-geometry
+pytest
