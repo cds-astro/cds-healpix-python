@@ -14,14 +14,14 @@ ipix, depth, fully_covered = elliptical_cone_search(
     depth=10
 )
 
-from mocpy import MOC, WCS
+from mocpy import MOC, World2ScreenMPL
 
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
 import matplotlib.pyplot as plt
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
-with WCS(fig,
+with World2ScreenMPL(fig,
         fov=100 * u.deg,
         center=SkyCoord(0, 0, unit="deg", frame="icrs"),
         coordsys="icrs",
