@@ -6,12 +6,10 @@ name: publish-cdshealpix-wheels
 
 # Exec only if a tag starting by 'v' is pushed
 # see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-#on:
-#  push:
-#    tags:
-#       - v*
-# TODO: remove this once it works and decomment rpevious lines      
-on: [push]
+on:
+  push:
+    tags:
+       - v*
 
 # Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
 # Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
@@ -45,10 +43,9 @@ jobs:
          source $HOME/.cargo/env
          for PYBIN in /opt/python/cp3[6789]*/bin; do
            "${PYBIN}/pip" install maturin
+           #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
            # --skip-existing is a recent option, not yet in the binaries!
-           # "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
-           # TODO: to put in production, replace the next line by the previous one:
-           "${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
          done
 
   # Linux is specifi because of manylinux, we have to use a docker file 
@@ -80,10 +77,9 @@ jobs:
          source $HOME/.cargo/env
          for PYBIN in /opt/python/cp3[6789]*/bin; do
            "${PYBIN}/pip" install maturin
+           #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
            # --skip-existing is a recent option, not yet in the binaries!
-           #"${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
-           # TODO: to put in production, replace the next line by the previous one:
-           "${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
          done 
 
   build-macos-and-windows-wheels:      
@@ -110,11 +106,10 @@ jobs:
        run: |
          #python3 -m pip install maturin
          pip install maturin
+         #maturin build --release --no-sdist
          #maturin publish --no-sdist --skip-existing --username fxpineau 
          # --skip-existing is a recent option, not yet in the binaries!
-         # TODO: to put in production, replace the next line by the following one:
-         maturin build --release --no-sdist
-         # maturin publish --no-sdist --username fxpineau 
+         maturin publish --no-sdist --username fxpineau 
 
   # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
   #    using: https://github.com/JamesIves/github-pages-deploy-action

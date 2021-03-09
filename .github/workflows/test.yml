@@ -78,9 +78,7 @@ jobs:
     steps:
      # Checkout the project        
      - name: "Checkout branch ${{ github.head_ref }}"
-       uses: actions/checkout@v2
-       with:
-         ref: ${{ github.head_ref }}
+       uses: actions/checkout@v1
      # We need to install rust in the docker image (else, cargo is already available in github action)  
      - name: "Intsall Rust"
        run: |
@@ -95,7 +93,7 @@ jobs:
      - name: "Build and test wheels"
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[6789]*/bin; do
+         for PYBIN in /opt/python/cp36*/bin; do
            echo "Loop on PYBIN: $PYBIN"
            # With maturin develop, we have to use virtualenv
            "${PYBIN}/pip" install virtualenv
@@ -219,7 +217,6 @@ jobs:
           # Build and install cdshealpix
           maturin develop --release
           # Install dependencies needed to run benches
-          # TODO: CHECK IS ASTROPY IS NOT MISSING
           pip install -r requirements-doc.txt
           # Compile the docs and run the test examples
           cd ./docs
