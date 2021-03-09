@@ -70,7 +70,8 @@
 <p>This section describes how you can contribute to the project. It will require you to install:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.rust-lang.org/learn/get-started">Rustup</a>: the Rust installer and version management tool</p></li>
-<li><p><a class="reference external" href="https://github.com/PyO3/setuptools-rust">setuptools_rust</a> PyPI package</p></li>
+<li><p><a class="reference external" href="https://github.com/PyO3/maturin">maturin</a> PyPI package, see also on [pypi](<a class="reference external" href="https://pypi.org/project/maturin/">https://pypi.org/project/maturin/</a>)</p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">virtualenv</span> <span class="pre">&lt;https://pypi.org/project/virtualenv/&gt;__</span></code> PyPi package</p></li>
 <li><p>For running the basic tests: <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a></p></li>
 <li><p>For running the benchmarks: <a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">pytest_benchmark</a> <a class="reference external" href="https://github.com/astropy/astropy-healpix">astropy_healpix</a></p></li>
 </ul>
@@ -85,7 +86,8 @@
 <p>and follow the installation instructions.</p>
 <p>Rustup will allow you to compile the shared library for your local architecture. You will then obtain a .so (Linux/MacOS) or a .pyd (Windows) file that can be loaded and called from python.</p>
 <p>Then you can create a new virtual environment (using the virtualenv package) by specifying the version of python you need. Let is call it <code class="docutils literal notranslate"><span class="pre">cdshealpix-env</span></code>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>virtualenv -p /usr/bin/python3 cdshealpix-env
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install virtualenv
+virtualenv -p /usr/bin/python3 cdshealpix-env
 </pre></div>
 </div>
 <p>Activate it:</p>
@@ -94,6 +96,7 @@
 </div>
 <p>Install all the python dependencies for contributing:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r &lt;path_to_cloned_repo&gt;/requirements-dev.txt
+pip install -r &lt;path_to_cloned_repo&gt;/requirements-bench.txt
 </pre></div>
 </div>
 <p>At this moment you have correctly set up your development environment. When you will be done with your developments, remember to deactivate your environment by typing <code class="docutils literal notranslate"><span class="pre">`deactivate`</span></code>.</p>
@@ -101,18 +104,16 @@
 </div>
 <div class="section" id="dynamic-library-compilation">
 <h3>Dynamic library compilation<a class="headerlink" href="#dynamic-library-compilation" title="Permalink to this headline">¶</a></h3>
-<p>The generation of the shared library is managed by [setuptools_rust](<a class="reference external" href="https://github.com/PyO3/setuptools-rust">https://github.com/PyO3/setuptools-rust</a>). Just go to the root of your cloned repo:</p>
+<p>The generation of the shared library is managed by [maturin](<a class="reference external" href="https://github.com/PyO3/maturin">https://github.com/PyO3/maturin</a>). Just go to the root of your cloned repo:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;path_to_cloned_repo&gt;
 </pre></div>
 </div>
 <p>and run this command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py build
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install maturin
+maturin develop --release
 </pre></div>
 </div>
-<p>The generated .so will be located in a build/lib folder. Just copy it from build/lib to cdshealpix:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp build/lib/cdshealpix/*.so cdshealpix
-</pre></div>
-</div>
+<p>The generated .so will be located in a target/release folder. Just copy it from target/release to cdshealpix:</p>
 <p>You do not have to recompile the dynamic library every time if you just work on the python-side code. It is only necessary if you want to update the Rust code located in src/lib.rs.</p>
 </div>
 </div>
@@ -137,8 +138,8 @@
 <li><p><a class="reference external" href="https://mocpy.readthedocs.io/en/latest/">mocpy</a> is used to generate plots of the HEALPix cells obtained.</p></li>
 <li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a> is used by <code class="xref py py-obj docutils literal notranslate"><span class="pre">mocpy</span></code> for plotting purposes.</p></li>
 </ul>
-<p>These packages can be installed via pip but are already referred in <code class="xref py py-obj docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code>. So if you did a:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r &lt;path_to_cloned_repo&gt;/requirements-dev.txt
+<p>These packages can be installed via pip but are already referred in <code class="xref py py-obj docutils literal notranslate"><span class="pre">requirements-doc.txt</span></code>. So if you did a:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -r &lt;path_to_cloned_repo&gt;/requirements-doc.txt
 </pre></div>
 </div>
 <p>Then they are already installed.</p>
