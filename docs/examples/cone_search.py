@@ -1,6 +1,7 @@
 from cdshealpix import cone_search
+from astropy.coordinates import Longitude, Latitude
 import astropy.units as u
-ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+ipix, depth, fully_covered = cone_search(lon=Longitude(0, u.deg), lat=Latitude(0, u.deg), radius=10 * u.deg, depth=10)
 
 from mocpy import MOC, World2ScreenMPL
 from astropy.coordinates import SkyCoord, Angle

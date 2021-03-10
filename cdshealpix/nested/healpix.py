@@ -1,8 +1,12 @@
 from .. import cdshealpix # noqa
 
 import astropy.units as u
-from astropy.coordinates import SkyCoord, Angle
+from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
 import numpy as np
+
+# Do not fill by hand :)
+# > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
+__all__ = ['lonlat_to_healpix', 'skycoord_to_healpix', 'healpix_to_lonlat', 'healpix_to_skycoord', 'vertices', 'vertices_skycoord', 'neighbours', 'external_neighbours', 'cone_search', 'polygon_search', 'elliptical_cone_search', 'healpix_to_xy', 'lonlat_to_xy', 'xy_to_lonlat', 'bilinear_interpolation']
 
 # Raise a ValueError exception if the input 
 # HEALPix cells array contains invalid values
@@ -27,9 +31,9 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         The longitudes of the sky coordinates.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         The latitudes of the sky coordinates.
     depth : `numpy.ndarray`
         The depth of the returned HEALPix cell indexes.
@@ -55,17 +59,25 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     Examples
     --------
     >>> from cdshealpix import lonlat_to_healpix
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> lon = [0, 50, 25] * u.deg
-    >>> lat = [6, -12, 45] * u.deg
+    >>> lon = Longitude([0, 50, 25], u.deg)
+    >>> lat = Latitude([6, -12, 45], u.deg)
     >>> depth = np.array([5, 6])
     >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], depth[np.newaxis, :])
     """
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
-    lon = np.atleast_1d(lon.to_value(u.rad))
-    lat = np.atleast_1d(lat.to_value(u.rad))
+    #
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = np.atleast_1d(lon.rad)
+    lat = np.atleast_1d(lat.rad)
     depth = np.atleast_1d(depth)
 
     if (depth < 0).any() or (depth > 29).any():
@@ -136,7 +148,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, depth)
     """
-    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, depth, return_offsets, num_threads)
+    return lonlat_to_healpix(Longitude(skycoord.icrs.ra), Latitude(skycoord.icrs.dec), depth, return_offsets, num_threads)
 
 def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
@@ -162,7 +174,7 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
         The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.
 
     Raises
@@ -207,14 +219,14 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
 
     cdshealpix.healpix_to_lonlat(depth, ipix, dx, dy, lon, lat, num_threads)
 
-    return lon * u.rad, lat * u.rad
+    return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
     It is the equivalent of `healpix_to_lonlat` except that it returns `astropy.coordinates.SkyCoord` instead
-    of `astropy.units.Quantity`.
+    of `astropy.coordinates`.
     It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
     method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
@@ -279,8 +291,9 @@ def vertices(ipix, depth, step=1, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
-        The sky coordinates of the 4 vertices of the HEALPix cells. `lon` and `lat` are each `~astropy.units.Quantity` instances
+    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
+        The sky coordinates of the 4 vertices of the HEALPix cells. 
+        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively, 
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
 
     Raises
@@ -313,7 +326,7 @@ def vertices(ipix, depth, step=1, num_threads=0):
 
     cdshealpix.vertices(depth, ipix, step, lon, lat, num_threads)
 
-    return lon * u.rad, lat * u.rad
+    return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
@@ -468,9 +481,9 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         Longitude of the center of the cone.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         Latitude of the center of the cone.
     radius : `astropy.units.Quantity`
         Radius of the cone.
@@ -499,21 +512,28 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     Examples
     --------
     >>> from cdshealpix import cone_search
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
-    >>> ipix, depth, fully_covered = cone_search(lon=0 * u.deg, lat=0 * u.deg, radius=10 * u.deg, depth=10)
+    >>> ipix, depth, fully_covered = cone_search(lon=Longitude(0 * u.deg), lat=Latitude(0 * u.deg), radius=10 * u.deg, depth=10)
     """
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
-
+    
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
-        raise ValueError('The longitude, latitude and radius must be '
-                         'scalar Quantity objects')
+        raise ValueError('The longitude, latitude and radius must be scalar objects')
 
-    lon = lon.to_value(u.rad)
-    lat = lat.to_value(u.rad)
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(radius, u.Quantity), "`radius` must be of type `astropy.units.Quantity`"
+
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = lon.rad
+    lat = lat.rad
     radius = radius.to_value(u.rad)
 
-    ipix, depth, full = cdshealpix.cone_search(np.uint8(depth), np.uint8(depth_delta), np.float64(lon), np.float64(lat), np.float64(radius), np.bool(flat))
+    ipix, depth, full = cdshealpix.cone_search(np.uint8(depth), np.uint8(depth_delta), np.float64(lon), np.float64(lat), np.float64(radius), bool(flat))
     return ipix, depth, full
 
 def polygon_search(lon, lat, depth, flat=False):
@@ -524,9 +544,9 @@ def polygon_search(lon, lat, depth, flat=False):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         The longitudes of the vertices defining the polygon.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         The latitudes of the vertices defining the polygon.
     depth : int
         Maximum depth of the HEALPix cells that will be returned.
@@ -552,18 +572,25 @@ def polygon_search(lon, lat, depth, flat=False):
     Examples
     --------
     >>> from cdshealpix import polygon_search
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> lon = np.random.rand(3) * 360 * u.deg
-    >>> lat = (np.random.rand(3) * 178 - 89) * u.deg
+    >>> lon = Longitude(np.random.rand(3) * 360, u.deg)
+    >>> lat = Latitude((np.random.rand(3) * 180 - 90), u.deg)
     >>> max_depth = 12
     >>> ipix, depth, fully_covered = polygon_search(lon, lat, max_depth)
     """
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    lon = np.atleast_1d(lon.to_value(u.rad)).ravel()
-    lat = np.atleast_1d(lat.to_value(u.rad)).ravel()
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+   
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = np.atleast_1d(lon.rad).ravel()
+    lat = np.atleast_1d(lat.rad).ravel()
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
@@ -591,9 +618,9 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
     Parameters
     ----------
-    lon : `astropy.coordinates.Quantity`
+    lon : `astropy.coordinates.Longitude`
         Longitude of the center of the elliptical cone.
-    lat : `astropy.coordinates.Quantity`
+    lat : `astropy.coordinates.Latitude`
         Latitude of the center of the elliptical cone.
     a : `astropy.coordinates.Angle`
         Semi-major axe angle of the elliptical cone.
@@ -630,11 +657,11 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     Examples
     --------
     >>> from cdshealpix import elliptical_cone_search
+    >>> from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
     >>> import astropy.units as u
-    >>> from astropy.coordinates import Angle, SkyCoord
     >>> import numpy as np
-    >>> lon = 0 * u.deg
-    >>> lat = 0 * u.deg
+    >>> lon = Longitude(0, u.deg)
+    >>> lat = Latitude(0, u.deg)
     >>> a = Angle(50, unit="deg")
     >>> b = Angle(10, unit="deg")
     >>> pa = Angle(45, unit="deg")
@@ -644,10 +671,13 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+
     if not lon.isscalar or not lat.isscalar or not a.isscalar \
         or not b.isscalar or not pa.isscalar:
         raise ValueError('The longitude, latitude, semi-minor axe, semi-major axe and angle must be '
-                         'scalar Quantity objects')
+                         'scalar objects')
 
     if a >= Angle(np.pi/2.0, unit="rad"):
         raise ValueError('The semi-major axis exceeds 90deg.')
@@ -655,19 +685,16 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     if b > a:
         raise ValueError('The semi-minor axis is greater than the semi-major axis.')
 
-    lon = lon.to_value(u.rad)
-    lat = lat.to_value(u.rad)
-    a = a.to_value(u.rad)
-    b = b.to_value(u.rad)
-    pa = pa.to_value(u.rad)
-
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
     ipix, depth, full = cdshealpix.elliptical_cone_search(depth=depth,
         delta_depth=delta_depth,
-        lon=lon,
-        lat=lat,
-        a=a,
-        b=b,
-        pa=pa,
+        lon=lon.rad,
+        lat=lat.rad,
+        a=a.to_value(u.rad),
+        b=b.to_value(u.rad),
+        pa=pa.to_value(u.rad),
         flat=flat)
 
     return ipix, depth, full
@@ -733,9 +760,9 @@ def lonlat_to_xy(lon, lat, num_threads=0):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         The longitudes of the sky coordinates.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         The latitudes of the sky coordinates.
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
@@ -751,14 +778,21 @@ def lonlat_to_xy(lon, lat, num_threads=0):
     Examples
     --------
     >>> from cdshealpix import lonlat_to_xy
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> lon = [10, 25] * u.deg
-    >>> lat = [5, 10] * u.deg
+    >>> lon = Longitude([10, 25], u.deg)
+    >>> lat = Latitude([5, 10], u.deg)
     >>> x, y = lonlat_to_xy(lon, lat)
     """
-    lon = np.atleast_1d(lon.to_value(u.rad))
-    lat = np.atleast_1d(lat.to_value(u.rad))
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = np.atleast_1d(lon.rad)
+    lat = np.atleast_1d(lat.rad)
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
@@ -789,7 +823,7 @@ def xy_to_lonlat(x, y, num_threads=0):
 
     Returns
     -------
-    (lon, lat) : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+    (lon, lat) : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
         The coordinates on the sky
 
     Examples
@@ -821,7 +855,7 @@ def xy_to_lonlat(x, y, num_threads=0):
     num_threads = np.uint16(num_threads)
 
     cdshealpix.xy_to_lonlat(x, y, lon, lat, num_threads)
-    return lon * u.rad, lat * u.rad
+    return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 
 def bilinear_interpolation(lon, lat, depth, num_threads=0):
@@ -844,9 +878,9 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         The longitudes of the sky coordinates.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         The latitudes of the sky coordinates.
     depth : int
         The depth of the HEALPix cells
@@ -865,15 +899,19 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     Examples
     --------
     >>> from cdshealpix import bilinear_interpolation
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> lon = [10, 25] * u.deg
-    >>> lat = [5, 10] * u.deg
+    >>> lon = Longitude([10, 25], u.deg)
+    >>> lat = Latitude([5, 10], u.deg)
     >>> depth = 5
     >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
     """
-    lon = np.atleast_1d(lon.to_value(u.rad))
-    lat = np.atleast_1d(lat.to_value(u.rad))
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = np.atleast_1d(lon.rad)
+    lat = np.atleast_1d(lat.rad)
 
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")

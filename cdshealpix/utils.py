@@ -2,6 +2,8 @@ import numpy as np
 
 from . import cdshealpix # noqa
 
+__all__ = ['to_ring', 'from_ring']
+
 # Raise a ValueError exception if the input 
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, depth):
@@ -103,3 +105,4 @@ def from_ring(ipix, depth, num_threads=0):
     cdshealpix.from_ring(depth, ipix, ipix_nested, num_threads)
 
     return ipix_nested
+

@@ -1,8 +1,12 @@
 from .. import cdshealpix # noqa
 
 import astropy.units as u
-from astropy.coordinates import SkyCoord, Angle
+from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
 import numpy as np
+
+# Do not fill by hand :)
+# > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
+__all__ = ['lonlat_to_healpix', 'skycoord_to_healpix', 'healpix_to_lonlat', 'healpix_to_skycoord', 'healpix_to_xy', 'vertices', 'vertices_skycoord']
 
 # Raise a ValueError exception if the input 
 # HEALPix cells array contains invalid values
@@ -21,9 +25,9 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
 
     Parameters
     ----------
-    lon : `astropy.units.Quantity`
+    lon : `astropy.coordinates.Longitude`
         The longitudes of the sky coordinates.
-    lat : `astropy.units.Quantity`
+    lat : `astropy.coordinates.Latitude`
         The latitudes of the sky coordinates.
     nside : `numpy.ndarray`
         The nside of the returned HEALPix cell indexes.
@@ -49,17 +53,22 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
     Examples
     --------
     >>> from cdshealpix.ring import lonlat_to_healpix
+    >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> lon = [0, 50, 25] * u.deg
-    >>> lat = [6, -12, 45] * u.deg
+    >>> lon = Longitude([0, 50, 25], u.deg)
+    >>> lat = Latitude([6, -12, 45], u.deg)
     >>> depth = np.array([12, 14])
     >>> nside = 2 ** depth
     >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], nside[np.newaxis, :])
     """
     # Check arrays
-    lon = np.atleast_1d(lon.to_value(u.rad))
-    lat = np.atleast_1d(lat.to_value(u.rad))
+    #
+    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
+    # Although `to_value` is more generical (method of Quantity),
+    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    lon = np.atleast_1d(lon.rad)
+    lat = np.atleast_1d(lat.rad)
     nside = np.atleast_1d(nside)
 
     if (nside < 1).any() or (nside > (1 << 29)).any():
@@ -130,7 +139,7 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, 1 << depth)
     """
-    return lonlat_to_healpix(skycoord.icrs.ra, skycoord.icrs.dec, nside, return_offsets, num_threads)
+    return lonlat_to_healpix(Longitude(skycoord.icrs.ra), Latitude(skycoord.icrs.dec), nside, return_offsets, num_threads)
 
 def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
@@ -156,7 +165,7 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
+    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
         The sky coordinates of the center of the HEALPix cells given as a longitude, latitude tuple.
 
     Raises
@@ -201,7 +210,7 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     num_threads = np.uint16(num_threads)
 
     cdshealpix.healpix_to_lonlat_ring(nside, ipix, dx, dy, lon, lat, num_threads)
-    return lon * u.rad, lat * u.rad
+    return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells at a given nside.
@@ -329,8 +338,9 @@ def vertices(ipix, nside, step=1, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.units.Quantity`, `astropy.units.Quantity`)
-        The sky coordinates of the 4 vertices of the HEALPix cells. `lon` and `lat` are each `~astropy.units.Quantity` instances
+    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
+        The sky coordinates of the 4 vertices of the HEALPix cells. 
+        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively, 
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
 
     Warnings
@@ -366,7 +376,7 @@ def vertices(ipix, nside, step=1, num_threads=0):
     num_threads = np.uint16(num_threads)
 
     cdshealpix.vertices_ring(nside, ipix, step, lon, lat, num_threads)
-    return lon * u.rad, lat * u.rad
+    return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 def vertices_skycoord(ipix, nside, step=1):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given nside.

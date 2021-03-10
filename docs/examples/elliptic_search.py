@@ -2,12 +2,12 @@ import cdshealpix
 
 from cdshealpix import elliptical_cone_search
 import astropy.units as u
-from astropy.coordinates import Angle, SkyCoord
+from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
 import numpy as np
 
 ipix, depth, fully_covered = elliptical_cone_search(
-    lon=0 * u.deg,
-    lat=0 * u.deg,
+    lon=Longitude(0, u.deg),
+    lat=Latitude(0, u.deg),
     a=Angle(50, unit="deg"),
     b=Angle(5, unit="deg"),
     pa=Angle(30, unit="deg"),

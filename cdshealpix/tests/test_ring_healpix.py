@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from astropy.coordinates import Angle, SkyCoord
+from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
 import astropy.units as u
 
 from ..ring import lonlat_to_healpix, skycoord_to_healpix, \
@@ -14,8 +14,8 @@ def test_lonlat_to_healpix(size):
     depth = np.random.randint(30)
     nside = 1 << depth
 
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, nside=nside, return_offsets=True)
     ipixels, dx, dy = skycoord_to_healpix(
@@ -35,7 +35,7 @@ def test_lonlat_to_healpix(size):
 ])
 def test_lonlat_to_healpix_accurate(lon, lat, expected_ipix):
     nside = 2
-    ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, nside=nside, return_offsets=True)
+    ipixels, dx, dy = lonlat_to_healpix(lon=Longitude(lon), lat=Latitude(lat), nside=nside, return_offsets=True)
 
     assert ipixels == expected_ipix
     assert ((dx >= 0) & (dx <= 1)).all()

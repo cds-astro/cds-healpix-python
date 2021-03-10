@@ -1,9 +1,10 @@
 from cdshealpix import polygon_search
+from astropy.coordinates import Longitude, Latitude
 import astropy.units as u
 import numpy as np
 
-lon = [20, -20, -20, 20] * u.deg
-lat = [20, 20, -20, -20] * u.deg
+lon = Longitude([20, -20, -20, 20], u.deg)
+lat = Latitude([20, 20, -20, -20], u.deg)
 
 depth = 7
 ipix, depth, fully_covered = polygon_search(lon, lat, depth)

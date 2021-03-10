@@ -9,19 +9,36 @@ from ..nested import lonlat_to_healpix, \
  vertices, \
  neighbours, \
  cone_search
+from astropy.coordinates import Longitude, Latitude
 
 @pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")
 def test_lonlat_to_healpix_broadcast(benchmark):
     size = 10000
     depth = np.random.randint(low=0, high=29, size=10)
 
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
+
+    ipixels = benchmark(lonlat_to_healpix,
+        lon=lon[:, np.newaxis],
+        lat=lat[:, np.newaxis],
+        depth=depth[np.newaxis, :],
+        num_threads=1)
+
+@pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")
+def test_lonlat_to_healpix_broadcast_multithread(benchmark):
+    size = 10000
+    depth = np.random.randint(low=0, high=29, size=10)
+
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipixels = benchmark(lonlat_to_healpix,
         lon=lon[:, np.newaxis],
         lat=lat[:, np.newaxis],
         depth=depth[np.newaxis, :])
+
+
 
 @pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")
 def test_lonlat_to_healpix_astropy_broadcast(benchmark):
@@ -30,7 +47,7 @@ def test_lonlat_to_healpix_astropy_broadcast(benchmark):
 
     size = 10000
     lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lat = (np.random.rand(size) * 180 - 90) * u.deg
 
     ipixels = benchmark(astropy_healpix.core.lonlat_to_healpix,
         lon=lon[:, np.newaxis],
@@ -42,8 +59,17 @@ def test_lonlat_to_healpix_astropy_broadcast(benchmark):
 def test_lonlat_to_healpix(benchmark):
     size = 10000
     depth = 12
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
+
+    ipixels = benchmark(lonlat_to_healpix, lon=lon, lat=lat, depth=depth, num_threads=1)
+
+@pytest.mark.benchmark(group="lonlat_to_healpix")
+def test_lonlat_to_healpix_multithread(benchmark):
+    size = 10000
+    depth = 12
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipixels = benchmark(lonlat_to_healpix, lon=lon, lat=lat, depth=depth)
 
@@ -53,7 +79,7 @@ def test_lonlat_to_healpix_astropy(benchmark):
     depth = 12
     nside = 1 << depth
     lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lat = (np.random.rand(size) * 180 - 90) * u.deg
 
     ipixels = benchmark(astropy_healpix.core.lonlat_to_healpix, lon=lon, lat=lat, nside=nside, order='nested')
 
@@ -63,7 +89,16 @@ def test_healpix_to_lonlat_broadcast(benchmark):
     depth = np.random.randint(low=0, high=29, size=10)
     ipixels = np.random.randint(12 * 4 ** np.min(depth), size=size)
 
+    lon, lat = benchmark(healpix_to_lonlat, ipix=ipixels[:, np.newaxis], depth=depth[np.newaxis, :], num_threads=1)
+
+@pytest.mark.benchmark(group="healpix_to_lonlat_broadcast")
+def test_healpix_to_lonlat_broadcast_multithread(benchmark):
+    size = 1000
+    depth = np.random.randint(low=0, high=29, size=10)
+    ipixels = np.random.randint(12 * 4 ** np.min(depth), size=size)
+
     lon, lat = benchmark(healpix_to_lonlat, ipix=ipixels[:, np.newaxis], depth=depth[np.newaxis, :])
+
 
 @pytest.mark.benchmark(group="healpix_to_lonlat_broadcast")
 def test_healpix_to_lonlat_astropy_broadcast(benchmark):
@@ -79,6 +114,14 @@ def test_healpix_to_lonlat_astropy_broadcast(benchmark):
 
 @pytest.mark.benchmark(group="healpix_to_lonlat")
 def test_healpix_to_lonlat(benchmark):
+    size = 10000
+    depth = 12
+    ipixels = np.random.randint(12 * 4 ** (depth), size=size)
+
+    lon, lat = benchmark(healpix_to_lonlat, ipix=ipixels, depth=depth, num_threads=1)
+
+@pytest.mark.benchmark(group="healpix_to_lonlat")
+def test_healpix_to_lonlat_multithread(benchmark):
     size = 10000
     depth = 12
     ipixels = np.random.randint(12 * 4 ** (depth), size=size)
@@ -106,6 +149,14 @@ def test_healpix_vertices_lonlat(benchmark):
     size = 100000
     ipixels = np.random.randint(12 * 4**(depth), size=size)
 
+    lon, lat = benchmark(vertices, ipix=ipixels, depth=depth, num_threads=1)
+
+@pytest.mark.benchmark(group="vertices")
+def test_healpix_vertices_lonlat_multithread(benchmark):
+    depth = 12
+    size = 100000
+    ipixels = np.random.randint(12 * 4**(depth), size=size)
+
     lon, lat = benchmark(vertices, ipix=ipixels, depth=depth)
 
 @pytest.mark.benchmark(group="vertices")
@@ -125,13 +176,13 @@ def test_healpix_neighbours(benchmark):
     res = benchmark(neighbours, ipix=ipixels, depth=depth)
 
 lon_c = np.random.rand(1)[0] * 360 * u.deg
-lat_c = (np.random.rand(1)[0] * 178 - 89) * u.deg
+lat_c = (np.random.rand(1)[0] * 180 - 90) * u.deg
 radius_c = np.random.rand(1)[0] * 45 * u.deg
 depth_c = 5
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search(benchmark):
-    res = benchmark.pedantic(cone_search, kwargs={'lon': lon_c, 'lat': lat_c, 'radius': radius_c, 'depth': depth_c}, iterations=10, rounds=100)
+    res = benchmark.pedantic(cone_search, kwargs={'lon': Longitude(lon_c), 'lat': Latitude(lat_c), 'radius': radius_c, 'depth': depth_c}, iterations=10, rounds=100)
 
 @pytest.mark.benchmark(group="cone_search")
 def test_cone_search_astropy(benchmark):

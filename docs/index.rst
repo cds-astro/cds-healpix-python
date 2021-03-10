@@ -21,7 +21,7 @@ Welcome to cdshealpix's documentation!
 is available for Python 3.5, 3.6 and 3.7 through the following architectures:
 
 * Linux i686/x86_64
-* Windows 32/64 bits
+* Windows 64 bits
 * MacOS
 
 What is HEALPix ?

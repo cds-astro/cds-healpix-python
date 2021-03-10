@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from astropy.coordinates import Angle, SkyCoord
+from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
 import astropy.units as u
 
 from ..nested import lonlat_to_healpix, \
@@ -25,8 +25,8 @@ from .. import to_ring, from_ring
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_lonlat_to_healpix(size):
     depth = np.random.randint(30)
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipixels, dx, dy = lonlat_to_healpix(lon=lon, lat=lat, depth=depth, return_offsets=True)
     ipixels, dx, dy = skycoord_to_healpix(
@@ -79,17 +79,17 @@ def test_invalid_depth_exception():
     with pytest.raises(Exception):
         healpix_to_lonlat(ipix, 30)
     with pytest.raises(Exception):
-        lonlat_to_healpix(0 * u.deg, 0 * u.deg, -2)
+        lonlat_to_healpix(Longitude(0, u.deg), Latitude(0, u.deg), -2)
     with pytest.raises(Exception):
         vertices(ipix, -2)
     with pytest.raises(Exception):
         neighbours(ipix, -2)
     with pytest.raises(Exception):
-        cone_search(0 * u.deg, 0 * u.deg, 15 * u.deg, -2)
+        cone_search(Longitude(0, u.deg), Latitude(0, u.deg), 15 * u.deg, -2)
 
 def test_lonlat_shape_exception():
-    lon = [2, 5] * u.deg
-    lat = [5] * u.deg
+    lon = Longitude([2, 5], u.deg)
+    lat = Latitude([5], u.deg)
     
     with pytest.raises(Exception):
         lonlat_to_healpix(lon, lat, 12)
@@ -134,8 +134,8 @@ def test_neighbours():
     assert ((neigh >= -1) & (neigh < npix)).all()
 
 def test_cone_search():
-    lon = np.random.rand(1)[0] * 359 * u.deg
-    lat = (np.random.rand(1)[0] * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(1)[0] * 360, u.deg)
+    lat = Latitude(np.random.rand(1)[0] * 180 - 90, u.deg)
     radius = (np.random.rand(1)[0] * 45) * u.deg
     max_depth = 5
 
@@ -146,13 +146,13 @@ def test_cone_search():
     assert ((ipix >= 0) & (ipix < npix)).all()
 
     with pytest.raises(Exception):
-        cone_search([5, 4] * u.deg, [5, 4] * u.deg, 15 * u.deg, depth=12)
+        cone_search(Longitude([5, 4], u.deg), Latitude([5, 4], u.deg), 15 * u.deg, depth=12)
 
 @pytest.mark.parametrize("size", [0, 1, 2, 3, 5, 6, 9])
 def test_polygon_search(size):
     max_depth = 12
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     if size < 3:
         with pytest.raises(Exception):
@@ -167,34 +167,34 @@ def test_polygon_search(size):
 # From https://github.com/cds-astro/cds-healpix-python/issues/10
 def test_polygon_search_issue10():
     coords = SkyCoord([(353.8156714, -56.33202193), (6.1843286, -56.33202193), (5.27558041, -49.49378172), (354.72441959, -49.49378172)], unit=u.deg)
-    polygon_search(coords.ra, coords.dec, 12)
+    polygon_search(Longitude(coords.ra), Latitude(coords.dec), 12)
 
 # From https://github.com/cds-astro/mocpy/issues/57
 def test_polygon_search_issue57():
     coords = np.load('./cdshealpix/tests/moc_coords.npy')
-    polygon_search(coords[:,0] * u.deg, coords[:,1] * u.deg, 9)
+    polygon_search(Longitude(coords[:,0], u.deg), Latitude(coords[:,1], u.deg), 9)
 
 def test_polygon_search_not_enough_vertices_exception():
     # 4 total vertices but only 2 distincts. This should fail
     with pytest.raises(Exception):
-        polygon_search([1, 1, 2, 1] * u.deg, [1, 1, 3, 1] * u.deg, depth=12)
+        polygon_search(Longitude([1, 1, 2, 1], u.deg), Latitude([1, 1, 3, 1], u.deg), depth=12)
     
     # 4 total vertices and 3 distincts. This should pass
-    polygon_search([1, 1, 2, 1] * u.deg, [1, 1, 3, 2] * u.deg, depth=12)
+    polygon_search(Longitude([1, 1, 2, 1], u.deg), Latitude([1, 1, 3, 2], u.deg), depth=12)
 
 # Following an error spotted by the hips2fits service that usually deal with big polygons
 def test_polygon_search_big_polygon():
     ipix, _, _ = polygon_search(
-        [268.84102386, 299.40278164, 66.0951825,   96.66953469] * u.deg,
-        [-45.73283624, 38.47909742, 38.76894431, -45.43470273] * u.deg,
+        Longitude([268.84102386, 299.40278164, 66.0951825,   96.66953469], u.deg),
+        Latitude([-45.73283624, 38.47909742, 38.76894431, -45.43470273], u.deg),
         depth=0,
         flat=True
     )
     assert (ipix == np.asarray([0, 3, 4, 5, 7, 8, 9, 10, 11])).all()
 
 def test_elliptical_cone_search():
-    lon = 0 * u.deg
-    lat = 0 * u.deg
+    lon = Longitude(0, u.deg)
+    lat = Latitude(0, u.deg)
     a = Angle(50, unit="deg")
     b = Angle(5, unit="deg")
     pa = Angle(0, unit="deg")
@@ -247,8 +247,8 @@ def assert_equal_array(first, second, tol=1e-8):
     assert ((first - second) < tol).all()
 
 @pytest.mark.parametrize("lon, lat, expected_x, expected_y", [
-    (np.array([0., 0.78539816, 1.57079633]) * u.rad,
-     np.array([-0.72972766, 0., 0.72972766]) * u.rad,
+    (Longitude(np.array([0., 0.78539816, 1.57079633]), u.rad),
+     Latitude(np.array([-0.72972766, 0., 0.72972766]), u.rad),
      np.array([0., 1., 2.]),
      np.array([-1., 0., 1.]))
 ])
@@ -303,8 +303,8 @@ def test_from_vs_to_ring(size):
 def test_bilinear_interpolation(depth):
     size = 1000
 
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipix, weights = bilinear_interpolation(lon, lat, depth)
     
@@ -316,8 +316,8 @@ def test_bilinear_interpolation(depth):
 def test_bilinear_interpolation(depth):
     size = 1000
 
-    lon = np.random.rand(size) * 360 * u.deg
-    lat = (np.random.rand(size) * 178 - 89) * u.deg
+    lon = Longitude(np.random.rand(size) * 360, u.deg)
+    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     ipix, weights = bilinear_interpolation(lon, lat, depth)
     
@@ -327,8 +327,8 @@ def test_bilinear_interpolation(depth):
 
 @pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
 def test_bilinear_interpolation2(depth):
-    lon = [10, 25, np.nan] * u.deg
-    lat = [5, 10, 45] * u.deg
+    lon = Longitude([10, 25, np.nan], u.deg)
+    lat = Latitude([5, 10, 45], u.deg)
     depth = 5
 
     ipix, weights = bilinear_interpolation(lon, lat, depth)
