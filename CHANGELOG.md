@@ -2,7 +2,7 @@
 
 ## 0.6.0
 
-Not erleased yet! Released 2021-XX-XX
+Released 2021-03-11
 
 ### API changes
 
