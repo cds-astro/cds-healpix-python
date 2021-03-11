@@ -115,6 +115,7 @@ maturin develop --release
 </div>
 <p>The generated .so will be located in a target/release folder. Just copy it from target/release to cdshealpix:</p>
 <p>You do not have to recompile the dynamic library every time if you just work on the python-side code. It is only necessary if you want to update the Rust code located in src/lib.rs.</p>
+<p>Remark: if you pull a new version and get errors, you may have to remove <code class="xref py py-obj docutils literal notranslate"><span class="pre">Cargo.lock</span></code> before executing <code class="xref py py-obj docutils literal notranslate"><span class="pre">maturin</span> <span class="pre">develop</span> <span class="pre">--release</span></code>.</p>
 </div>
 </div>
 <div class="section" id="running-the-tests">

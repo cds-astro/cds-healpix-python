@@ -75,6 +75,8 @@ The generated .so will be located in a target/release folder. Just copy it from 
 
 You do not have to recompile the dynamic library every time if you just work on the python-side code. It is only necessary if you want to update the Rust code located in src/lib.rs.
 
+Remark: if you pull a new version and get errors, you may have to remove `Cargo.lock` before executing `maturin develop --release`.
+
 Running the tests
 -----------------
 
@@ -90,6 +92,7 @@ For running only the benchmarks:
 .. code-block:: bash
 
     python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
+
 
 Working on the documentation
 ----------------------------
