@@ -896,6 +896,13 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
         For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
         a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.
 
+    Warning
+    -------
+    Panics if a nan value is found in either lon or lat.  
+    You can e.g. transform nan by 0 before calling this method using `lon = np.nan_to_num(lon) or `lat = np.nan_to_num(lat)`.
+    But it is probably cleaner to pre-filter the pair of coordinates by removing the one containing a nan.
+
+
     Examples
     --------
     >>> from cdshealpix import bilinear_interpolation
@@ -931,9 +938,6 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     ipix = np.empty(shape=num_coords + (4,), dtype=np.uint64)
     weights = np.empty(shape=num_coords + (4,), dtype=np.float64)
 
-    # Replace nan values with 0
-    lon = np.nan_to_num(lon)
-    lat = np.nan_to_num(lat)
     num_threads = np.uint16(num_threads)
 
     # Call the rust bilinear interpolation code

@@ -327,7 +327,7 @@ def test_bilinear_interpolation(depth):
 
 @pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
 def test_bilinear_interpolation2(depth):
-    lon = Longitude([10, 25, np.nan], u.deg)
+    lon = Longitude([10, 25, 0], u.deg)
     lat = Latitude([5, 10, 45], u.deg)
     depth = 5
 
