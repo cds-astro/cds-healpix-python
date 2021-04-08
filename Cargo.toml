@@ -3,13 +3,15 @@ name = "cdshealpix"
 version = "0.6.0"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 edition = "2018"
-license = "MIT/Apache-2.0"
+license-file = "LICENSE"
 readme = "README.md"
 categories = ["algorithms", "science"] 
-repository = "https://github.com/cds-astro/cds-healpix-python/"
-description = """
-Python cdshealpix package wrapping code of the cdshealpix crate.
-"""
+repository = "https://github.com/cds-astro/cds-healpix-python"
+description = "Python cdshealpix package wrapping code of the cdshealpix crate."
+documentation = "https://cds-astro.github.io/cds-healpix-python"
+
+[badges]
+maintenance = { status = "actively-developed" }
 
 [lib]
 name = "cdshealpix"
