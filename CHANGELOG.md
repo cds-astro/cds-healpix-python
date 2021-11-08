@@ -1,5 +1,14 @@
 # `cdshealpix-python` Change Log
 
+## 0.6.1
+
+Released 2021-11-08
+
+### Chnages
+
+* Based on cds-healpix-rust v0.5.5
+
+
 ## 0.6.0
 
 Released 2021-03-11

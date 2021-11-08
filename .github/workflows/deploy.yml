@@ -41,7 +41,7 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[6789]*/bin; do
+         for PYBIN in /opt/python/cp3[678910]*/bin; do
            "${PYBIN}/pip" install maturin
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --manylinux 2014 --username "$MATURIN_USERNAME"
          done
@@ -73,7 +73,7 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[6789]*/bin; do
+         for PYBIN in /opt/python/cp3[678910]*/bin; do
            "${PYBIN}/pip" install maturin
            #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
@@ -87,7 +87,7 @@ jobs:
       fail-fast: false      
       matrix:
         os: [windows-latest, macOS-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
     steps:
      # Checkout the project       
      - uses: actions/checkout@v2

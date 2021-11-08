@@ -21,7 +21,7 @@ use healpix::compass_point::{MainWind, Cardinal, Ordinal};
 /// like in python.
 /// ndarray also offers a way to zip arrays (immutably and mutably) and
 /// operate on them element-wisely. This is done in parallel using the
-/// ndarray-parallel crate that offers the par_apply method on zipped arrays.
+/// ndarray-parallel crate that offers the par_for_each method on zipped arrays.
 #[pymodule]
 fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// wrapper of to_ring and from_ring
@@ -40,7 +40,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         pool.install(||
             Zip::from(&ipix)
                 .and(&mut ipix_ring)
-                .par_apply(|&pix, pix_ring| {
+                .par_for_each(|&pix, pix_ring| {
                     *pix_ring = layer.to_ring(pix);
                 })
         );
@@ -63,7 +63,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         pool.install(||
             Zip::from(&ipix_ring)
                 .and(&mut ipix)
-                .par_apply(|&pix_ring, pix| {
+                .par_for_each(|&pix_ring, pix| {
                     *pix = layer.from_ring(pix_ring);
                 })
         );
@@ -98,7 +98,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&lon)
                 .and(&lat)
                 .and(&depth)
-                .par_apply(|p, x, y, &lon, &lat, &d| {
+                .par_for_each(|p, x, y, &lon, &lat, &d| {
                     let r = healpix::nested::hash_with_dxdy(d, lon, lat);
                     *p = r.0;
                     *x = r.1;
@@ -134,7 +134,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&lon)
                 .and(&lat)
                 .and(&nside)
-                .par_apply(|p, x, y, &lon, &lat, &n| {
+                .par_for_each(|p, x, y, &lon, &lat, &n| {
                     let r = healpix::ring::hash_with_dxdy(n, lon, lat);
                     *p = r.0;
                     *x = r.1;
@@ -167,7 +167,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&depth)
                 .and(&mut lon)
                 .and(&mut lat)
-                .par_apply(|&p, &d, lon, lat| {
+                .par_for_each(|&p, &d, lon, lat| {
                     let (l, b) = healpix::nested::sph_coo(d, p, dx, dy);
                     *lon = l;
                     *lat = b;
@@ -198,7 +198,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&nside)
                 .and(&mut lon)
                 .and(&mut lat)
-                .par_apply(|&p, &n, lon, lat| {
+                .par_for_each(|&p, &n, lon, lat| {
                     let (l, b) = healpix::ring::sph_coo(n, p, dx, dy);
                     *lon = l;
                     *lat = b;
@@ -228,7 +228,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&depth)
                 .and(&mut x)
                 .and(&mut y)
-                .par_apply(|&p, &d, hpx, hpy| {
+                .par_for_each(|&p, &d, hpx, hpy| {
                     let layer = healpix::nested::get(d);
                     let (x, y) = layer.center_of_projected_cell(p);
                     *hpx = x;
@@ -257,7 +257,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&nside)
                 .and(&mut x)
                 .and(&mut y)
-                .par_apply(|&p, &n, hpx, hpy| {
+                .par_for_each(|&p, &n, hpx, hpy| {
                     let (x, y) = healpix::ring::center_of_projected_cell(n, p);
                     *hpx = x;
                     *hpy = y;
@@ -287,7 +287,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&lat)
                 .and(&mut x)
                 .and(&mut y)
-                .par_apply(|&l, &b, hpx, hpy| {
+                .par_for_each(|&l, &b, hpx, hpy| {
                     let (x, y) = healpix::proj(l, b);
                     *hpx = x;
                     *hpy = y;
@@ -317,7 +317,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                 .and(&y)
                 .and(&mut lon)
                 .and(&mut lat)
-                .par_apply(|&hpx, &hpy, l, b| {
+                .par_for_each(|&hpx, &hpy, l, b| {
                     let r = healpix::unproj(hpx, hpy);
                     *l = r.0;
                     *b = r.1;
@@ -345,10 +345,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
             if step == 1 {
-                Zip::from(lon.genrows_mut())
-                    .and(lat.genrows_mut())
+                Zip::from(lon.rows_mut())
+                    .and(lat.rows_mut())
                     .and(&ipix)
-                    .par_apply(|mut lon, mut lat, &p| {
+                    .par_for_each(|mut lon, mut lat, &p| {
                         let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::nested::vertices(depth, p);
                         lon[0] = s_lon;
                         lat[0] = s_lat;
@@ -363,10 +363,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                         lat[3] = w_lat;
                     });
             } else {
-                Zip::from(lon.genrows_mut())
-                    .and(lat.genrows_mut())
+                Zip::from(lon.rows_mut())
+                    .and(lat.rows_mut())
                     .and(&ipix)
-                    .par_apply(|mut lon, mut lat, &p| {
+                    .par_for_each(|mut lon, mut lat, &p| {
                         let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
 
                         for i in 0..(4*step) {
@@ -395,10 +395,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(lon.genrows_mut())
-                .and(lat.genrows_mut())
+            Zip::from(lon.rows_mut())
+                .and(lat.rows_mut())
                 .and(&ipix)
-                .par_apply(|mut lon, mut lat, &p| {
+                .par_for_each(|mut lon, mut lat, &p| {
                     let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::ring::vertices(nside, p);
                     lon[0] = s_lon;
                     lat[0] = s_lat;
@@ -432,9 +432,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(neighbours.genrows_mut())
+            Zip::from(neighbours.rows_mut())
                 .and(&ipix)
-                .par_apply(|mut n, &p| {
+                .par_for_each(|mut n, &p| {
                     let map = healpix::nested::neighbours(depth, p, true);
 
                     n[0] = map.get(MainWind::S)
@@ -591,10 +591,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let layer = healpix::nested::get(depth);
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(corners.genrows_mut())
-                .and(edges.genrows_mut())
+            Zip::from(corners.rows_mut())
+                .and(edges.rows_mut())
                 .and(&ipix)
-                .par_apply(|mut c, mut e, &p| {
+                .par_for_each(|mut c, mut e, &p| {
                     let external_edges = layer.external_edge_struct(p, delta_depth);
 
                     c[0] = external_edges.get_corner(&Cardinal::S)
@@ -659,11 +659,11 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(ipix.genrows_mut())
-                .and(weights.genrows_mut())
+            Zip::from(ipix.rows_mut())
+                .and(weights.rows_mut())
                 .and(&lon)
                 .and(&lat)
-                .par_apply(|mut pix, mut w, &l, &b| {
+                .par_for_each(|mut pix, mut w, &l, &b| {
                     let [(p1, w1), (p2, w2), (p3, w3), (p4, w4)] = layer.bilinear_interpolation(l, b);
 
                     pix[0] = p1;

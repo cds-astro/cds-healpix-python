@@ -15,6 +15,26 @@ It is compatible with Python 3.6 to 3.8.
 pip install cdshealpix
 ```
 
+Or
+```bash
+conda install -c conda-forge cdshealpix
+```
+
+Reminder on conda activation/deactivation:
+```bash
+conda config --set auto_activate_base false
+conda activate base
+conda deactivate
+```
+
+Test:
+```python
+import cdshealpix
+from cdshealpix import healpix_to_lonlat
+lon, lat = healpix_to_lonlat(0, 0)
+assert lon.rad[0] == 0.7853981633974483
+```
+
 # Features
 
 * [Nested and Ring HEALPix notation](https://cds-astro.github.io/cds-healpix-python/api.html#cdshealpix) supported
