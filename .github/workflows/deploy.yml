@@ -78,6 +78,32 @@ jobs:
            #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
          done 
+  
+  # Comming in large parts from @odidev in MOCPy pull request
+  build-aarch64-wheels:
+    runs-on: ubuntu-latest
+    env:
+      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      img: quay.io/pypa/manylinux2014_aarch64
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v2
+     - name: "Set up QEMU"
+       id: qemu
+       uses: docker/setup-qemu-action@v1
+     - name: Install dependencies
+       run: |
+         docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+         ${{ env.img }} \
+         bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+           source $HOME/.cargo/env && \
+           for PYBIN in /opt/python/cp3[678910]*/bin; do
+             echo "Loop on PYBIN: $PYBIN"
+             "${PYBIN}/pip" install maturin
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
+           done'
+
 
   build-macos-and-windows-wheels:      
     runs-on: ${{ matrix.os }}
