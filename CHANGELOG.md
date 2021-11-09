@@ -2,12 +2,12 @@
 
 ## 0.6.1
 
-Released 2021-11-08
+Released 2021-11-09
 
-### Chnages
+### Changes
 
-* Based on cds-healpix-rust v0.5.5
-
+* Update cds-healpix-rust to v0.5.5
+* Update pyO3 dependencies (replace deprecated methods)
 
 ## 0.6.0
 
