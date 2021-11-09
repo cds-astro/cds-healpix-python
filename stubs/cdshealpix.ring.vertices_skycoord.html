@@ -4,16 +4,17 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>cdshealpix.ring.vertices_skycoord &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css" />
     
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -73,11 +74,11 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="cdshealpix-ring-vertices-skycoord">
+  <section id="cdshealpix-ring-vertices-skycoord">
 <h1>cdshealpix.ring.vertices_skycoord<a class="headerlink" href="#cdshealpix-ring-vertices-skycoord" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="cdshealpix.ring.vertices_skycoord">
-<code class="sig-prename descclassname"><span class="pre">cdshealpix.ring.</span></code><code class="sig-name descname"><span class="pre">vertices_skycoord</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nside</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.ring.vertices_skycoord" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="cdshealpix.ring.vertices_skycoord">
+<span class="sig-prename descclassname"><span class="pre">cdshealpix.ring.</span></span><span class="sig-name descname"><span class="pre">vertices_skycoord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nside</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.ring.vertices_skycoord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the sky coordinates of the vertices of some HEALPix cells at a given nside.</p>
 <p>This method returns the 4 vertices of each cell in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ipix</span></code>.
 This method is wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.vertices">vertices</a>
@@ -85,7 +86,7 @@ method from the <a class="reference external" href="https://crates.io/crates/cds
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
 </dd>
 <dt><strong>nside</strong><span class="classifier">int</span></dt><dd><p>The nside of the HEALPix cells.</p>
 </dd>
@@ -98,7 +99,7 @@ of vertices returned is <code class="docutils literal notranslate"><span class="
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>vertices</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v4.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt><dd><p>The sky coordinates of the 4 vertices of the HEALPix cells. <a class="reference internal" href="cdshealpix.ring.vertices.html#cdshealpix.ring.vertices" title="cdshealpix.ring.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a> is a <a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v4.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object
+<dt><strong>vertices</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v5.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt><dd><p>The sky coordinates of the 4 vertices of the HEALPix cells. <a class="reference internal" href="cdshealpix.ring.vertices.html#cdshealpix.ring.vertices" title="cdshealpix.ring.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a> is a <a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v5.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object
 containing a <span class="math notranslate nohighlight">\(N\)</span> x <span class="math notranslate nohighlight">\(4\)</span> numpy array where N is the number of HEALPix cells given in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ipix</span></code>.</p>
 </dd>
 </dl>
@@ -120,7 +121,7 @@ containing a <span class="math notranslate nohighlight">\(N\)</span> x <span cla
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -163,7 +164,7 @@ containing a <span class="math notranslate nohighlight">\(N\)</span> x <span cla
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.5.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
   </p>
 </footer>
   </body>

@@ -4,12 +4,13 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Contributing &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -65,7 +66,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="contributing">
+  <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
 <p>This section describes how you can contribute to the project. It will require you to install:</p>
 <ul class="simple">
@@ -75,9 +76,9 @@
 <li><p>For running the basic tests: <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a></p></li>
 <li><p>For running the benchmarks: <a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">pytest_benchmark</a> <a class="reference external" href="https://github.com/astropy/astropy-healpix">astropy_healpix</a></p></li>
 </ul>
-<div class="section" id="compiling-the-cdshealpix-rust-dynamic-library">
+<section id="compiling-the-cdshealpix-rust-dynamic-library">
 <h2>Compiling the cdshealpix Rust dynamic library<a class="headerlink" href="#compiling-the-cdshealpix-rust-dynamic-library" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="setting-up-your-development-environment">
+<section id="setting-up-your-development-environment">
 <h3>Setting up your development environment<a class="headerlink" href="#setting-up-your-development-environment" title="Permalink to this headline">¶</a></h3>
 <p>If you want to contribute you first must download Rustup:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --proto <span class="s1">&#39;=https&#39;</span> --tlsv1.2 -sSf https://sh.rustup.rs <span class="p">|</span> sh
@@ -101,8 +102,8 @@ pip install -r &lt;path_to_cloned_repo&gt;/requirements-bench.txt
 </div>
 <p>At this moment you have correctly set up your development environment. When you will be done with your developments, remember to deactivate your environment by typing <code class="docutils literal notranslate"><span class="pre">`deactivate`</span></code>.</p>
 <p>The next step tells you how to generate the shared library associated with <a class="reference internal" href="api.html#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a>.</p>
-</div>
-<div class="section" id="dynamic-library-compilation">
+</section>
+<section id="dynamic-library-compilation">
 <h3>Dynamic library compilation<a class="headerlink" href="#dynamic-library-compilation" title="Permalink to this headline">¶</a></h3>
 <p>The generation of the shared library is managed by [maturin](<a class="reference external" href="https://github.com/PyO3/maturin">https://github.com/PyO3/maturin</a>). Just go to the root of your cloned repo:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;path_to_cloned_repo&gt;
@@ -116,9 +117,9 @@ maturin develop --release
 <p>The generated .so will be located in a target/release folder. Just copy it from target/release to cdshealpix:</p>
 <p>You do not have to recompile the dynamic library every time if you just work on the python-side code. It is only necessary if you want to update the Rust code located in src/lib.rs.</p>
 <p>Remark: if you pull a new version and get errors, you may have to remove <code class="xref py py-obj docutils literal notranslate"><span class="pre">Cargo.lock</span></code> before executing <code class="xref py py-obj docutils literal notranslate"><span class="pre">maturin</span> <span class="pre">develop</span> <span class="pre">--release</span></code>.</p>
-</div>
-</div>
-<div class="section" id="running-the-tests">
+</section>
+</section>
+<section id="running-the-tests">
 <h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
 <p>For running the tests + benchmarks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -v cdshealpix
@@ -128,8 +129,8 @@ maturin develop --release
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
 </pre></div>
 </div>
-</div>
-<div class="section" id="working-on-the-documentation">
+</section>
+<section id="working-on-the-documentation">
 <h2>Working on the documentation<a class="headerlink" href="#working-on-the-documentation" title="Permalink to this headline">¶</a></h2>
 <p>To work on the documentation you have to install a few more packages:</p>
 <ul class="simple">
@@ -154,8 +155,8 @@ make html
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firefox docs/_build/html/index.html <span class="p">&amp;</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -204,7 +205,7 @@ make html
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.5.2. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
   </p>
 </footer>
   </body>
