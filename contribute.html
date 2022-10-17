@@ -1,19 +1,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Contributing &#8212; cdshealpix  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -67,7 +70,7 @@
           <div class="body" role="main">
             
   <section id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">¶</a></h1>
 <p>This section describes how you can contribute to the project. It will require you to install:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.rust-lang.org/learn/get-started">Rustup</a>: the Rust installer and version management tool</p></li>
@@ -77,9 +80,9 @@
 <li><p>For running the benchmarks: <a class="reference external" href="https://pytest-benchmark.readthedocs.io/en/latest/">pytest_benchmark</a> <a class="reference external" href="https://github.com/astropy/astropy-healpix">astropy_healpix</a></p></li>
 </ul>
 <section id="compiling-the-cdshealpix-rust-dynamic-library">
-<h2>Compiling the cdshealpix Rust dynamic library<a class="headerlink" href="#compiling-the-cdshealpix-rust-dynamic-library" title="Permalink to this headline">¶</a></h2>
+<h2>Compiling the cdshealpix Rust dynamic library<a class="headerlink" href="#compiling-the-cdshealpix-rust-dynamic-library" title="Permalink to this heading">¶</a></h2>
 <section id="setting-up-your-development-environment">
-<h3>Setting up your development environment<a class="headerlink" href="#setting-up-your-development-environment" title="Permalink to this headline">¶</a></h3>
+<h3>Setting up your development environment<a class="headerlink" href="#setting-up-your-development-environment" title="Permalink to this heading">¶</a></h3>
 <p>If you want to contribute you first must download Rustup:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl --proto <span class="s1">&#39;=https&#39;</span> --tlsv1.2 -sSf https://sh.rustup.rs <span class="p">|</span> sh
 </pre></div>
@@ -104,7 +107,7 @@ pip install -r &lt;path_to_cloned_repo&gt;/requirements-bench.txt
 <p>The next step tells you how to generate the shared library associated with <a class="reference internal" href="api.html#module-cdshealpix" title="cdshealpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix</span></code></a>.</p>
 </section>
 <section id="dynamic-library-compilation">
-<h3>Dynamic library compilation<a class="headerlink" href="#dynamic-library-compilation" title="Permalink to this headline">¶</a></h3>
+<h3>Dynamic library compilation<a class="headerlink" href="#dynamic-library-compilation" title="Permalink to this heading">¶</a></h3>
 <p>The generation of the shared library is managed by [maturin](<a class="reference external" href="https://github.com/PyO3/maturin">https://github.com/PyO3/maturin</a>). Just go to the root of your cloned repo:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> &lt;path_to_cloned_repo&gt;
 </pre></div>
@@ -120,7 +123,7 @@ maturin develop --release
 </section>
 </section>
 <section id="running-the-tests">
-<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h2>
+<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading">¶</a></h2>
 <p>For running the tests + benchmarks:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -v cdshealpix
 </pre></div>
@@ -131,7 +134,7 @@ maturin develop --release
 </div>
 </section>
 <section id="working-on-the-documentation">
-<h2>Working on the documentation<a class="headerlink" href="#working-on-the-documentation" title="Permalink to this headline">¶</a></h2>
+<h2>Working on the documentation<a class="headerlink" href="#working-on-the-documentation" title="Permalink to this heading">¶</a></h2>
 <p>To work on the documentation you have to install a few more packages:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://www.sphinx-doc.org/en/master/">sphinx</a> is responsible for building the documentation in HTML.</p></li>
@@ -179,9 +182,11 @@ make html
 </ul>
 
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="stubs/cdshealpix.ring.vertices_skycoord.html"
-                        title="previous chapter">cdshealpix.ring.vertices_skycoord</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="stubs/cdshealpix.ring.vertices_skycoord.html"
+                          title="previous chapter">cdshealpix.ring.vertices_skycoord</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -205,7 +210,7 @@ make html
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 5.3.0. &nbsp;
   </p>
 </footer>
   </body>

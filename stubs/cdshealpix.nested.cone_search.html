@@ -1,19 +1,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>cdshealpix.nested.cone_search &#8212; cdshealpix  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -74,7 +77,7 @@
           <div class="body" role="main">
             
   <section id="cdshealpix-nested-cone-search">
-<h1>cdshealpix.nested.cone_search<a class="headerlink" href="#cdshealpix-nested-cone-search" title="Permalink to this headline">¶</a></h1>
+<h1>cdshealpix.nested.cone_search<a class="headerlink" href="#cdshealpix-nested-cone-search" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="cdshealpix.nested.cone_search">
 <span class="sig-prename descclassname"><span class="pre">cdshealpix.nested.</span></span><span class="sig-name descname"><span class="pre">cone_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.nested.cone_search" title="Permalink to this definition">¶</a></dt>
@@ -82,13 +85,13 @@
 <p>This method is wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.cone_coverage_approx_custom">cone</a>
 method from the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.Longitude.html#astropy.coordinates.Longitude" title="(in Astropy v5.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Longitude</span></code></a></span></dt><dd><p>Longitude of the center of the cone.</p>
+<dt><strong>lon</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.Longitude.html#astropy.coordinates.Longitude" title="(in Astropy v5.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Longitude</span></code></a></span></dt><dd><p>Longitude of the center of the cone.</p>
 </dd>
-<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.Latitude.html#astropy.coordinates.Latitude" title="(in Astropy v5.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Latitude</span></code></a></span></dt><dd><p>Latitude of the center of the cone.</p>
+<dt><strong>lat</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.Latitude.html#astropy.coordinates.Latitude" title="(in Astropy v5.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.Latitude</span></code></a></span></dt><dd><p>Latitude of the center of the cone.</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v5.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>Radius of the cone.</p>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.units.Quantity.html#astropy.units.Quantity" title="(in Astropy v5.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.units.Quantity</span></code></a></span></dt><dd><p>Radius of the cone.</p>
 </dd>
 <dt><strong>depth</strong><span class="classifier">int</span></dt><dd><p>Maximum depth of the HEALPix cells that will be returned.</p>
 </dd>
@@ -99,9 +102,9 @@ The depth at which the computations will be made will therefore be equal to <cod
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>ipix, depth, fully_covered</strong><span class="classifier">(<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</span></dt><dd><p>A tuple containing 3 numpy arrays of identical size:</p>
+<dt><strong>ipix, depth, fully_covered</strong><span class="classifier">(<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</span></dt><dd><p>A tuple containing 3 numpy arrays of identical size:</p>
 <ul class="simple">
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ipix</span></code> stores HEALPix cell indices.</p></li>
 <li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">depth</span></code> stores HEALPix cell depths.</p></li>
@@ -110,7 +113,7 @@ The depth at which the computations will be made will therefore be equal to <cod
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>When one of <code class="xref py py-obj docutils literal notranslate"><span class="pre">lat</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">lon</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code> contains more that one value.</p>
 </dd>
@@ -136,16 +139,23 @@ The depth at which the computations will be made will therefore be equal to <cod
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
-<li><a class="reference internal" href="#">cdshealpix.nested.cone_search</a></li>
+<li><a class="reference internal" href="#">cdshealpix.nested.cone_search</a><ul>
+<li><a class="reference internal" href="#cdshealpix.nested.cone_search"><code class="docutils literal notranslate"><span class="pre">cone_search()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cdshealpix.nested.external_neighbours.html"
-                        title="previous chapter">cdshealpix.nested.external_neighbours</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="cdshealpix.nested.polygon_search.html"
-                        title="next chapter">cdshealpix.nested.polygon_search</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="cdshealpix.nested.external_neighbours.html"
+                          title="previous chapter">cdshealpix.nested.external_neighbours</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="cdshealpix.nested.polygon_search.html"
+                          title="next chapter">cdshealpix.nested.polygon_search</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -169,7 +179,7 @@ The depth at which the computations will be made will therefore be equal to <cod
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 5.3.0. &nbsp;
   </p>
 </footer>
   </body>

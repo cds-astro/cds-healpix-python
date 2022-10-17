@@ -1,19 +1,22 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Examples &#8212; cdshealpix  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -73,9 +76,9 @@
           <div class="body" role="main">
             
   <section id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
 <section id="cone-search">
-<h2>Cone search<a class="headerlink" href="#cone-search" title="Permalink to this headline">¶</a></h2>
+<h2>Cone search<a class="headerlink" href="#cone-search" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">cone_search</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -109,11 +112,11 @@
 </div>
 <p>(<a class="reference external" href="../examples/cone_search.py">Source code</a>, <a class="reference external" href="../examples/cone_search.png">png</a>, <a class="reference external" href="../examples/cone_search.hires.png">hires.png</a>, <a class="reference external" href="../examples/cone_search.pdf">pdf</a>)</p>
 <figure class="align-default">
-<img alt="../_images/cone_search.png" src="../_images/cone_search.png" />
+<img alt="../_images/cone_search.png" class="plot-directive" src="../_images/cone_search.png" />
 </figure>
 </section>
 <section id="elliptical-cone-search">
-<h2>Elliptical cone search<a class="headerlink" href="#elliptical-cone-search" title="Permalink to this headline">¶</a></h2>
+<h2>Elliptical cone search<a class="headerlink" href="#elliptical-cone-search" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cdshealpix</span>
 
 <span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">elliptical_cone_search</span>
@@ -157,11 +160,11 @@
 </div>
 <p>(<a class="reference external" href="../examples/elliptic_search.py">Source code</a>, <a class="reference external" href="../examples/elliptic_search.png">png</a>, <a class="reference external" href="../examples/elliptic_search.hires.png">hires.png</a>, <a class="reference external" href="../examples/elliptic_search.pdf">pdf</a>)</p>
 <figure class="align-default">
-<img alt="../_images/elliptic_search.png" src="../_images/elliptic_search.png" />
+<img alt="../_images/elliptic_search.png" class="plot-directive" src="../_images/elliptic_search.png" />
 </figure>
 </section>
 <section id="polygon-search">
-<h2>Polygon search<a class="headerlink" href="#polygon-search" title="Permalink to this headline">¶</a></h2>
+<h2>Polygon search<a class="headerlink" href="#polygon-search" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">polygon_search</span>
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span>
 <span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
@@ -201,7 +204,7 @@
 </div>
 <p>(<a class="reference external" href="../examples/polygon_search.py">Source code</a>, <a class="reference external" href="../examples/polygon_search.png">png</a>, <a class="reference external" href="../examples/polygon_search.hires.png">hires.png</a>, <a class="reference external" href="../examples/polygon_search.pdf">pdf</a>)</p>
 <figure class="align-default">
-<img alt="../_images/polygon_search.png" src="../_images/polygon_search.png" />
+<img alt="../_images/polygon_search.png" class="plot-directive" src="../_images/polygon_search.png" />
 </figure>
 </section>
 </section>
@@ -223,12 +226,16 @@
 </ul>
 
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../install.html"
-                        title="previous chapter">Install</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../api.html"
-                        title="next chapter">API</a></p>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../install.html"
+                          title="previous chapter">Install</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../api.html"
+                          title="next chapter">API</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -252,7 +259,7 @@
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 4.2.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 5.3.0. &nbsp;
   </p>
 </footer>
   </body>
