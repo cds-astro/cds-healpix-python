@@ -914,6 +914,9 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     >>> depth = 5
     >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
     """
+    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
     # Longitude/Latitude ensure that the values the contain are in the correct ranges.
@@ -925,6 +928,11 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
 
     if lon.shape != lat.shape:
         raise ValueError("The number of longitudes does not match with the number of latitudes given")
+
+    # Useless since we test isinstance at the beginning of the function
+    #if ((lat < np.pi/2.0) | (lat > np.pi/2.0)).any():
+    #    raise ValueError("Lat must be in [-pi/2, 2pi/2]")
+
 
     num_coords = lon.shape
 
