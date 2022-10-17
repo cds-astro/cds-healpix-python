@@ -1,0 +1,44 @@
+name: publish-cdshealpix-wheels-linux32
+
+on: [push, workflow_dispatch]
+
+jobs:
+
+  # Linux is specifi because of manylinux, we have to use a docker file 
+  build-linux32-wheels:
+    # Containers run in Linux
+    runs-on: ubuntu-latest
+    # Docker Hub image that 'build-linux-wheels' executes in.
+    # See https://github.com/pypa/manylinux for this particular container:
+    # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
+    container: quay.io/pypa/manylinux2014_i686
+    # We are now in CentOS 7 32 bits
+    steps:
+     # Checkout the project        
+     - name: "Checkout the full project"
+       uses: actions/checkout@v1
+     # We need to install rust in the docker image (else, cargo is already available in github action)  
+     - name: "Install Rust"
+       run: |
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host i686-unknown-linux-gnu -y
+     # Build wheels for all pre-installed python version (in /opt/python/, see docker image comment)
+     # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
+     # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
+     - name: "Build and publish wheels"
+       shell: bash
+       env:
+        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+       run: |
+         source $HOME/.cargo/env
+         for PYBIN in /opt/python/cp3[8910]*/bin; do
+           "${PYBIN}/pip" install --upgrade pip
+           "${PYBIN}/pip" install maturin
+           "${PYBIN}/maturin" -V
+           rustc -vV
+           echo "${PYBIN}/python"
+           echo "CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target i686-unknown-linux-gnu
+         done
+
+
