@@ -2,7 +2,7 @@
 name = "cdshealpix"
 version = "0.6.2"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
-edition = "2018"
+edition = "2021"
 license = "BSD-3-Clause"
 readme = "README.md"
 categories = ["algorithms", "science"] 
@@ -15,11 +15,9 @@ maintenance = { status = "actively-developed" }
 
 [lib]
 name = "cdshealpix"
-#path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-# The cdshealpix rust crate
 healpix = { package = "cdshealpix", version = "0.6.4" }
 rayon = "1.5.3"
 

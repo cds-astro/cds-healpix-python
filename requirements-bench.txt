@@ -1,4 +1,4 @@
-astropy
+astropy>=5.1
 pytest_benchmark
 astropy_healpix
 healpy

@@ -1,2 +1,2 @@
-astropy
+astropy>=5.1
 pytest

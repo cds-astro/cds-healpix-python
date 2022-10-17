@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     # Docker Hub image that 'build-linux-wheels' executes in.
     # See https://github.com/pypa/manylinux for this particular container:
-    # * CPython 3.5, 3.6, 3.7, 3.8 and 3.9, installed in /opt/python/<python tag>-<abi tag>
+    # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
     container: quay.io/pypa/manylinux2014_x86_64
     # We are now in CentOS 7 64 bits
     steps:
@@ -43,7 +43,7 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[78910]*/bin; do
+         for PYBIN in /opt/python/cp3[8910]*/bin; do
            "${PYBIN}/pip" install maturin
            maturin -V
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 musllinux_1_2 --username "$MATURIN_USERNAME"
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     # Docker Hub image that 'build-linux-wheels' executes in.
     # See https://github.com/pypa/manylinux for this particular container:
-    # * CPython 3.5, 3.6, 3.7, 3.8 and 3.9, installed in /opt/python/<python tag>-<abi tag>
+    # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
     container: quay.io/pypa/manylinux2014_i686
     # We are now in CentOS 7 32 bits
     steps:
@@ -76,7 +76,7 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[78910]*/bin; do
+         for PYBIN in /opt/python/cp3[8910]*/bin; do
            "${PYBIN}/pip" install maturin
            maturin -V
            #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
@@ -104,7 +104,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp3[78910]*/bin; do
+           for PYBIN in /opt/python/cp3[8910]*/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install maturin
              "${PYBIN}/maturin" -V
@@ -120,7 +120,7 @@ jobs:
       fail-fast: false      
       matrix:
         os: [windows-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
     steps:
      # Checkout the project       
      - uses: actions/checkout@v2
@@ -153,7 +153,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
     steps:
      # Checkout the project       
      - uses: actions/checkout@v2
@@ -188,10 +188,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
-      - name: "Set up Python 3.8 on Ubuntu"
+      - name: "Set up Python 3.9 on Ubuntu"
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: '3.9'
       - name: "Build doc"
         run: |
           # Build the doc

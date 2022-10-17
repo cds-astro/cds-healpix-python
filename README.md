@@ -9,7 +9,11 @@ This is a BSD-licensed HEALPix package which is wrapped around the [cdshealpix R
 
 [cdshealpix](https://pypi.org/project/cdshealpix/) is multi-platform and is currently deployed on PyPI for i686 and x86_64 archs.
 
-It is compatible with Python 3.7 to 3.10.
+It is compatible with Python 3.8 to 3.11
+* phyton dependencies are numpy and astropy
+* astropy v5.1 does not seem to be compatible with python 3.7 [this page](https://repology.org/project/python:astropy/versions)
+* astropy requieres numpy>=1.18 according to [this page](https://docs.astropy.org/en/stable/install.html)
+
 
 ```bash
 pip install cdshealpix
@@ -50,4 +54,5 @@ assert lon.rad[0] == 0.7853981633974483
 # Documentation
 
 Here is the link to the [documentation](https://cds-astro.github.io/cds-healpix-python/) for informations about how to use this package.
+
 
