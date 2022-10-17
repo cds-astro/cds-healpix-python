@@ -44,9 +44,12 @@ jobs:
        run: |
          source $HOME/.cargo/env
          for PYBIN in /opt/python/cp3[8910]*/bin; do
+           "${PYBIN}/pip" install --upgrade pip
            "${PYBIN}/pip" install maturin
-           maturin -V
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 musllinux_1_2 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" -V
+           rustc -vV
+           echo "${PYBIN}/python"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
          done
 
   # Linux is specifi because of manylinux, we have to use a docker file 
@@ -77,10 +80,12 @@ jobs:
        run: |
          source $HOME/.cargo/env
          for PYBIN in /opt/python/cp3[8910]*/bin; do
+           "${PYBIN}/pip" install --upgrade pip
            "${PYBIN}/pip" install maturin
-           maturin -V
-           #"${PYBIN}/maturin" build --release -i "${PYBIN}/python" --no-sdist --manylinux 2014
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --no-sdist --compatibility manylinux2014 musllinux_1_2 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" -V
+           rustc -vV
+           echo "${PYBIN}/python"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
          done 
   
   # Comming in large parts from @odidev in MOCPy pull request
@@ -92,7 +97,7 @@ jobs:
       img: quay.io/pypa/manylinux2014_aarch64
     steps:
      - name: Checkout
-       uses: actions/checkout@v2
+       uses: actions/checkout@v3
      - name: "Set up QEMU"
        id: qemu
        uses: docker/setup-qemu-action@v1
@@ -104,11 +109,14 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
+           rustup target add aarch64-unknown-linux-gnu && \
            for PYBIN in /opt/python/cp3[8910]*/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install maturin
              "${PYBIN}/maturin" -V
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --no-sdist --manylinux 2014 --username "$MATURIN_USERNAME"
+             rustc -vV
+             echo "${PYBIN}/python"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu
            done'
 
 
@@ -123,7 +131,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
      # Checkout the project       
-     - uses: actions/checkout@v2
+     - uses: actions/checkout@v3
      #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
        uses: actions/setup-python@v2
@@ -139,11 +147,13 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          #python3 -m pip install maturin
+         pip install --upgrade pip
          pip install maturin
          #maturin build --release --no-sdist
          #maturin publish --no-sdist --skip-existing --username fxpineau 
          maturin -V
-         maturin publish --interpreter python${{matrix.python_version}} --skip-existing --username "$MATURIN_PASSWORD" 
+         rustc -vV
+         maturin publish --interpreter python${{matrix.python_version}} --skip-existing --username fxpineau
 
   build-macos-wheels:
     runs-on: ${{ matrix.os }}
@@ -156,7 +166,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
      # Checkout the project       
-     - uses: actions/checkout@v2
+     - uses: actions/checkout@v3
      #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
        uses: actions/setup-python@v2
@@ -172,11 +182,13 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          #python3 -m pip install maturin
+         rustup target add aarch64-apple-darwin
+         pip install --upgrade pip
          pip install maturin
          maturin -V
-         #maturin build --release --no-sdist
-         #maturin publish --no-sdist --skip-existing --username fxpineau 
-         maturin publish --interpreter python${{matrix.python_version}} --universal2 --skip-existing  --username "$MATURIN_PASSWORD"
+         rustc -vV
+         echo "${PYBIN}/python"
+         maturin publish --interpreter python${{matrix.python_version}} --universal2 --skip-existing  --username "$MATURIN_USERNAME"
 
 
   # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
@@ -185,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch ${{ github.head_ref }}"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
       - name: "Set up Python 3.9 on Ubuntu"
@@ -196,10 +208,12 @@ jobs:
         run: |
           # Build the doc
           # - Install virtualenv     
+          pip install --upgrade pip
           pip install virtualenv
           # - Create and activate a new virtualenv
           virtualenv cdshealpixenv
           source cdshealpixenv/bin/activate
+          pip install --upgrade pip
           # - Install maturin
           pip install maturin
           # - Build and install cdshealpix
