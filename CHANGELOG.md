@@ -1,5 +1,20 @@
 # `cdshealpix-python` Change Log
 
+## 0.6.2
+
+Released 2022-10-17
+
+### Changes
+
+* Tests for Longitude and Latitude in  `bilinear_interpolation`
+* Remove support for Python 3.6 (https://endoflife.date/python)
+* Update dependencies
+    + update cds-healpix-rust to v0.6
+    + ...
+
+--------------------------------------------------------------------------------
+
+
 ## 0.6.1
 
 Released 2021-11-09

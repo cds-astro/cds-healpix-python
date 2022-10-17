@@ -9,7 +9,7 @@ This is a BSD-licensed HEALPix package which is wrapped around the [cdshealpix R
 
 [cdshealpix](https://pypi.org/project/cdshealpix/) is multi-platform and is currently deployed on PyPI for i686 and x86_64 archs.
 
-It is compatible with Python 3.6 to 3.10.
+It is compatible with Python 3.7 to 3.10.
 
 ```bash
 pip install cdshealpix

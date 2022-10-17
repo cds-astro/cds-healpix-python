@@ -24,8 +24,11 @@ use healpix::compass_point::{MainWind, Cardinal, Ordinal};
 /// ndarray-parallel crate that offers the par_for_each method on zipped arrays.
 #[pymodule]
 fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
-    /// wrapper of to_ring and from_ring
-    #[pyfn(m, "to_ring")]
+
+    // wrapper of to_ring and from_ring
+
+    #[pyfn(m)]
+    #[pyo3(name = "to_ring")]
     unsafe fn to_ring(_py: Python,
         depth: u8,
         ipix: &PyArrayDyn<u64>,
@@ -47,7 +50,8 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         Ok(())
     }
-    #[pyfn(m, "from_ring")]
+
+    #[pyfn(m)]
     unsafe fn from_ring(_py: Python,
         depth: u8,
         ipix_ring: &PyArrayDyn<u64>,
@@ -72,7 +76,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `lonlat_to_healpix`
-    #[pyfn(m, "lonlat_to_healpix")]
+    #[pyfn(m)]
     unsafe fn lonlat_to_healpix(_py: Python,
         depth: &PyArrayDyn<u8>,
         lon: &PyArrayDyn<f64>,
@@ -109,7 +113,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(())
     }
 
-    #[pyfn(m, "lonlat_to_healpix_ring")]
+    #[pyfn(m)]
     unsafe fn lonlat_to_healpix_ring(_py: Python,
         nside: &PyArrayDyn<u32>,
         lon: &PyArrayDyn<f64>,
@@ -146,7 +150,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `healpix_to_lonlat`
-    #[pyfn(m, "healpix_to_lonlat")]
+    #[pyfn(m)]
     unsafe fn healpix_to_lonlat(_py: Python,
         depth: &PyArrayDyn<u8>,
         ipix: &PyArrayDyn<u64>,
@@ -177,7 +181,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Ok(())
     }
 
-    #[pyfn(m, "healpix_to_lonlat_ring")]
+    #[pyfn(m)]
     unsafe fn healpix_to_lonlat_ring(_py: Python,
         nside: &PyArrayDyn<u32>,
         ipix: &PyArrayDyn<u64>,
@@ -209,7 +213,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `healpix_to_xy`
-    #[pyfn(m, "healpix_to_xy")]
+    #[pyfn(m)]
     unsafe fn healpix_to_xy(_py: Python,
         ipix: &PyArrayDyn<u64>,
         depth: &PyArrayDyn<u8>,
@@ -238,7 +242,8 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         Ok(())
     }
-    #[pyfn(m, "healpix_to_xy_ring")]
+
+    #[pyfn(m)]
     unsafe fn healpix_to_xy_ring(_py: Python,
         nside: &PyArrayDyn<u32>,
         ipix: &PyArrayDyn<u64>,
@@ -268,7 +273,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `lonlat_to_xy`
-    #[pyfn(m, "lonlat_to_xy")]
+    #[pyfn(m)]
     unsafe fn lonlat_to_xy(_py: Python,
         lon: &PyArrayDyn<f64>,
         lat: &PyArrayDyn<f64>,
@@ -298,7 +303,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `xy_to_lonlat`
-    #[pyfn(m, "xy_to_lonlat")]
+    #[pyfn(m)]
     unsafe fn xy_to_lonlat(_py: Python,
         x: &PyArrayDyn<f64>,
         y: &PyArrayDyn<f64>,
@@ -328,7 +333,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// wrapper of `vertices`
-    #[pyfn(m, "vertices")]
+    #[pyfn(m)]
     unsafe fn vertices(_py: Python,
         depth: u8,
         ipix: &PyArrayDyn<u64>,
@@ -380,7 +385,8 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
 
         Ok(())
     }
-    #[pyfn(m, "vertices_ring")]
+
+    #[pyfn(m)]
     unsafe fn vertices_ring(_py: Python,
         nside: u32,
         ipix: &PyArrayDyn<u64>,
@@ -420,7 +426,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     /// Wrapper of `neighbours`
     /// The given array must be of size 9
     /// `[S, SE, E, SW, C, NE, W, NW, N]`
-    #[pyfn(m, "neighbours")]
+    #[pyfn(m)]
     unsafe fn neighbours(_py: Python,
         depth: u8,
         ipix: &PyArrayDyn<u64>,
@@ -462,7 +468,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// Cone search
-    #[pyfn(m, "cone_search")]
+    #[pyfn(m)]
     fn cone_search(py: Python,
         depth: u8,
         delta_depth: u8,
@@ -496,7 +502,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// Elliptical cone search
-    #[pyfn(m, "elliptical_cone_search")]
+    #[pyfn(m)]
     fn elliptical_cone_search(py: Python,
         depth: u8,
         delta_depth: u8,
@@ -534,7 +540,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     }
 
     /// Polygon search
-    #[pyfn(m, "polygon_search")]
+    #[pyfn(m)]
     unsafe fn polygon_search(py: Python,
         depth: u8,
         lon: &PyArrayDyn<f64>,
@@ -574,7 +580,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         )
     }
 
-    #[pyfn(m, "external_neighbours")]
+    #[pyfn(m)]
     unsafe fn external_neighbours(_py: Python,
         depth: u8,
         delta_depth: u8,
@@ -640,7 +646,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     ////////////////////////////
     // Bilinear interpolation //
     ////////////////////////////
-    #[pyfn(m, "bilinear_interpolation")]
+    #[pyfn(m)]
     unsafe fn bilinear_interpolation(_py: Python,
                               depth: u8,
                               lon: &PyArrayDyn<f64>,
