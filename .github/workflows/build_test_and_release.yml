@@ -26,10 +26,11 @@ jobs:
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
       - name: "Set up Python ${{ matrix.python-version }}"
         uses: actions/setup-python@v4
+        id: py
         with:
-          id: py
           python-version: ${{ matrix.python-version }}
           architecture: x64
+      - run: echo '${{ steps.py.outputs.python-path }}'     
       # Install rust, see https://github.com/actions-rs/toolchain
       - name: "Install Rust toolchain"
         uses: actions-rs/toolchain@v1
@@ -44,18 +45,17 @@ jobs:
           maturin-version: latest
           command: build
           target: x86_64
-          args: -i ${{ steps.py.outputs.python-path }} --release --out dist
+          args: --release --out dist
       - name: "Install built wheel and test it - x86_64"
         run: |
+          # Install local wheel
+          pip install cdshealpix --no-deps --no-index --find-links dist --force-reinstall
           # Install dependencies for tests
           pip install -r requirements-dev.txt
-          # Install local wheel
-          pip install cdshealpix --no-index --find-links dist --force-reinstall
           # Check import is ok
           python -c "import cdshealpix"
           # Run test
-          python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-          python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+          pytest --pyargs cdshealpix
       - name: "Build wheel - universal2"
         uses: messense/maturin-action@v1
         with:
@@ -65,15 +65,14 @@ jobs:
           args: --release --universal2 --out dist
       - name: "Install built wheel and test - universal2"
         run: |
+          # Install local wheel
+          pip install cdshealpix --no-deps --no-index --find-links dist --force-reinstall
           # Install dependencies for tests
           pip install -r requirements-dev.txt
-          # Install local wheel
-          pip install cdshealpix --no-index --find-links dist --force-reinstall
           # Check import is ok
           python -c "import cdshealpix"
           # Run test
-          python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-          python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+          pytest --pyargs cdshealpix
       # Upload artifac in "dist" repo, see https://github.com/actions/upload-artifact
       # more info here: https://github.com/actions/upload-artifact
       - name: "Upload wheels"
@@ -123,15 +122,14 @@ jobs:
           args: -i ${{ steps.py.outputs.python-path }} --release --out dist
       - name: "Install built wheel and test it - ${{ matrix.python-version }} - ${{ matrix.target }}"
         run: |
+          # Install local wheel
+          pip install cdshealpix --no-deps --no-index --find-links dist --force-reinstall
           # Install dependencies for tests
           pip install -r requirements-dev.txt
-          # Install local wheel
-          pip install cdshealpix --no-index --find-links dist --force-reinstall
           # Check import is ok
           python -c "import cdshealpix"
           # Run test
-          python -m pytest -v -s "cdshealpix\tests\test_nested_healpix.py"
-          python -m pytest -v -s "cdshealpix\tests\test_ring_healpix.py"
+          pytest --pyargs cdshealpix
       # Upload artifac in "dist" repo, see https://github.com/actions/upload-artifact
       # more info here: https://github.com/actions/upload-artifact
       - name: "Upload wheels"
@@ -150,8 +148,8 @@ jobs:
       fail-fast: false
       matrix:
         target: [x86_64, i686]
-        #python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
-        python-version: ['3.8']
+        #python-version: [3.7, 3.8, 3.9, 3.10, 3.11-dev]
+        #python-version: [3.8]
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
@@ -160,11 +158,13 @@ jobs:
           ref: ${{ github.head_ref }}
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
       - name: "Set up Python - ${{ matrix.python-version }} - ${{ matrix.target }}"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         id: py
         with:
-          python-version: ${{ matrix.python-version }}
+          #python-version: ${{ matrix.python-version }}
+          python-version: 3.9
           architecture: x64
+      - run: echo '${{ steps.py.outputs.python-path }}'
       # Build wheels with maturin, see https://github.com/messense/maturin-action
       - name: "Build wheels - ${{ matrix.python-version }} - ${{ matrix.target }}"
         uses: messense/maturin-action@v1
@@ -173,19 +173,20 @@ jobs:
           command: build      
           target: ${{ matrix.target }}
           manylinux: auto
-          args: -i ${{ steps.py.outputs.python-path }} --release --out dist
+          # args: -i ${{ steps.py.outputs.python-path }} --release --out dist
+          # args: -i /opt/python/cp38-cp38/bin/python3 --release --out dist
+          args: --release --out dist
       - name: "Install built wheel and test it - ${{ matrix.python-version }} - ${{ matrix.target }}" 
         if: matrix.target == 'x86_64'
         run: |
+          # Install local wheel
+          pip install cdshealpix --no-deps --no-index --find-links dist --force-reinstall
           # Install dependencies for tests
           pip install -r requirements-dev.txt
-          # Install local wheel
-          pip install cdshealpix --no-index --find-links dist --force-reinstall
           # Check import is ok
           python -c "import cdshealpix"
           # Run test
-          python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-          python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+          pytest --pyargs cdshealpix
       # Upload artifac in "dist" repo, see https://github.com/actions/upload-artifact
       # more info here: https://github.com/actions/upload-artifact
       - name: "Upload wheels"
@@ -205,7 +206,7 @@ jobs:
         #target: [aarch64, armv7, s390x, ppc64le, ppc64]
         target: [aarch64, armv7]
         #python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
-        python-version: ['3.8']
+        #python-version: [3.8]
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
@@ -214,10 +215,12 @@ jobs:
           ref: ${{ github.head_ref }}
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
       - name: "Set up Python - ${{ matrix.python-version }} - ${{ matrix.target }}"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         id: py
         with:
-          python-version: ${{ matrix.python-version }}
+          #python-version: ${{ matrix.python-version }}
+          python-version: 3.9
+      #- run: echo '${{ steps.py.outputs.python-path }}'    
       # Build wheels with maturin, see https://github.com/messense/maturin-action
       - name: "Build wheels - ${{ matrix.python-version }} - ${{ matrix.target }}"
         uses: messense/maturin-action@v1
@@ -226,7 +229,8 @@ jobs:
           command: build
           target: ${{ matrix.target }}
           manylinux: auto
-          args: -i ${{ steps.py.outputs.python-path }} --release --out dist
+          #args: -i ${{ steps.py.outputs.python-path }} --release --out dist
+          args: --release --out dist
       # Executes commands on non-x86 CPU architecture, https://github.com/uraimo/run-on-arch-action
       - uses: uraimo/run-on-arch-action@v2.0.5
         if: matrix.target != 'ppc64'
@@ -240,15 +244,14 @@ jobs:
             apt-get install -y --no-install-recommends python3 python3-pip
             pip3 install -U pip
           run: |
+            # Install local wheel
+            pip3 install cdshealpix --no-deps --no-index --find-links dist --force-reinstall
             # Install dependencies for tests
             pip3 install -r requirements-dev.txt
-            # Install local wheel
-            pip3 install cdshealpix --no-index --find-links dist --force-reinstall
             # Check import is ok
             python3 -c "import cdshealpix"
             # Run test
-            python3 -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-            python3 -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+            pytest --pyargs cdshealpix
       # Upload artifac in "dist" repo, see https://github.com/actions/upload-artifact
       # more info here: https://github.com/actions/upload-artifact
       - name: Upload wheels
