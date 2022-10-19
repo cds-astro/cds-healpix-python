@@ -1,8 +1,9 @@
 # Enrich using https://www.maturin.rs/metadata.html
 [project]
 name = "cdshealpix"
-requires-python = ">=3.8"
-dependencies = ["numpy>=1.18", "astropy>=5.1"]
+# 3.6 is no longer maintained and no more supported by maturin
+requires-python = ">=3.7"
+dependencies = ["numpy", "astropy"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
@@ -15,7 +16,7 @@ repository = "https://github.com/cds-astro/cds-healpix-python"
 
 # Build a cdshealpix-x.x.x.tar.gz containing sources (from maturin).
 [build-system]
-requires = ["maturin>=0.13"]
+requires = ["maturin>=13"]
 build-backend = "maturin"
 
 [tool.maturin]

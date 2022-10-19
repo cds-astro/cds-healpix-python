@@ -7,7 +7,7 @@
 # To understand this scripts, look at the comments in deploy.yml or test.yml.
 
 name: bench-cdshealpix
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 jobs:
   runs-benches:
     runs-on: ${{ matrix.os }}
