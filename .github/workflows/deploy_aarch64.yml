@@ -25,13 +25,14 @@ jobs:
          -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
-           source $HOME/.cargo/env && \
+           source $HOME/.cargo/env && ls -lrth && \
            for PYBIN in /opt/python/cp3[8910]*/bin; do
              echo "Loop on PYBIN: $PYBIN"
+             "${PYBIN}/pip" install --upgrade pip
              "${PYBIN}/pip" install maturin
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --config "net.git-fetch-with-cli = true"
            done'
 

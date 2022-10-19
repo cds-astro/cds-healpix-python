@@ -49,7 +49,7 @@ jobs:
            "${PYBIN}/maturin" -V
            rustc -vV
            echo "${PYBIN}/python"
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
          done
 
   # Linux is specifi because of manylinux, we have to use a docker file 
@@ -86,7 +86,7 @@ jobs:
            rustc -vV
            echo "${PYBIN}/python"
            echo "CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target i686-unknown-linux-gnu
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python"  --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target i686-unknown-linux-gnu
          done 
   
   # Comming in large parts from @odidev in MOCPy pull request
@@ -116,7 +116,7 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
            done'
 
 
@@ -153,7 +153,7 @@ jobs:
          #maturin publish --no-sdist --skip-existing --username fxpineau 
          maturin -V
          rustc -vV
-         maturin publish --interpreter python${{matrix.python_version}} --skip-existing --username fxpineau
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing --username fxpineau
 
   build-macos-wheels:
     runs-on: ${{ matrix.os }}
@@ -188,7 +188,7 @@ jobs:
          maturin -V
          rustc -vV
          echo "${PYBIN}/python"
-         maturin publish --interpreter python${{matrix.python_version}} --universal2 --skip-existing  --username "$MATURIN_USERNAME"
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --universal2 --skip-existing  --username "$MATURIN_USERNAME"
 
 
   # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
