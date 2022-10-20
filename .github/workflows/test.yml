@@ -182,12 +182,12 @@ jobs:
             source $HOME/.cargo/env && \
             for PYBIN in /opt/python/cp3[78910]*/bin; do
               echo "Loop on PYBIN: $PYBIN"
-              cargo build --release --config "net.git-fetch-with-cli = true"
               "${PYBIN}/pip" install virtualenv
               "${PYBIN}/virtualenv" cdshealpixenv
               source cdshealpixenv/bin/activate
               pip install --upgrade pip
               pip install maturin
+              cargo build --release --config "net.git-fetch-with-cli = true"
               maturin build --release --compatibility manylinux2014 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
               maturin develop --release --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
               pip install -r requirements-dev.txt
