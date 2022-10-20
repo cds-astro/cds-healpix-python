@@ -164,42 +164,42 @@ jobs:
 
 
   ## So far desactivated because too long to build astropy wheels
-  test-aarch64-wheels:
-    runs-on: ubuntu-latest
-    env:
-      img: quay.io/pypa/manylinux2014_aarch64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: "Set up QEMU"
-        id: qemu
-        uses: docker/setup-qemu-action@v1
-      - name: Install dependencies
-        run: |
-          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-          ${{ env.img }} \
-          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
-            source $HOME/.cargo/env && \
-            for PYBIN in /opt/python/cp3[78910]*/bin; do
-              echo "Loop on PYBIN: $PYBIN"
-              "${PYBIN}/pip" install virtualenv
-              "${PYBIN}/virtualenv" cdshealpixenv
-              source cdshealpixenv/bin/activate
-              pip install --upgrade pip
-              pip install maturin
-              cargo build --release --config "net.git-fetch-with-cli = true"
-              maturin build --release --compatibility manylinux2014 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-              maturin develop --release --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-              pip install -r requirements-dev.txt
-              cd python
-              python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-              python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
-              cd ..
-              pip freeze > requirements-uninstall.txt
-              pip uninstall -r requirements-uninstall.txt -y
-              deactivate
-              rm -r cdshealpixenv/
-            done'
+  #test-aarch64-wheels:
+  #  runs-on: ubuntu-latest
+  #  env:
+  #    img: quay.io/pypa/manylinux2014_aarch64
+  #  steps:
+  #    - name: Checkout
+  #      uses: actions/checkout@v3
+  #    - name: "Set up QEMU"
+  #      id: qemu
+  #      uses: docker/setup-qemu-action@v1
+  #    - name: Install dependencies
+  #      run: |
+  #        docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+  #        ${{ env.img }} \
+  #        bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
+  #          source $HOME/.cargo/env && \
+  #          for PYBIN in /opt/python/cp3[78910]*/bin; do
+  #            echo "Loop on PYBIN: $PYBIN"
+  #            "${PYBIN}/pip" install virtualenv
+  #            "${PYBIN}/virtualenv" cdshealpixenv
+  #            source cdshealpixenv/bin/activate
+  #            pip install --upgrade pip
+  #            pip install maturin
+  #            cargo build --release --config "net.git-fetch-with-cli = true"
+  #            maturin build --release --compatibility manylinux2014 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+  #            maturin develop --release --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+  #            pip install -r requirements-dev.txt
+  #            cd python
+  #            python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
+  #            python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+  #            cd ..
+  #            pip freeze > requirements-uninstall.txt
+  #            pip uninstall -r requirements-uninstall.txt -y
+  #            deactivate
+  #            rm -r cdshealpixenv/
+  #          done'
 
   test-macos-wheels: 
     runs-on: macOS-latest

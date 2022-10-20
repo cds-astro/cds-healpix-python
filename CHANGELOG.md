@@ -1,13 +1,27 @@
 # `cdshealpix-python` Change Log
 
-## 0.6.2
+## 0.6.3
+
+Released 2022-10-20
+
+### Changes
+
+* Project layout change ["to avoid the a common ImportError pitfall"](https://github.com/PyO3/maturin#mixed-rustpython-projects)
+* Re-introduce support for Python 3.7 (https://endoflife.date/python)
+* Relax astropy contrain (remove numpy since already a dependency of astropy)
+* Update ci
+
+--------------------------------------------------------------------------------
+
+
+## 0.6.2 - Not in conda - Yanked on pypi 
 
 Released 2022-10-17
 
 ### Changes
 
 * Tests for Longitude and Latitude in  `bilinear_interpolation`
-* Remove support for Python 3.6 (https://endoflife.date/python)
+* Remove support for Python <= 3.7 (https://endoflife.date/python)
 * Update dependencies
     + update cds-healpix-rust to v0.6
     + ...

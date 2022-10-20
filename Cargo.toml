@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix"
-version = "0.6.2"
+version = "0.6.3"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 description = "Python cdshealpix package wrapping code of the cdshealpix crate"
 license = "BSD-3-Clause"

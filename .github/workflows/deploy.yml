@@ -53,7 +53,8 @@ jobs:
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
          done
 
-  # Linux is specifi because of manylinux, we have to use a docker file 
+  # Linux is specifi because of manylinux, we have to use a docker file
+  # Replace because last version was generating x86_64 wheels :o/ 
   #build-linux32-wheels:
   #  # Containers run in Linux
   #  runs-on: ubuntu-latest
