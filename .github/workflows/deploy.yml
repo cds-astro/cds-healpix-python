@@ -1,0 +1,270 @@
+# The starting point of this script are the links provided on the maturing doc:
+# * https://github.com/nanoporetech/fast-ctc-decode/blob/b226ea0f2b2f4f474eff47349703d57d2ea4801b/.github/workflows/publish.yml
+# * https://github.com/konstin/complex-manylinux-maturin-docker/blob/main/.github/workflows/build.yml
+
+name: publish-cdshealpix-wheels
+
+# Exec only if a tag starting by 'v' is pushed
+# see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+on:
+  push:
+    tags:
+       - v*
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
+# Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+jobs:
+  
+  # Linux is specifi because of manylinux, we have to use a docker file 
+  build-linux64-wheels:
+    # Containers run in Linux
+    runs-on: ubuntu-latest
+    # Docker Hub image that 'build-linux-wheels' executes in.
+    # See https://github.com/pypa/manylinux for this particular container:
+    # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
+    container: quay.io/pypa/manylinux2014_x86_64
+    # We are now in CentOS 7 64 bits
+    steps:
+     - name: "Checkout the full project"
+       uses: actions/checkout@v1
+     # We need to install rust in the docker image (else, cargo is already available in github action)  
+     - name: "Install Rust"
+       run: |
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+     # Build wheels for all pre-installed python version (in /opt/python/, see docker image comment)
+     # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
+     # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
+     - name: "Build and publish wheels"
+       shell: bash
+       env:
+        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+       run: |
+         source $HOME/.cargo/env
+         for PYBIN in /opt/python/cp3[78910]*/bin; do
+           "${PYBIN}/pip" install --upgrade pip
+           "${PYBIN}/pip" install maturin
+           "${PYBIN}/maturin" -V
+           rustc -vV
+           echo "${PYBIN}/python"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
+         done
+
+  # Linux is specifi because of manylinux, we have to use a docker file 
+  #build-linux32-wheels:
+  #  # Containers run in Linux
+  #  runs-on: ubuntu-latest
+  #  # Docker Hub image that 'build-linux-wheels' executes in.
+  #  # See https://github.com/pypa/manylinux for this particular container:
+  #  # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
+  #  container: quay.io/pypa/manylinux2014_i686
+  #  # We are now in CentOS 7 32 bits
+  #  steps:
+  #   # Checkout the project        
+  #   - name: "Checkout the full project"
+  #     uses: actions/checkout@v1
+  #   # We need to install rust in the docker image (else, cargo is already available in github action)  
+  #   - name: "Install Rust"
+  #     run: |
+  #       curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host i686-unknown-linux-gnu -y
+  #   # Build wheels for all pre-installed python version (in /opt/python/, see docker image comment)
+  #   # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
+  #   # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
+  #   - name: "Build and publish wheels"
+  #     shell: bash
+  #     env:
+  #      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+  #      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+  #     run: |
+  #       source $HOME/.cargo/env
+  #       for PYBIN in /opt/python/cp3[78910]*/bin; do
+  #         "${PYBIN}/pip" install --upgrade pip
+  #         "${PYBIN}/pip" install maturin
+  #         "${PYBIN}/maturin" -V
+  #         rustc -vV
+  #         echo "${PYBIN}/python"
+  #         echo "CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
+  #         "${PYBIN}/maturin" publish -i "${PYBIN}/python"  --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target i686-unknown-linux-gnu
+  #       done 
+ 
+  # Comming in large parts from @odidev in MOCPy pull request
+  build-linux32-wheels:
+    runs-on: ubuntu-latest
+    env:
+      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      img: quay.io/pypa/manylinux2014_i686
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v3
+     - name: "Set up QEMU"
+       id: qemu
+       uses: docker/setup-qemu-action@v1
+     - name: Install dependencies
+       run: |
+         docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+         -e MATURIN_USERNAME=${{ env.MATURIN_USERNAME }} \
+         -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
+         ${{ env.img }} \
+         bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+           source $HOME/.cargo/env && \
+           for PYBIN in /opt/python/cp3[8910]*/bin; do
+             echo "Loop on PYBIN: $PYBIN"
+             "${PYBIN}/pip" install --upgrade pip
+             "${PYBIN}/pip" install maturin
+             "${PYBIN}/maturin" -V
+             rustc -vV
+             echo "${PYBIN}/python"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
+           done'
+
+
+
+  # Comming in large parts from @odidev in MOCPy pull request
+  build-aarch64-wheels:
+    runs-on: ubuntu-latest
+    env:
+      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      img: quay.io/pypa/manylinux2014_aarch64
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v1
+     - name: "Set up QEMU"
+       id: qemu
+       uses: docker/setup-qemu-action@v1
+     - name: Install dependencies
+       run: |
+         docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
+         -e MATURIN_USERNAME=${{ env.MATURIN_USERNAME }} \
+         -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
+         ${{ env.img }} \
+         bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
+           source $HOME/.cargo/env && \
+           for PYBIN in /opt/python/cp3[78910]*/bin; do
+             echo "Loop on PYBIN: $PYBIN"
+             "${PYBIN}/pip" install maturin
+             "${PYBIN}/maturin" -V
+             rustc -vV
+             echo "${PYBIN}/python"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist -v --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --config "net.git-fetch-with-cli = true"
+           done'
+
+
+  build-windows-wheels:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+      # run all matrix jobs even if on is failling (default behaviour is to stop all jobs)
+      fail-fast: false      
+      matrix:
+        os: [windows-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+     # Checkout the project       
+     - uses: actions/checkout@v3
+     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+     - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+       uses: actions/setup-python@v2
+       with:
+         python-version: ${{ matrix.python-version }}
+     # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
+     - name: Build and publish wheel for Python ${{ matrix.python-version }} on ${{ matrix.os }}
+       # We do not use environement variable for user, because it seems that the way of providing it in the command
+       # line is not the same for macos and for windows. We should create 2 different actions (see 
+       # https://docs.github.com/en/actions/reference/encrypted-secrets )
+       env:
+        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+       run: |
+         #python3 -m pip install maturin
+         pip install --upgrade pip
+         pip install maturin
+         #maturin build --release --no-sdist
+         #maturin publish --no-sdist --skip-existing --username fxpineau 
+         maturin -V
+         rustc -vV
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing --username fxpineau
+
+  build-macos-wheels:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
+      # run all matrix jobs even if on is failling (default behaviour is to stop all jobs)
+      fail-fast: false
+      matrix:
+        os: [macOS-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    steps:
+     # Checkout the project       
+     - uses: actions/checkout@v3
+     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+     - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+       uses: actions/setup-python@v2
+       with:
+         python-version: ${{ matrix.python-version }}
+     # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
+     - name: Build and publish wheel for Python ${{ matrix.python-version }} on ${{ matrix.os }}
+       # We do not use environement variable for user, because it seems that the way of providing it in the command
+       # line is not the same for macos and for windows. We should create 2 different actions (see 
+       # https://docs.github.com/en/actions/reference/encrypted-secrets )
+       env:
+        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
+        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+       run: |
+         #python3 -m pip install maturin
+         rustup target add aarch64-apple-darwin
+         pip install --upgrade pip
+         pip install maturin
+         maturin -V
+         rustc -vV
+         echo "${PYBIN}/python"
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --universal2 --skip-existing  --username "$MATURIN_USERNAME"
+
+
+  # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
+  #    using: https://github.com/JamesIves/github-pages-deploy-action
+  deploy-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout branch ${{ github.head_ref }}"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: "Set up Python 3.9 on Ubuntu"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: "Build doc"
+        run: |
+          # Build the doc
+          # - Install virtualenv     
+          pip install --upgrade pip
+          pip install virtualenv
+          # - Create and activate a new virtualenv
+          virtualenv cdshealpixenv
+          source cdshealpixenv/bin/activate
+          pip install --upgrade pip
+          # - Install maturin
+          pip install maturin
+          # - Build and install cdshealpix
+          maturin develop --release
+          # - Install dependencies needed to run benches
+          pip install -r requirements-doc.txt
+          # - Build the doc: once done, it is in docs/_build/html/
+          cd ./docs
+          make html
+          cd ..
+          # Switch of the virtualenv
+          deactivate
+      - name: "Publish doc on github pages (commit on branch gh-pages)"
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: docs/_build/html/
+        
