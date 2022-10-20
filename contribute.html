@@ -125,11 +125,14 @@ maturin develop --release
 <section id="running-the-tests">
 <h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading">¶</a></h2>
 <p>For running the tests + benchmarks:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -v cdshealpix
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> python
+python -m pytest -v cdshealpix
 </pre></div>
 </div>
 <p>For running only the benchmarks:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> python
+python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
+<span class="nb">cd</span> ..
 </pre></div>
 </div>
 </section>

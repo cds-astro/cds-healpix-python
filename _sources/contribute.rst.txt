@@ -84,6 +84,7 @@ For running the tests + benchmarks:
 
 .. code-block:: bash
 
+    cd python
     python -m pytest -v cdshealpix
 
 
@@ -91,8 +92,9 @@ For running only the benchmarks:
 
 .. code-block:: bash
 
+    cd python
     python -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
-
+    cd ..
 
 Working on the documentation
 ----------------------------
