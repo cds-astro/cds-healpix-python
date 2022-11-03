@@ -859,11 +859,11 @@ def xy_to_lonlat(x, y, num_threads=0):
 
 
 def bilinear_interpolation(lon, lat, depth, num_threads=0):
-    r"""
-    Compute the HEALPix bilinear interpolation from sky coordinates
+    r""" Compute the HEALPix bilinear interpolation from sky coordinates
 
     For each (``lon``, ``lat``) sky position given, this function
-    returns the 4 HEALPix cells that share the nearest cross of the position.
+    returns the 4 HEALPix cells that share the nearest cross of the
+    position in the nested configuration.
 
     +-----+-----+
     |(1)  |(2)  |
@@ -893,15 +893,11 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     -------
     pixels, weights: (`numpy.ma.masked_array`, `numpy.ma.masked_array`)
         :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
-        For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
-        a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.
-
-    Warning
-    -------
-    Panics if a nan value is found in either lon or lat.  
-    You can e.g. transform nan by 0 before calling this method using `lon = np.nan_to_num(lon) or `lat = np.nan_to_num(lat)`.
-    But it is probably cleaner to pre-filter the pair of coordinates by removing the one containing a nan.
-
+        For each given sky position, 4 HEALPix cells in the nested configuration are returned.
+        Each cell is associated with a specific weight. The 4 weights sum up to 1. 
+        For numpy masked arrays, invalid positions are flaged with a `True` while valid
+        coordinates are marked as `False`. See numpy docs for more information.
+        https://numpy.org/doc/stable/reference/maskedarray.html
 
     Examples
     --------
