@@ -15,7 +15,7 @@ repository = "https://github.com/cds-astro/cds-healpix-python"
 
 # Build a cdshealpix-x.x.x.tar.gz containing sources (from maturin).
 [build-system]
-requires = ["maturin>=13"]
+requires = ["maturin>=0.13"]
 build-backend = "maturin"
 
 [tool.maturin]
