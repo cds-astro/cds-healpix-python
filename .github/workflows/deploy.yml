@@ -49,7 +49,7 @@ jobs:
            "${PYBIN}/maturin" -V
            rustc -vV
            echo "${PYBIN}/python"
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python"    --sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
          done
 
@@ -152,8 +152,8 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --config "net.git-fetch-with-cli = true"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist -v --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
            done'
 
 
@@ -165,7 +165,7 @@ jobs:
       fail-fast: false      
       matrix:
         os: [windows-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     steps:
      # Checkout the project       
      - uses: actions/checkout@v3
@@ -200,7 +200,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     steps:
      # Checkout the project       
      - uses: actions/checkout@v3

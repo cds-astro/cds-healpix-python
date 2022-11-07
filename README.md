@@ -7,12 +7,7 @@
 
 This is a BSD-licensed HEALPix package which is wrapped around the [cdshealpix Rust crate](https://github.com/cds-astro/cds-healpix-rust).
 
-[cdshealpix](https://pypi.org/project/cdshealpix/) is multi-platform and is currently deployed on PyPI for i686 and x86_64 archs.
-
-It is compatible with Python 3.8 to 3.11
-* phyton dependencies are numpy and astropy
-* astropy v5.1 does not seem to be compatible with python 3.7 [this page](https://repology.org/project/python:astropy/versions)
-* astropy requieres numpy>=1.18 according to [this page](https://docs.astropy.org/en/stable/install.html)
+[cdshealpix](https://pypi.org/project/cdshealpix/) is multi-platform and is currently deployed on PyPI for i686, x86_64 and aarch64 archs.
 
 
 ```bash
