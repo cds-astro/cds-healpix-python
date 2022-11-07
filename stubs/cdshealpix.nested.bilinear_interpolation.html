@@ -84,7 +84,8 @@
 <span class="sig-prename descclassname"><span class="pre">cdshealpix.nested.</span></span><span class="sig-name descname"><span class="pre">bilinear_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.nested.bilinear_interpolation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the HEALPix bilinear interpolation from sky coordinates</p>
 <p>For each (<code class="docutils literal notranslate"><span class="pre">lon</span></code>, <code class="docutils literal notranslate"><span class="pre">lat</span></code>) sky position given, this function
-returns the 4 HEALPix cells that share the nearest cross of the position.</p>
+returns the 4 HEALPix cells that share the nearest cross of the
+position in the nested configuration.</p>
 <table class="docutils align-default">
 <tbody>
 <tr class="row-odd"><td><ol class="arabic simple">
@@ -127,8 +128,11 @@ or the number of logical CPUs (otherwise)</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>pixels, weights: (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
-For a given sky position, 4 HEALPix cells are returned. Each of them are associated with
-a specific weight. The 4 weights sum up to 1. Invalid positions lead to masked values.</p>
+For each given sky position, 4 HEALPix cells in the nested configuration are returned.
+Each cell is associated with a specific weight. The 4 weights sum up to 1. 
+For numpy masked arrays, invalid positions are flaged with a <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> while valid
+coordinates are marked as <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>. See numpy docs for more information.
+<a class="reference external" href="https://numpy.org/doc/stable/reference/maskedarray.html">https://numpy.org/doc/stable/reference/maskedarray.html</a></p>
 </dd>
 </dl>
 </dd>
