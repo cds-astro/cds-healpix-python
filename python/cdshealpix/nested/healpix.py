@@ -222,7 +222,7 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
-    r"""Get the sky coordinates of the center of some HEALPix cells at a given depth.
+    r"""Get the sky coordinates of the center of some HEALPix cells in a nested configuration at a given depth.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
     It is the equivalent of `healpix_to_lonlat` except that it returns `astropy.coordinates.SkyCoord` instead
@@ -233,7 +233,7 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     Parameters
     ----------
     ipix : `numpy.ndarray`
-        The HEALPix cell indexes given as a `np.uint64` numpy array.
+        The HEALPix cell indexes in a nested configuration given as a `np.uint64` numpy array.
     depth : `numpy.ndarray`
         The depth of the HEALPix cells.
     dx : float, optional
@@ -262,6 +262,10 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
     >>> skycoord = healpix_to_skycoord(ipix, depth)
+    >>> print(skycoord)
+    <SkyCoord (ICRS): (ra, dec) in deg
+        [(44.9230957 , 0.0746039 ), (45.01098633, 0.03730194),
+         (44.96704102, 0.03730194)]>
     """
     lon, lat = healpix_to_lonlat(ipix, depth, dx, dy, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
