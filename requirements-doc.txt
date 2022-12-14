@@ -1,6 +1,7 @@
 maturin>=0.13
 astropy
 sphinx
+jupyter-sphinx
 numpydoc
 astropy_sphinx_theme
 sphinxcontrib-bibtex<2.0.0
