@@ -40,6 +40,6 @@ jobs:
          # Install dependencies needed to run benches
          pip install -r requirements-bench.txt
          # Run benches
-         python3 -m pytest -v cdshealpix/tests/test_benchmark_healpix.py
+         python3 -m pytest -v python/cdshealpix/tests/test_benchmark_healpix.py
          deactivate
 
