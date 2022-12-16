@@ -6,6 +6,8 @@ __all__ = ["to_ring", "from_ring"]
 
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
+
+
 def _check_ipixels(data, depth):
     npix = 12 * 4 ** (depth)
     if (data >= npix).any() or (data < 0).any():
@@ -15,7 +17,7 @@ def _check_ipixels(data, depth):
 
 
 def to_ring(ipix, depth, num_threads=0):
-    """Convert HEALPix cells from the NESTED to the RING scheme
+    """Convert HEALPix cells from the NESTED to the RING scheme.
 
     Parameters
     ----------
@@ -44,7 +46,8 @@ def to_ring(ipix, depth, num_threads=0):
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> ipix_ring = to_ring(ipix, depth)
+    >>> print(to_ring(ipix, depth))
+    [100526076 100591616 100591614]
     """
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
@@ -63,7 +66,7 @@ def to_ring(ipix, depth, num_threads=0):
 
 
 def from_ring(ipix, depth, num_threads=0):
-    """Convert HEALPix cells from the RING to the NESTED scheme
+    """Convert HEALPix cells from the RING to the NESTED scheme.
 
     Parameters
     ----------
@@ -93,6 +96,7 @@ def from_ring(ipix, depth, num_threads=0):
     >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
     >>> ipix = from_ring(ipix, depth)
+    [16777203 33554430 67108862]
     """
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
