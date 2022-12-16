@@ -1,4 +1,4 @@
-from .. import cdshealpix # noqa
+from .. import cdshealpix  # noqa
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
@@ -6,9 +6,25 @@ import numpy as np
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
-__all__ = ['lonlat_to_healpix', 'skycoord_to_healpix', 'healpix_to_lonlat', 'healpix_to_skycoord', 'vertices', 'vertices_skycoord', 'neighbours', 'external_neighbours', 'cone_search', 'polygon_search', 'elliptical_cone_search', 'healpix_to_xy', 'lonlat_to_xy', 'xy_to_lonlat', 'bilinear_interpolation']
+__all__ = [
+    "lonlat_to_healpix",
+    "skycoord_to_healpix",
+    "healpix_to_lonlat",
+    "healpix_to_skycoord",
+    "vertices",
+    "vertices_skycoord",
+    "neighbours",
+    "external_neighbours",
+    "cone_search",
+    "polygon_search",
+    "elliptical_cone_search",
+    "healpix_to_xy",
+    "lonlat_to_xy",
+    "xy_to_lonlat",
+    "bilinear_interpolation",
+]
 
-# Raise a ValueError exception if the input 
+# Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 # data and depth must have the same shape
 def _check_ipixels(data, depth):
@@ -20,13 +36,16 @@ def _check_ipixels(data, depth):
         valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
 
     if (data >= npix).any() or (data < 0).any():
-        raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
+        raise ValueError(
+            "The input HEALPix array contains values out of {0}.".format(valid_ipix)
+        )
+
 
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
-    The depth of the returned HEALPix cell indexes must be specified. This 
-    method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__ 
+    The depth of the returned HEALPix cell indexes must be specified. This
+    method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__
     method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
     Parameters
@@ -67,8 +86,12 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     >>> depth = np.array([5, 6])
     >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], depth[np.newaxis, :])
     """
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
 
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
@@ -84,7 +107,9 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+        raise ValueError(
+            "The number of longitudes does not match with the number of latitudes given"
+        )
 
     # Broadcasting arrays
     lon, lat, depth = np.broadcast_arrays(lon, lat, depth)
@@ -104,6 +129,7 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
         return ipix, dx, dy
     else:
         return ipix
+
 
 def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
@@ -148,7 +174,14 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, depth)
     """
-    return lonlat_to_healpix(Longitude(skycoord.icrs.ra), Latitude(skycoord.icrs.dec), depth, return_offsets, num_threads)
+    return lonlat_to_healpix(
+        Longitude(skycoord.icrs.ra),
+        Latitude(skycoord.icrs.dec),
+        depth,
+        return_offsets,
+        num_threads,
+    )
+
 
 def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
@@ -221,6 +254,7 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
 
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
+
 def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells in a nested configuration at a given depth.
 
@@ -270,6 +304,7 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     lon, lat = healpix_to_lonlat(ipix, depth, dx, dy, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
+
 def vertices(ipix, depth, step=1, num_threads=0):
     """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given depth.
 
@@ -296,8 +331,8 @@ def vertices(ipix, depth, step=1, num_threads=0):
     Returns
     -------
     lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
-        The sky coordinates of the 4 vertices of the HEALPix cells. 
-        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively, 
+        The sky coordinates of the 4 vertices of the HEALPix cells.
+        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively,
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
 
     Raises
@@ -322,7 +357,7 @@ def vertices(ipix, depth, step=1, num_threads=0):
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
-    
+
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros(ipix.shape + (4 * step,))
     lat = np.zeros(ipix.shape + (4 * step,))
@@ -331,6 +366,7 @@ def vertices(ipix, depth, step=1, num_threads=0):
     cdshealpix.vertices(depth, ipix, step, lon, lat, num_threads)
 
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
+
 
 def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given depth.
@@ -377,6 +413,7 @@ def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     lon, lat = vertices(ipix, depth, step, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
 
+
 def neighbours(ipix, depth, num_threads=0):
     """Get the neighbouring cells of some HEALPix cells at a given depth.
 
@@ -421,13 +458,14 @@ def neighbours(ipix, depth, num_threads=0):
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
-    
+
     # Allocation of the array containing the neighbours
     neighbours = np.zeros(ipix.shape + (9,), dtype=np.int64)
     num_threads = np.uint16(num_threads)
     cdshealpix.neighbours(depth, ipix, neighbours, num_threads)
 
     return neighbours
+
 
 def external_neighbours(ipix, depth, delta_depth, num_threads=0):
     """
@@ -473,9 +511,12 @@ def external_neighbours(ipix, depth, delta_depth, num_threads=0):
     corner_cells = np.zeros(ipix.shape + (4,), dtype=np.int64)
 
     num_threads = np.uint16(num_threads)
-    cdshealpix.external_neighbours(depth, delta_depth, ipix, corner_cells, edge_cells, num_threads)
+    cdshealpix.external_neighbours(
+        depth, delta_depth, ipix, corner_cells, edge_cells, num_threads
+    )
 
     return edge_cells, corner_cells
+
 
 def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     """Get the HEALPix cells contained in a cone at a given depth.
@@ -522,13 +563,19 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     """
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
-    
-    if not lon.isscalar or not lat.isscalar or not radius.isscalar:
-        raise ValueError('The longitude, latitude and radius must be scalar objects')
 
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
-    assert isinstance(radius, u.Quantity), "`radius` must be of type `astropy.units.Quantity`"
+    if not lon.isscalar or not lat.isscalar or not radius.isscalar:
+        raise ValueError("The longitude, latitude and radius must be scalar objects")
+
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(
+        radius, u.Quantity
+    ), "`radius` must be of type `astropy.units.Quantity`"
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -537,8 +584,16 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     lat = lat.rad
     radius = radius.to_value(u.rad)
 
-    ipix, depth, full = cdshealpix.cone_search(np.uint8(depth), np.uint8(depth_delta), np.float64(lon), np.float64(lat), np.float64(radius), bool(flat))
+    ipix, depth, full = cdshealpix.cone_search(
+        np.uint8(depth),
+        np.uint8(depth_delta),
+        np.float64(lon),
+        np.float64(lat),
+        np.float64(radius),
+        bool(flat),
+    )
     return ipix, depth, full
+
 
 def polygon_search(lon, lat, depth, flat=False):
     """Get the HEALPix cells contained in a polygon at a given depth.
@@ -587,9 +642,13 @@ def polygon_search(lon, lat, depth, flat=False):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
-   
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
     # Longitude/Latitude ensure that the values the contain are in the correct ranges.
@@ -597,7 +656,9 @@ def polygon_search(lon, lat, depth, flat=False):
     lat = np.atleast_1d(lat.rad).ravel()
 
     if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+        raise ValueError(
+            "The number of longitudes does not match with the number of latitudes given"
+        )
 
     num_vertices = lon.shape[0]
 
@@ -608,11 +669,14 @@ def polygon_search(lon, lat, depth, flat=False):
     vertices = np.vstack((lon, lat)).T
     distinct_vertices = np.unique(vertices, axis=0)
     if distinct_vertices.shape[0] < 3:
-        raise IndexError("There must be at least 3 distinct vertices in order to form a polygon")
+        raise IndexError(
+            "There must be at least 3 distinct vertices in order to form a polygon"
+        )
 
     ipix, depth, full = cdshealpix.polygon_search(depth, lon, lat, flat)
 
     return ipix, depth, full
+
 
 def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False):
     """Get the HEALPix cells contained in an elliptical cone at a given depth.
@@ -675,33 +739,47 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
 
-    if not lon.isscalar or not lat.isscalar or not a.isscalar \
-        or not b.isscalar or not pa.isscalar:
-        raise ValueError('The longitude, latitude, semi-minor axe, semi-major axe and angle must be '
-                         'scalar objects')
+    if (
+        not lon.isscalar
+        or not lat.isscalar
+        or not a.isscalar
+        or not b.isscalar
+        or not pa.isscalar
+    ):
+        raise ValueError(
+            "The longitude, latitude, semi-minor axe, semi-major axe and angle must be "
+            "scalar objects"
+        )
 
-    if a >= Angle(np.pi/2.0, unit="rad"):
-        raise ValueError('The semi-major axis exceeds 90deg.')
+    if a >= Angle(np.pi / 2.0, unit="rad"):
+        raise ValueError("The semi-major axis exceeds 90deg.")
 
     if b > a:
-        raise ValueError('The semi-minor axis is greater than the semi-major axis.')
+        raise ValueError("The semi-minor axis is greater than the semi-major axis.")
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
     # Longitude/Latitude ensure that the values the contain are in the correct ranges.
-    ipix, depth, full = cdshealpix.elliptical_cone_search(depth=depth,
+    ipix, depth, full = cdshealpix.elliptical_cone_search(
+        depth=depth,
         delta_depth=delta_depth,
         lon=lon.rad,
         lat=lat.rad,
         a=a.to_value(u.rad),
         b=b.to_value(u.rad),
         pa=pa.to_value(u.rad),
-        flat=flat)
+        flat=flat,
+    )
 
     return ipix, depth, full
+
 
 def healpix_to_xy(ipix, depth, num_threads=0):
     r"""
@@ -745,7 +823,7 @@ def healpix_to_xy(ipix, depth, num_threads=0):
     # Broadcasting
     ipix, depth = np.broadcast_arrays(ipix, depth)
 
-    # Allocation of the array containing the resulting coordinates    
+    # Allocation of the array containing the resulting coordinates
     x = np.zeros(ipix.shape, dtype=np.float64)
     y = np.zeros(ipix.shape, dtype=np.float64)
 
@@ -757,6 +835,7 @@ def healpix_to_xy(ipix, depth, num_threads=0):
     cdshealpix.healpix_to_xy(ipix, depth, x, y, num_threads)
 
     return x, y
+
 
 def lonlat_to_xy(lon, lat, num_threads=0):
     r"""
@@ -789,8 +868,12 @@ def lonlat_to_xy(lon, lat, num_threads=0):
     >>> lat = Latitude([5, 10], u.deg)
     >>> x, y = lonlat_to_xy(lon, lat)
     """
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -799,7 +882,9 @@ def lonlat_to_xy(lon, lat, num_threads=0):
     lat = np.atleast_1d(lat.rad)
 
     if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+        raise ValueError(
+            "The number of longitudes does not match with the number of latitudes given"
+        )
 
     num_coords = lon.shape
     # Allocation of the array containing the resulting ipixels
@@ -809,6 +894,7 @@ def lonlat_to_xy(lon, lat, num_threads=0):
 
     cdshealpix.lonlat_to_xy(lon, lat, x, y, num_threads)
     return x, y
+
 
 def xy_to_lonlat(x, y, num_threads=0):
     r"""
@@ -863,7 +949,7 @@ def xy_to_lonlat(x, y, num_threads=0):
 
 
 def bilinear_interpolation(lon, lat, depth, num_threads=0):
-    r""" Compute the HEALPix bilinear interpolation from sky coordinates
+    r"""Compute the HEALPix bilinear interpolation from sky coordinates
 
     For each (``lon``, ``lat``) sky position given, this function
     returns the 4 HEALPix cells that share the nearest cross of the
@@ -898,7 +984,7 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     pixels, weights: (`numpy.ma.masked_array`, `numpy.ma.masked_array`)
         :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
         For each given sky position, 4 HEALPix cells in the nested configuration are returned.
-        Each cell is associated with a specific weight. The 4 weights sum up to 1. 
+        Each cell is associated with a specific weight. The 4 weights sum up to 1.
         For numpy masked arrays, invalid positions are flaged with a `True` while valid
         coordinates are marked as `False`. See numpy docs for more information.
         https://numpy.org/doc/stable/reference/maskedarray.html
@@ -914,8 +1000,12 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     >>> depth = 5
     >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
     """
-    assert isinstance(lon, Longitude), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(lat, Latitude), "`lat` must be of type `astropy.coordinates.Latitude`"
+    assert isinstance(
+        lon, Longitude
+    ), "`lon` must be of type `astropy.coordinates.Longitude`"
+    assert isinstance(
+        lat, Latitude
+    ), "`lat` must be of type `astropy.coordinates.Latitude`"
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -927,12 +1017,13 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+        raise ValueError(
+            "The number of longitudes does not match with the number of latitudes given"
+        )
 
     # Useless since we test isinstance at the beginning of the function
-    #if ((lat < np.pi/2.0) | (lat > np.pi/2.0)).any():
+    # if ((lat < np.pi/2.0) | (lat > np.pi/2.0)).any():
     #    raise ValueError("Lat must be in [-pi/2, 2pi/2]")
-
 
     num_coords = lon.shape
 
@@ -949,12 +1040,7 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     num_threads = np.uint16(num_threads)
 
     # Call the rust bilinear interpolation code
-    cdshealpix.bilinear_interpolation(
-        depth,
-        lon, lat,
-        ipix, weights,
-        num_threads
-    )
+    cdshealpix.bilinear_interpolation(depth, lon, lat, ipix, weights, num_threads)
 
     ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
     weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)

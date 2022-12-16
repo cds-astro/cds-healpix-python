@@ -1,15 +1,17 @@
 import numpy as np
 
-from . import cdshealpix # noqa
+from . import cdshealpix  # noqa
 
-__all__ = ['to_ring', 'from_ring']
+__all__ = ["to_ring", "from_ring"]
 
-# Raise a ValueError exception if the input 
+# Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, depth):
     npix = 12 * 4 ** (depth)
     if (data >= npix).any() or (data < 0).any():
-        raise ValueError("The input HEALPix cells contains value out of [0, {0}]".format(npix - 1))
+        raise ValueError(
+            "The input HEALPix cells contains value out of [0, {0}]".format(npix - 1)
+        )
 
 
 def to_ring(ipix, depth, num_threads=0):
@@ -50,7 +52,7 @@ def to_ring(ipix, depth, num_threads=0):
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
-    
+
     # Allocation of the array containing the cells under the RING scheme
     ipix_ring = np.zeros(ipix.shape, dtype=np.uint64)
 
@@ -58,6 +60,7 @@ def to_ring(ipix, depth, num_threads=0):
     cdshealpix.to_ring(depth, ipix, ipix_ring, num_threads)
 
     return ipix_ring
+
 
 def from_ring(ipix, depth, num_threads=0):
     """Convert HEALPix cells from the RING to the NESTED scheme
@@ -97,7 +100,7 @@ def from_ring(ipix, depth, num_threads=0):
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
-    
+
     # Allocation of the array containing the cells under the NESTED scheme
     ipix_nested = np.zeros(ipix.shape, dtype=np.uint64)
 
@@ -105,4 +108,3 @@ def from_ring(ipix, depth, num_threads=0):
     cdshealpix.from_ring(depth, ipix, ipix_nested, num_threads)
 
     return ipix_nested
-

@@ -1,4 +1,4 @@
-from .. import cdshealpix # noqa
+from .. import cdshealpix  # noqa
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
@@ -6,21 +6,32 @@ import numpy as np
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
-__all__ = ['lonlat_to_healpix', 'skycoord_to_healpix', 'healpix_to_lonlat', 'healpix_to_skycoord', 'healpix_to_xy', 'vertices', 'vertices_skycoord']
+__all__ = [
+    "lonlat_to_healpix",
+    "skycoord_to_healpix",
+    "healpix_to_lonlat",
+    "healpix_to_skycoord",
+    "healpix_to_xy",
+    "vertices",
+    "vertices_skycoord",
+]
 
-# Raise a ValueError exception if the input 
+# Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, nside):
-    npix = 12 * (nside ** 2)
+    npix = 12 * (nside**2)
     if (data >= npix).any() or (data < 0).any():
         valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
-        raise ValueError("The input HEALPix array contains values out of {0}.".format(valid_ipix))
+        raise ValueError(
+            "The input HEALPix array contains values out of {0}.".format(valid_ipix)
+        )
+
 
 def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
 
-    The ``nside`` of the returned HEALPix cell indexes must be specified. This 
-    method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__ 
+    The ``nside`` of the returned HEALPix cell indexes must be specified. This
+    method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__
     method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
     Parameters
@@ -75,12 +86,14 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
 
     if lon.shape != lat.shape:
-        raise ValueError("The number of longitudes does not match with the number of latitudes given")
+        raise ValueError(
+            "The number of longitudes does not match with the number of latitudes given"
+        )
 
     # Broadcasting
     lon, lat, nside = np.broadcast_arrays(lon, lat, nside)
 
-    # Allocation of the array containing the resulting coordinates    
+    # Allocation of the array containing the resulting coordinates
     num_ipix = lon.shape
     ipix = np.empty(num_ipix, dtype=np.uint64)
     dx = np.empty(num_ipix, dtype=np.float64)
@@ -95,6 +108,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
         return ipix, dx, dy
     else:
         return ipix
+
 
 def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates
@@ -139,7 +153,14 @@ def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
     >>> depth = 12
     >>> ipix = skycoord_to_healpix(skycoord, 1 << depth)
     """
-    return lonlat_to_healpix(Longitude(skycoord.icrs.ra), Latitude(skycoord.icrs.dec), nside, return_offsets, num_threads)
+    return lonlat_to_healpix(
+        Longitude(skycoord.icrs.ra),
+        Latitude(skycoord.icrs.dec),
+        nside,
+        return_offsets,
+        num_threads,
+    )
+
 
 def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
@@ -212,6 +233,7 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     cdshealpix.healpix_to_lonlat_ring(nside, ipix, dx, dy, lon, lat, num_threads)
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
+
 def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     r"""Get the sky coordinates of the center of some HEALPix cells at a given nside.
 
@@ -257,6 +279,7 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     """
     lon, lat = healpix_to_lonlat(ipix, nside, dx, dy, num_threads)
     return SkyCoord(ra=lon, dec=lat, frame="icrs", unit="rad")
+
 
 def healpix_to_xy(ipix, nside, num_threads=0):
     r"""
@@ -313,6 +336,7 @@ def healpix_to_xy(ipix, nside, num_threads=0):
 
     return x, y
 
+
 def vertices(ipix, nside, step=1, num_threads=0):
     """Get the longitudes and latitudes of the vertices of some HEALPix cells at a given nside.
 
@@ -339,8 +363,8 @@ def vertices(ipix, nside, step=1, num_threads=0):
     Returns
     -------
     lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
-        The sky coordinates of the 4 vertices of the HEALPix cells. 
-        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively, 
+        The sky coordinates of the 4 vertices of the HEALPix cells.
+        `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively,
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
 
     Warnings
@@ -377,6 +401,7 @@ def vertices(ipix, nside, step=1, num_threads=0):
 
     cdshealpix.vertices_ring(nside, ipix, step, lon, lat, num_threads)
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
+
 
 def vertices_skycoord(ipix, nside, step=1):
     """Get the sky coordinates of the vertices of some HEALPix cells at a given nside.
