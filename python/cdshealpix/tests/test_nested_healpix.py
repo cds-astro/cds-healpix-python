@@ -72,10 +72,7 @@ def test_healpix_to_lonlat_on_broadcasted_arrays():
 
 def test_healpix_to_lonlat_on_broadcasted_arrays2():
     level = np.arange(2)
-    nside = 2**level
-
     ipix = np.arange(3)
-
     lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], level[np.newaxis, :])
     assert lon.shape == lat.shape and lon.shape == (3, 2)
 
@@ -361,7 +358,7 @@ def test_xy_to_lonlat(x, y, expected_lon, expected_lat):
     assert_equal_array(lat.to_value(u.rad), expected_lat.to_value(u.rad))
 
 
-### Test to_ring & from_ring
+# -- Test to_ring & from_ring
 @pytest.mark.parametrize(
     "pix, depth, expected_ring_pix",
     [
@@ -399,20 +396,6 @@ def test_from_vs_to_ring(size):
     ring = to_ring(ipix=ipixels, depth=depth)
     ipixels_result = from_ring(ipix=ring, depth=depth)
     assert (ipixels == ipixels_result).all()
-
-
-@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
-def test_bilinear_interpolation(depth):
-    size = 1000
-
-    lon = Longitude(np.random.rand(size) * 360, u.deg)
-    lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
-
-    ipix, weights = bilinear_interpolation(lon, lat, depth)
-
-    assert ((weights >= 0.0) & (weights <= 1.0)).all()
-    assert weights.sum() == ipix.shape[0]
-    assert ((ipix >= 0) & (ipix < 12 * (4**depth))).all()
 
 
 @pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
