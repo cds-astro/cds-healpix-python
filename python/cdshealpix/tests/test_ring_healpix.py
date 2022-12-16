@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
+from astropy.coordinates import SkyCoord, Longitude, Latitude
 import astropy.units as u
 
 from ..ring import (
