@@ -1,7 +1,7 @@
 from .. import cdshealpix  # noqa
 
 import astropy.units as u
-from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
+from astropy.coordinates import SkyCoord, Longitude, Latitude
 import numpy as np
 
 # Do not fill by hand :)
@@ -16,6 +16,7 @@ __all__ = [
     "vertices_skycoord",
 ]
 
+
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, nside):
@@ -28,7 +29,7 @@ def _check_ipixels(data, nside):
 
 
 def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
-    r"""Get the HEALPix indexes that contains specific sky coordinates
+    r"""Get the HEALPix indexes that contains specific sky coordinates.
 
     The ``nside`` of the returned HEALPix cell indexes must be specified. This
     method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__
@@ -111,7 +112,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
 
 
 def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
-    r"""Get the HEALPix indexes that contains specific sky coordinates
+    r"""Get the HEALPix indexes that contains specific sky coordinates.
 
     The ``nside`` of the returned HEALPix cell indexes must be specified.
     This method is wrapped around the
@@ -283,7 +284,7 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
 
 def healpix_to_xy(ipix, nside, num_threads=0):
     r"""
-    Project the center of a HEALPix cell to the xy-HEALPix plane
+    Project the center of a HEALPix cell to the xy-HEALPix plane.
 
     Parameters
     ----------
