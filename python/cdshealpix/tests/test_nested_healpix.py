@@ -3,6 +3,7 @@ import numpy as np
 
 from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
 import astropy.units as u
+import pathlib
 
 from ..nested import (
     lonlat_to_healpix,
@@ -198,7 +199,7 @@ def test_polygon_search_issue10():
 
 # From https://github.com/cds-astro/mocpy/issues/57
 def test_polygon_search_issue57():
-    coords = np.load("./cdshealpix/tests/moc_coords.npy")
+    coords = np.load(pathlib.Path(__file__).parent / "moc_coords.npy")
     polygon_search(Longitude(coords[:, 0], u.deg), Latitude(coords[:, 1], u.deg), 9)
 
 
