@@ -95,7 +95,7 @@ def from_ring(ipix, depth, num_threads=0):
     >>> import numpy as np
     >>> ipix = np.array([42, 6, 10])
     >>> depth = 12
-    >>> ipix = from_ring(ipix, depth)
+    >>> print(from_ring(ipix, depth))
     [16777203 33554430 67108862]
     """
     if depth < 0 or depth > 29:
