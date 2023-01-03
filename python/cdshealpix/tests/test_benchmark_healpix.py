@@ -3,7 +3,7 @@ import astropy.units as u
 import numpy as np
 import astropy_healpix
 
-from ..nested import (
+from ..nested.healpix import (
     lonlat_to_healpix,
     healpix_to_lonlat,
     healpix_to_skycoord,

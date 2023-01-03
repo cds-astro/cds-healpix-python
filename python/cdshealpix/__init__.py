@@ -1,4 +1,4 @@
-from .version import __version__
+from .version import __version__  # noqa
 
-from .nested import *
-from .utils import *
+from .nested import *  # noqa
+from .utils import *  # noqa

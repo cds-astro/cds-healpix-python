@@ -5,7 +5,7 @@ from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
 import astropy.units as u
 import pathlib
 
-from ..nested import (
+from ..nested.healpix import (
     lonlat_to_healpix,
     healpix_to_lonlat,
     healpix_to_xy,
