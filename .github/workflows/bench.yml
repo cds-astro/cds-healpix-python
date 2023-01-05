@@ -22,13 +22,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: "Checkout the branch ${{ github.head_ref }}"       
+    - name: "Checkout the branch ${{ github.head_ref }}"
       uses: actions/checkout@v3
       with:
         ref: ${{ github.head_ref }}
     - name: "Install virtual env, build project and run benches"
       run: |
-         # Install virtualenv     
+         # Install virtualenv
          pip install virtualenv
          # Create and activate a new virtualenv
          virtualenv cdshealpixenv
