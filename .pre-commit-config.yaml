@@ -1,0 +1,41 @@
+repos:
+  # General pre-commits
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: detect-private-key
+        description: "Check accidental private keys in code"
+      - id: requirements-txt-fixer
+        description: "Sort requirements alphabetically"
+      - id: trailing-whitespace
+        description: "Remove trailing whitespaces"
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: 'v1.9.0'
+    hooks:
+     - id: python-no-eval
+     - id: rst-backticks
+  # For python files
+  - repo: https://github.com/psf/black
+    # Code style
+    rev: 22.12.0
+    hooks:
+      - id: black
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Fast linter to replace flake8
+    rev: 'v0.0.212'
+    hooks:
+     - id: ruff
+       fail_fast: true
+  # Same tools but for Jupyter notebooks
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.6.0
+    hooks:
+      - id: nbqa-black
+        name: nbqa-black
+        description: "Run 'black' on a Jupyter Notebook"
+        language: python
+        require_serial: true
+      - id: nbqa-ruff
+        name: nbqa-ruff
+        description: "Run ruff on a Jupyter notebook"
+        fail_fast: true
