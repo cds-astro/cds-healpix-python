@@ -1,17 +1,19 @@
-import pytest
+# Astropy tools
 import astropy.units as u
-import numpy as np
 import astropy_healpix
+from astropy.coordinates import Latitude, Longitude
+
+import numpy as np
+import pytest
 
 from ..nested.healpix import (
-    lonlat_to_healpix,
+    cone_search,
     healpix_to_lonlat,
     healpix_to_skycoord,
-    vertices,
+    lonlat_to_healpix,
     neighbours,
-    cone_search,
+    vertices,
 )
-from astropy.coordinates import Longitude, Latitude
 
 
 @pytest.mark.benchmark(group="lonlat_to_healpix_broadcast")

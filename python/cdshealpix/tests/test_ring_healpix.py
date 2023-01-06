@@ -1,14 +1,15 @@
-import pytest
-import numpy as np
-
-from astropy.coordinates import SkyCoord, Longitude, Latitude
+# Astropy tools
 import astropy.units as u
+from astropy.coordinates import Latitude, Longitude, SkyCoord
+
+import numpy as np
+import pytest
 
 from ..ring.healpix import (
-    lonlat_to_healpix,
-    skycoord_to_healpix,
     healpix_to_lonlat,
     healpix_to_xy,
+    lonlat_to_healpix,
+    skycoord_to_healpix,
     vertices,
 )
 

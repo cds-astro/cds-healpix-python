@@ -1,29 +1,31 @@
-import pytest
-import numpy as np
-
-from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
-import astropy.units as u
+# Standard Library
 import pathlib
 
+# Astropy tools
+# General Astronomy tools
+import astropy.units as u
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
+
+import numpy as np
+import pytest
+
+from .. import from_ring, to_ring
 from ..nested.healpix import (
-    lonlat_to_healpix,
-    healpix_to_lonlat,
-    healpix_to_xy,
-    lonlat_to_xy,
-    skycoord_to_healpix,
-    xy_to_lonlat,
-    healpix_to_skycoord,
-    vertices,
-    neighbours,
+    bilinear_interpolation,
     cone_search,
-    polygon_search,
     elliptical_cone_search,
     external_neighbours,
-    bilinear_interpolation,
+    healpix_to_lonlat,
+    healpix_to_skycoord,
+    healpix_to_xy,
+    lonlat_to_healpix,
+    lonlat_to_xy,
+    neighbours,
+    polygon_search,
+    skycoord_to_healpix,
+    vertices,
+    xy_to_lonlat,
 )
-
-
-from .. import to_ring, from_ring
 
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
