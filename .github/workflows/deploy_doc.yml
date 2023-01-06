@@ -1,0 +1,60 @@
+# The starting point of this script are the links provided on the maturing doc:
+# * https://github.com/nanoporetech/fast-ctc-decode/blob/b226ea0f2b2f4f474eff47349703d57d2ea4801b/.github/workflows/publish.yml
+# * https://github.com/konstin/complex-manylinux-maturin-docker/blob/main/.github/workflows/build.yml
+
+name: publish-cdshealpix-docs
+
+# Exec only if a tag starting by 'v' is pushed
+# see: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+on:
+  push:
+    tags:
+       - v*
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
+# Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+jobs:
+  # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
+  #    using: https://github.com/JamesIves/github-pages-deploy-action
+  deploy-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout branch ${{ github.head_ref }}"
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: "Set up Python 3.9 on Ubuntu"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: "Build doc"
+        run: |
+          # Build the doc
+          # - Install virtualenv     
+          pip install --upgrade pip
+          pip install virtualenv
+          # - Create and activate a new virtualenv
+          virtualenv cdshealpixenv
+          source cdshealpixenv/bin/activate
+          pip install --upgrade pip
+          # - Install maturin
+          pip install maturin
+          # - Build and install cdshealpix
+          maturin develop --release
+          # - Install dependencies needed to build docs
+          pip install -r requirements-doc.txt
+          # - Build the doc: once done, it is in docs/_build/html/
+          cd ./docs
+          make doctest
+          make html
+          cd ..
+          # Switch of the virtualenv
+          deactivate
+      - name: "Publish doc on github pages (commit on branch gh-pages)"
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: docs/_build/html/
+        
