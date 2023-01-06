@@ -1,8 +1,12 @@
-from .. import cdshealpix  # noqa
+"""Manipulation of HEALPix in ring configuration."""
 
+# Astropy tools
 import astropy.units as u
-from astropy.coordinates import SkyCoord, Longitude, Latitude
+from astropy.coordinates import Latitude, Longitude, SkyCoord
+
 import numpy as np
+
+from .. import cdshealpix
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
@@ -24,7 +28,7 @@ def _check_ipixels(data, nside):
     if (data >= npix).any() or (data < 0).any():
         valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
         raise ValueError(
-            "The input HEALPix array contains values out of {0}.".format(valid_ipix)
+            f"The input HEALPix array contains values out of {valid_ipix}."
         )
 
 
@@ -107,8 +111,7 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
 
     if return_offsets:
         return ipix, dx, dy
-    else:
-        return ipix
+    return ipix
 
 
 def skycoord_to_healpix(skycoord, nside, return_offsets=False, num_threads=0):
