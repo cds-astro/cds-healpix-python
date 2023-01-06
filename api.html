@@ -10,13 +10,15 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
@@ -119,7 +121,7 @@ represented in the ring scheme and vice versa.</p>
 <td><p>Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_skycoord.html#cdshealpix.nested.healpix_to_skycoord" title="cdshealpix.nested.healpix_to_skycoord"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_skycoord</span></code></a>(ipix, depth[, dx, dy, ...])</p></td>
-<td><p>Get the sky coordinates of the center of some HEALPix cells at a given depth.</p></td>
+<td><p>Get the sky coordinates of the center of some HEALPix cells in a nested configuration at a given depth.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_xy.html#cdshealpix.nested.healpix_to_xy" title="cdshealpix.nested.healpix_to_xy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_xy</span></code></a>(ipix, depth[, num_threads])</p></td>
 <td><p>Project the center of a HEALPix cell to the xy-HEALPix plane</p></td>
@@ -250,7 +252,7 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 5.3.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.1. &nbsp;
   </p>
 </footer>
   </body>
