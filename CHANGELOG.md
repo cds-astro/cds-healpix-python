@@ -7,27 +7,25 @@ Released 2022-10-20
 ### Changes
 
 * Project layout change ["to avoid the a common ImportError pitfall"](https://github.com/PyO3/maturin#mixed-rustpython-projects)
-* Re-introduce support for Python 3.7 (https://endoflife.date/python)
+* Re-introduce support for Python 3.7 ["https://endoflife.date/python"](https://endoflife.date/python)
 * Relax astropy contrain (remove numpy since already a dependency of astropy)
 * Update ci
 
 --------------------------------------------------------------------------------
 
-
-## 0.6.2 - Not in conda - Yanked on pypi 
+## 0.6.2 - Not in conda - Yanked on pypi
 
 Released 2022-10-17
 
 ### Changes
 
 * Tests for Longitude and Latitude in  `bilinear_interpolation`
-* Remove support for Python <= 3.7 (https://endoflife.date/python)
+* Remove support for Python <= 3.7 ["https://endoflife.date/python"](https://endoflife.date/python)
 * Update dependencies
-    + update cds-healpix-rust to v0.6
-    + ...
+  * update cds-healpix-rust to v0.6
+  * ...
 
 --------------------------------------------------------------------------------
-
 
 ## 0.6.1
 
@@ -49,7 +47,6 @@ Released 2021-03-11
 
 --------------------------------------------------------------------------------
 
-
 ## 0.5.5
 
 Released 2021-03-09
@@ -60,8 +57,6 @@ Released 2021-03-09
 * Replace appveyor and travis by github actions
 * Replace manylinux1 support by manilinux2014
 * Drop support for Windows 32bit
-* Drop support for Python <=3.5 
+* Drop support for Python <=3.5
 
 --------------------------------------------------------------------------------
-
-
