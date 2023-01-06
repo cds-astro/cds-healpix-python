@@ -1,1 +1,1 @@
-from .healpix import *  # noqa
+from .healpix import *  # noqa: F403
