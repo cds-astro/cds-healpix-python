@@ -1,2 +1,3 @@
 astropy
+pre-commit==2.21.*
 pytest

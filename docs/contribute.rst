@@ -41,13 +41,13 @@ Activate it:
     source cdshealpix-env/bin/activate
 
 
-Install all the python dependencies for contributing:
+Install all the python dependencies and the pre-commits hooks for contributing:
 
 .. code-block:: bash
 
     pip install -r <path_to_cloned_repo>/requirements-dev.txt
     pip install -r <path_to_cloned_repo>/requirements-bench.txt
-
+    pre-commit install
 
 At this moment you have correctly set up your development environment. When you will be done with your developments, remember to deactivate your environment by typing ```deactivate```.
 
@@ -69,7 +69,6 @@ and run this command:
 
     pip install maturin
     maturin develop --release
-
 
 The generated .so will be located in a target/release folder. Just copy it from target/release to cdshealpix:
 
@@ -121,6 +120,7 @@ To build the documentation:
 
     cd docs
     make html
+    make doctest
     cd ..
 
 The HTML files can then be consulted:
