@@ -1,9 +1,15 @@
-import cdshealpix
+"""Illustration of the elliptical cone search functionnality."""
 
-from cdshealpix import elliptical_cone_search
+# Astropy tools
 import astropy.units as u
-from astropy.coordinates import Angle, SkyCoord, Longitude, Latitude
-import numpy as np
+
+# For plots
+import matplotlib.pyplot as plt
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
+
+# Moc and HEALPix tools
+from cdshealpix import elliptical_cone_search
+from mocpy import MOC, World2ScreenMPL
 
 ipix, depth, fully_covered = elliptical_cone_search(
     lon=Longitude(0, u.deg),
@@ -14,11 +20,9 @@ ipix, depth, fully_covered = elliptical_cone_search(
     depth=10,
 )
 
-from mocpy import MOC, World2ScreenMPL
-
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
-import matplotlib.pyplot as plt
+
 
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily

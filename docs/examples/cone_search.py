@@ -1,17 +1,24 @@
-from cdshealpix import cone_search
-from astropy.coordinates import Longitude, Latitude
+"""Demonstration of the cone_search function."""
+
+# Astropy tools
 import astropy.units as u
+
+# For plots
+import matplotlib.pyplot as plt
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
+
+# Moc and HEALPix tools
+from cdshealpix import cone_search
+from mocpy import MOC, World2ScreenMPL
 
 ipix, depth, fully_covered = cone_search(
     lon=Longitude(0, u.deg), lat=Latitude(0, u.deg), radius=10 * u.deg, depth=10
 )
 
-from mocpy import MOC, World2ScreenMPL
-from astropy.coordinates import SkyCoord, Angle
 
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
-import matplotlib.pyplot as plt
+
 
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS from the mocpy.WCS class

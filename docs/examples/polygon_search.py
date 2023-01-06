@@ -1,7 +1,15 @@
-from cdshealpix import polygon_search
-from astropy.coordinates import Longitude, Latitude
+"""Example for polygon HEALPix."""
+
+# Astropy tools
 import astropy.units as u
-import numpy as np
+
+# For plots
+import matplotlib.pyplot as plt
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
+
+# Moc and HEALPix tools
+from cdshealpix import polygon_search
+from mocpy import MOC, World2ScreenMPL
 
 lon = Longitude([20, -20, -20, 20], u.deg)
 lat = Latitude([20, 20, -20, -20], u.deg)
@@ -9,12 +17,10 @@ lat = Latitude([20, 20, -20, -20], u.deg)
 depth = 7
 ipix, depth, fully_covered = polygon_search(lon, lat, depth)
 
-from mocpy import MOC, World2ScreenMPL
-from astropy.coordinates import SkyCoord, Angle
 
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 # Plot the MOC using matplotlib
-import matplotlib.pyplot as plt
+
 
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
