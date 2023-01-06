@@ -1,6 +1,8 @@
+"""Conversions between NESTED and RING scheme."""
+
 import numpy as np
 
-from . import cdshealpix  # noqa
+from . import cdshealpix
 
 __all__ = ["to_ring", "from_ring"]
 
@@ -12,7 +14,7 @@ def _check_ipixels(data, depth):
     npix = 12 * 4 ** (depth)
     if (data >= npix).any() or (data < 0).any():
         raise ValueError(
-            "The input HEALPix cells contains value out of [0, {0}]".format(npix - 1)
+            f"The input HEALPix cells contains value out of [0, {npix - 1}]"
         )
 
 
