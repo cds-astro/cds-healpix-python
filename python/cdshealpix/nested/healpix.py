@@ -1,8 +1,12 @@
-from .. import cdshealpix  # noqa
+"""Manipulation of HEALPix in the nested configuration."""
 
+# Astropy tools
 import astropy.units as u
-from astropy.coordinates import SkyCoord, Angle, Longitude, Latitude
+from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
+
 import numpy as np
+
+from .. import cdshealpix
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
@@ -24,6 +28,7 @@ __all__ = [
     "bilinear_interpolation",
 ]
 
+
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 # data and depth must have the same shape
@@ -37,12 +42,12 @@ def _check_ipixels(data, depth):
 
     if (data >= npix).any() or (data < 0).any():
         raise ValueError(
-            "The input HEALPix array contains values out of {0}.".format(valid_ipix)
+            f"The input HEALPix array contains values out of {valid_ipix}."
         )
 
 
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
-    r"""Get the HEALPix indexes that contains specific sky coordinates
+    r"""Get the HEALPix indexes that contains specific sky coordinates.
 
     The depth of the returned HEALPix cell indexes must be specified. This
     method is wrapped around the `hash <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.hash>`__
@@ -74,6 +79,8 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     ------
     ValueError
         When the number of longitudes and latitudes given do not match.
+        When `lon` is not of type `astropy.coordinates.Longitude`.
+        When `lat` is not of type `astropy.coordinates.Latitude`.
 
     Examples
     --------
@@ -86,12 +93,11 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     >>> depth = np.array([5, 6])
     >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], depth[np.newaxis, :])
     """
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     # Handle the case of an uniq lon, lat tuple given by creating a
     # 1d numpy array from the 0d astropy quantities.
@@ -127,12 +133,11 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
 
     if return_offsets:
         return ipix, dx, dy
-    else:
-        return ipix
+    return ipix
 
 
 def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
-    r"""Get the HEALPix indexes that contains specific sky coordinates
+    r"""Get the HEALPix indexes that contains specific sky coordinates.
 
     The depth of the returned HEALPix cell indexes must be specified.
     This method is wrapped around the
@@ -468,8 +473,7 @@ def neighbours(ipix, depth, num_threads=0):
 
 
 def external_neighbours(ipix, depth, delta_depth, num_threads=0):
-    """
-    Get the neighbours of specific healpix cells
+    """Get the neighbours of specific healpix cells.
 
     This method returns two arrays. One containing the healpix cells
     located on the external borders of the cells (at depth: `depth` + `delta_depth`).
@@ -567,15 +571,14 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError("The longitude, latitude and radius must be scalar objects")
 
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
-    assert isinstance(
-        radius, u.Quantity
-    ), "`radius` must be of type `astropy.units.Quantity`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
+
+    if not (isinstance(radius, u.Quantity)):
+        raise ValueError("`radius` must be of type `astropy.units.Quantity`")
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -642,12 +645,11 @@ def polygon_search(lon, lat, depth, flat=False):
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -739,12 +741,11 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     if (
         not lon.isscalar
@@ -782,8 +783,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
 
 
 def healpix_to_xy(ipix, depth, num_threads=0):
-    r"""
-    Project the center of a HEALPix cell to the xy-HEALPix plane
+    r"""Project the center of a HEALPix cell to the xy-HEALPix plane.
 
     Parameters
     ----------
@@ -838,8 +838,7 @@ def healpix_to_xy(ipix, depth, num_threads=0):
 
 
 def lonlat_to_xy(lon, lat, num_threads=0):
-    r"""
-    Project sky coordinates to the HEALPix space
+    r"""Project sky coordinates to the HEALPix space.
 
     Parameters
     ----------
@@ -868,12 +867,11 @@ def lonlat_to_xy(lon, lat, num_threads=0):
     >>> lat = Latitude([5, 10], u.deg)
     >>> x, y = lonlat_to_xy(lon, lat)
     """
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
@@ -949,7 +947,7 @@ def xy_to_lonlat(x, y, num_threads=0):
 
 
 def bilinear_interpolation(lon, lat, depth, num_threads=0):
-    r"""Compute the HEALPix bilinear interpolation from sky coordinates
+    r"""Compute the HEALPix bilinear interpolation from sky coordinates.
 
     For each (``lon``, ``lat``) sky position given, this function
     returns the 4 HEALPix cells that share the nearest cross of the
@@ -1000,16 +998,15 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     >>> depth = 5
     >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
     """
-    assert isinstance(
-        lon, Longitude
-    ), "`lon` must be of type `astropy.coordinates.Longitude`"
-    assert isinstance(
-        lat, Latitude
-    ), "`lat` must be of type `astropy.coordinates.Latitude`"
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
     # Although `to_value` is more generical (method of Quantity),
-    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
+    # Longitude/Latitude ensure that the values given to the contain are in the correct ranges.
     lon = np.atleast_1d(lon.rad)
     lat = np.atleast_1d(lat.rad)
 
