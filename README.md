@@ -9,17 +9,18 @@ This is a BSD-licensed HEALPix package which is wrapped around the [cdshealpix R
 
 [cdshealpix](https://pypi.org/project/cdshealpix/) is multi-platform and is currently deployed on PyPI for i686, x86_64 and aarch64 archs.
 
-
 ```bash
 pip install cdshealpix
 ```
 
 Or
+
 ```bash
 conda install -c conda-forge cdshealpix
 ```
 
 Reminder on conda activation/deactivation:
+
 ```bash
 conda config --set auto_activate_base false
 conda activate base
@@ -27,6 +28,7 @@ conda deactivate
 ```
 
 Test:
+
 ```python
 import cdshealpix
 from cdshealpix import healpix_to_lonlat
@@ -34,7 +36,7 @@ lon, lat = healpix_to_lonlat(0, 0)
 assert lon.rad[0] == 0.7853981633974483
 ```
 
-# Features
+## Features
 
 * [Nested and Ring HEALPix notation](https://cds-astro.github.io/cds-healpix-python/api.html#cdshealpix) supported
 * [Cone search](https://cds-astro.github.io/cds-healpix-python/stubs/cdshealpix.nested.cone_search.html#cdshealpix.nested.cone_search)
@@ -46,8 +48,6 @@ assert lon.rad[0] == 0.7853981633974483
 * Get the [world vertices corresponding to an HEALPix cell](https://cds-astro.github.io/cds-healpix-python/stubs/cdshealpix.nested.vertices.html#cdshealpix.nested.vertices)
 * Get the [neighbours of an HEALPix cell](https://cds-astro.github.io/cds-healpix-python/stubs/cdshealpix.nested.neighbours.html#cdshealpix.nested.neighbours)
 
-# Documentation
+## Documentation
 
 Here is the link to the [documentation](https://cds-astro.github.io/cds-healpix-python/) for informations about how to use this package.
-
-

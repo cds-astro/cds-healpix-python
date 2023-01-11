@@ -13,11 +13,11 @@ on:
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
+# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
 # Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
 jobs:
-  
-  # Linux is specifi because of manylinux, we have to use a docker file 
+
+  # Linux is specifi because of manylinux, we have to use a docker file
   build-linux64-wheels:
     # Containers run in Linux
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
     steps:
      - name: "Checkout the full project"
        uses: actions/checkout@v1
-     # We need to install rust in the docker image (else, cargo is already available in github action)  
+     # We need to install rust in the docker image (else, cargo is already available in github action)
      - name: "Install Rust"
        run: |
          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -54,7 +54,7 @@ jobs:
          done
 
   # Linux is specifi because of manylinux, we have to use a docker file
-  # Replace because last version was generating x86_64 wheels :o/ 
+  # Replace because last version was generating x86_64 wheels :o/
   #build-linux32-wheels:
   #  # Containers run in Linux
   #  runs-on: ubuntu-latest
@@ -64,10 +64,10 @@ jobs:
   #  container: quay.io/pypa/manylinux2014_i686
   #  # We are now in CentOS 7 32 bits
   #  steps:
-  #   # Checkout the project        
+  #   # Checkout the project
   #   - name: "Checkout the full project"
   #     uses: actions/checkout@v1
-  #   # We need to install rust in the docker image (else, cargo is already available in github action)  
+  #   # We need to install rust in the docker image (else, cargo is already available in github action)
   #   - name: "Install Rust"
   #     run: |
   #       curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host i686-unknown-linux-gnu -y
@@ -89,8 +89,8 @@ jobs:
   #         echo "${PYBIN}/python"
   #         echo "CARGO_BUILD_TARGET: ${CARGO_BUILD_TARGET}"
   #         "${PYBIN}/maturin" publish -i "${PYBIN}/python"  --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target i686-unknown-linux-gnu
-  #       done 
- 
+  #       done
+
   # Comming in large parts from @odidev in MOCPy pull request
   build-linux32-wheels:
     runs-on: ubuntu-latest
@@ -162,14 +162,14 @@ jobs:
     strategy:
       # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
       # run all matrix jobs even if on is failling (default behaviour is to stop all jobs)
-      fail-fast: false      
+      fail-fast: false
       matrix:
         os: [windows-latest]
         python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     steps:
-     # Checkout the project       
+     # Checkout the project
      - uses: actions/checkout@v3
-     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
        uses: actions/setup-python@v2
        with:
@@ -177,7 +177,7 @@ jobs:
      # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
      - name: Build and publish wheel for Python ${{ matrix.python-version }} on ${{ matrix.os }}
        # We do not use environement variable for user, because it seems that the way of providing it in the command
-       # line is not the same for macos and for windows. We should create 2 different actions (see 
+       # line is not the same for macos and for windows. We should create 2 different actions (see
        # https://docs.github.com/en/actions/reference/encrypted-secrets )
        env:
         MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
@@ -187,7 +187,7 @@ jobs:
          pip install --upgrade pip
          pip install maturin
          #maturin build --release --no-sdist
-         #maturin publish --no-sdist --skip-existing --username fxpineau 
+         #maturin publish --no-sdist --skip-existing --username fxpineau
          maturin -V
          rustc -vV
          maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing --username fxpineau
@@ -202,9 +202,9 @@ jobs:
         os: [macOS-latest]
         python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     steps:
-     # Checkout the project       
+     # Checkout the project
      - uses: actions/checkout@v3
-     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python  
+     #  Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
        uses: actions/setup-python@v2
        with:
@@ -212,7 +212,7 @@ jobs:
      # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
      - name: Build and publish wheel for Python ${{ matrix.python-version }} on ${{ matrix.os }}
        # We do not use environement variable for user, because it seems that the way of providing it in the command
-       # line is not the same for macos and for windows. We should create 2 different actions (see 
+       # line is not the same for macos and for windows. We should create 2 different actions (see
        # https://docs.github.com/en/actions/reference/encrypted-secrets )
        env:
         MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
@@ -244,7 +244,7 @@ jobs:
       - name: "Build doc"
         run: |
           # Build the doc
-          # - Install virtualenv     
+          # - Install virtualenv
           pip install --upgrade pip
           pip install virtualenv
           # - Create and activate a new virtualenv
@@ -268,4 +268,4 @@ jobs:
         with:
           branch: gh-pages
           folder: docs/_build/html/
-        
+

@@ -13,7 +13,7 @@ on:
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs 
+# Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
 # Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
 jobs:
   # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
@@ -32,7 +32,7 @@ jobs:
       - name: "Build doc"
         run: |
           # Build the doc
-          # - Install virtualenv     
+          # - Install virtualenv
           pip install --upgrade pip
           pip install virtualenv
           # - Create and activate a new virtualenv
@@ -57,4 +57,4 @@ jobs:
         with:
           branch: gh-pages
           folder: docs/_build/html/
-        
+

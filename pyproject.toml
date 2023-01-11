@@ -35,3 +35,30 @@ frozen = false
 # Require Cargo.lock is up to date
 locked = false
 
+[tool.ruff]
+fix = true
+force-exclude = true
+format = "grouped"
+show-source = true
+ignore-init-module-imports = true
+target-version = "py37"
+extend-select = ["SIM", "D", "UP", "N", "S", "B", "A", "C4", "ICN", "RET", "ARG", "PD", "PGH", "RUF"]
+extend-ignore = ["E501"]
+# E501: line length (done by black in our case)
+exclude = ["conf.py"]
+
+[tool.ruff.per-file-ignores]
+# D100: Missing docstring in public module
+# D103: Missing docstring in public function
+# D104: Missing docstring in public package
+# S101: Use of `assert` detected
+"__init__.py" = ["D104"]
+"version.py" = ["D100"]
+"test_*.py" = ["D103", "D100", "S101"]
+"notebooks*" = ["D100"]
+
+[tool.ruff.flake8-errmsg]
+max-string-length = 20
+
+[tool.ruff.pydocstyle]
+convention = "numpy"  # Accepts: "google", "numpy", or "pep257"

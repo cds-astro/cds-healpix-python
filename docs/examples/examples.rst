@@ -75,7 +75,7 @@ Fetching the HEALPix map from NASA archives
   data_header = ext_map[1].header
   data = ext_map[1].data # extracts the data
   ext_map.close()
- 
+
   hdr
 
 Let's also have a look at the data header
@@ -84,7 +84,7 @@ Let's also have a look at the data header
 
   data_header
 
-After learning that the magnitudes are stored in `'TEMPERATURE'`, we can extract all useful information.
+After learning that the magnitudes are stored in ``'TEMPERATURE'``, we can extract all useful information.
 
 .. jupyter-execute::
 
@@ -112,7 +112,7 @@ Then, we get the coordinates of the centers of these healpix cells
     ) # this function works for nested maps, see cdshealpix documentation
     center_coordinates_in_equatorial
 
-Conversion into galactic coordinates with astropy method 
+Conversion into galactic coordinates with astropy method
 
 .. jupyter-execute::
 
@@ -130,11 +130,11 @@ HEALPix cell to obtain the magnitude values in the other coordinate system.
     # then apply the interpolation
     ext_map_equatorial_nested = (extinction_values[healpix.data] * weights.data).sum(axis=1)
 
-Convert the two HEALPix into MOCs for visualisation 
+Convert the two HEALPix into MOCs for visualisation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We produce MOCs by excluding the high extinction regions. This allows to have a clear view of the position 
-of the galactic disc. 
+We produce MOCs by excluding the high extinction regions. This allows to have a clear view of the position
+of the galactic disc.
 
 .. jupyter-execute::
 
@@ -161,7 +161,7 @@ of the galactic disc.
         coordsys="icrs",
         rotation=Angle(0, u.degree),
         projection="SIN") as wcs:
-        
+
         ax1 = fig.add_subplot(121, projection=wcs, aspect='equal', adjustable='datalim')
         ax2 = fig.add_subplot(122, projection=wcs, aspect='equal', adjustable='datalim')
         moc_low_extinction_galactic.fill(ax=ax1, wcs=wcs, alpha=0.5, fill=True, color="green")

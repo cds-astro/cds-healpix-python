@@ -1,5 +1,3 @@
-from .version import __version__
-
-from .nested import *
-from .utils import *
-
+from .nested import *  # noqa: F403
+from .utils import *  # noqa: F403
+from .version import __version__  # noqa: F401

@@ -1,4 +1,4 @@
 astropy
-pytest_benchmark
 astropy_healpix
 healpy
+pytest_benchmark
