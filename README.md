@@ -1,7 +1,7 @@
 # CDSHealpix
 
-[![Build Status](https://github.com/github/docs/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/cds-astro/cds-healpix-python/actions/workflows/test.yml)
-[![Deploy status](https://github.com/github/docs/actions/workflows/deploy.yml/badge.svg)](https://github.com/cds-astro/cds-healpix-python/actions/workflows/deploy.yml)
+[![Build Status](https://github.com/cds-astro/cds-healpix-python/actions/workflows/test.yml/badge.svg)](https://github.com/cds-astro/cds-healpix-python/actions/workflows/test.yml)
+[![Deploy status](https://github.com/cds-astro/cds-healpix-python/actions/workflows/deploy_pypi.yml/badge.svg?branch=master)](https://github.com/cds-astro/cds-healpix-python/actions/workflows/deploy_pypi.yml)
 [![PyPI version](https://badge.fury.io/py/cdshealpix.svg)](https://badge.fury.io/py/cdshealpix)
 [![Documentation](https://img.shields.io/badge/Documentation-link-green.svg)](https://cds-astro.github.io/cds-healpix-python/)
 
