@@ -141,15 +141,17 @@ of the galactic disc.
     # For the HEALPix in equatorial coordinate system
     low_extinction_index_equatorial = np.where((ext_map_equatorial_nested < 0.5))[0]
     moc_low_extinction_equatorial = MOC.from_healpix_cells(
-        low_extinction_index_equatorial,
-        np.full((len(low_extinction_index_equatorial)),norder)
+        ipix = low_extinction_index_equatorial,
+        depth = np.full((len(low_extinction_index_equatorial)),norder),
+        max_depth = norder
         )
 
     # For the HEALPix in galactic coordinate system
     low_extinction_index_galactic = np.where((extinction_values < 0.5))[0]
     moc_low_extinction_galactic = MOC.from_healpix_cells(
-        low_extinction_index_galactic,
-        np.full((len(low_extinction_index_galactic)),norder)
+        ipix = low_extinction_index_galactic,
+        depth = np.full((len(low_extinction_index_galactic)),norder),
+        max_depth = norder
         )
 
     # Plot the MOCs using matplotlib

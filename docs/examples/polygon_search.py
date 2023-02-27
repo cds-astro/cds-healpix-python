@@ -14,11 +14,11 @@ from mocpy import MOC, WCS
 lon = Longitude([20, -20, -20, 20], u.deg)
 lat = Latitude([20, 20, -20, -20], u.deg)
 
-depth = 7
-ipix, depth, fully_covered = polygon_search(lon, lat, depth)
+max_depth = 7
+ipix, depth, fully_covered = polygon_search(lon, lat, max_depth)
 
 
-moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
+moc = MOC.from_healpix_cells(ipix, depth, max_depth)
 # Plot the MOC using matplotlib
 
 

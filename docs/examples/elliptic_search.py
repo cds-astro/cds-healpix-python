@@ -11,16 +11,18 @@ from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 from cdshealpix import elliptical_cone_search
 from mocpy import MOC, WCS
 
+max_depth = 10
+
 ipix, depth, fully_covered = elliptical_cone_search(
     lon=Longitude(0, u.deg),
     lat=Latitude(0, u.deg),
     a=Angle(50, unit="deg"),
     b=Angle(5, unit="deg"),
     pa=Angle(30, unit="deg"),
-    depth=10,
+    depth=max_depth,
 )
 
-moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
+moc = MOC.from_healpix_cells(ipix, depth, max_depth)
 # Plot the MOC using matplotlib
 
 
