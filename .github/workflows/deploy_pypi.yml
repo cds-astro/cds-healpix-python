@@ -28,8 +28,8 @@ jobs:
     # We are now in CentOS 7 64 bits
     steps:
      - name: "Checkout the full project"
-       uses: actions/checkout@v1
-     # We need to install rust in the docker image (else, cargo is already available in github action)
+       uses: actions/checkout@v3
+     # We need to install rust in the docker image (else, cargo is already available in github action)  
      - name: "Install Rust"
        run: |
          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -49,7 +49,7 @@ jobs:
            "${PYBIN}/maturin" -V
            rustc -vV
            echo "${PYBIN}/python"
-           "${PYBIN}/maturin" publish -i "${PYBIN}/python"    --sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
+           "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sidst --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
            "${PYBIN}/maturin" publish -i "${PYBIN}/python" --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
          done
 
@@ -152,8 +152,8 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
            done'
 
 
@@ -226,6 +226,7 @@ jobs:
          rustc -vV
          echo "${PYBIN}/python"
          maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --universal2 --skip-existing  --username "$MATURIN_USERNAME"
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist              --skip-existing  --username "$MATURIN_USERNAME"
 
 
   # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
