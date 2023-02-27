@@ -9,7 +9,7 @@ from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 
 # Moc and HEALPix tools
 from cdshealpix import cone_search
-from mocpy import MOC, World2ScreenMPL
+from mocpy import MOC, WCS
 
 ipix, depth, fully_covered = cone_search(
     lon=Longitude(0, u.deg), lat=Latitude(0, u.deg), radius=10 * u.deg, depth=10
@@ -17,12 +17,12 @@ ipix, depth, fully_covered = cone_search(
 
 
 moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
-# Plot the MOC using matplotlib
+# Plot the MOC using matpl/Wordotlib
 
 
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS from the mocpy.WCS class
-with World2ScreenMPL(
+with WCS(
     fig,
     fov=30 * u.deg,
     center=SkyCoord(0, 0, unit="deg", frame="icrs"),

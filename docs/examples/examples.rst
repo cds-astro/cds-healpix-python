@@ -54,7 +54,7 @@ For scientific use, please have a look at the method rotate_alm in
 
   import cdshealpix
 
-  from mocpy import MOC, World2ScreenMPL
+  from mocpy import MOC, WCS
   import astropy.units as u
 
   from astropy.io import fits
@@ -155,7 +155,7 @@ of the galactic disc.
     # Plot the MOCs using matplotlib
     fig = plt.figure(figsize=(20, 10))
     # Define a astropy WCS from the mocpy.WCS class
-    with World2ScreenMPL(fig,
+    with WCS(fig,
         fov=120 * u.deg,
         center=SkyCoord(0, 0, unit='deg', frame='icrs'),
         coordsys="icrs",

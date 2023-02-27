@@ -9,7 +9,7 @@ from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 
 # Moc and HEALPix tools
 from cdshealpix import polygon_search
-from mocpy import MOC, World2ScreenMPL
+from mocpy import MOC, WCS
 
 lon = Longitude([20, -20, -20, 20], u.deg)
 lat = Latitude([20, 20, -20, -20], u.deg)
@@ -24,7 +24,7 @@ moc = MOC.from_healpix_cells(ipix, depth, fully_covered)
 
 fig = plt.figure(111, figsize=(10, 10))
 # Define a astropy WCS easily
-with World2ScreenMPL(
+with WCS(
     fig,
     fov=100 * u.deg,
     center=SkyCoord(0, 0, unit="deg", frame="icrs"),
