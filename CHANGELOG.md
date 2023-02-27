@@ -13,6 +13,11 @@ This release is mostly documentation and CI improvements
 * adopted black codestyle
 * BUGFIX : ``from_ring`` doctring example is fixed 
 
+### Fix
+
+* Support for Mac M1 processor due to [maturin bug](https://github.com/PyO3/maturin/issues/1207) during last release.
+
+
 --------------------------------------------------------------------------------
 
 ## 0.6.3
