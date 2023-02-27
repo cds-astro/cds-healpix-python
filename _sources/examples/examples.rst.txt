@@ -54,7 +54,7 @@ For scientific use, please have a look at the method rotate_alm in
 
   import cdshealpix
 
-  from mocpy import MOC, World2ScreenMPL
+  from mocpy import MOC, WCS
   import astropy.units as u
 
   from astropy.io import fits
@@ -75,7 +75,7 @@ Fetching the HEALPix map from NASA archives
   data_header = ext_map[1].header
   data = ext_map[1].data # extracts the data
   ext_map.close()
- 
+
   hdr
 
 Let's also have a look at the data header
@@ -84,7 +84,7 @@ Let's also have a look at the data header
 
   data_header
 
-After learning that the magnitudes are stored in `'TEMPERATURE'`, we can extract all useful information.
+After learning that the magnitudes are stored in ``'TEMPERATURE'``, we can extract all useful information.
 
 .. jupyter-execute::
 
@@ -112,7 +112,7 @@ Then, we get the coordinates of the centers of these healpix cells
     ) # this function works for nested maps, see cdshealpix documentation
     center_coordinates_in_equatorial
 
-Conversion into galactic coordinates with astropy method 
+Conversion into galactic coordinates with astropy method
 
 .. jupyter-execute::
 
@@ -130,38 +130,40 @@ HEALPix cell to obtain the magnitude values in the other coordinate system.
     # then apply the interpolation
     ext_map_equatorial_nested = (extinction_values[healpix.data] * weights.data).sum(axis=1)
 
-Convert the two HEALPix into MOCs for visualisation 
+Convert the two HEALPix into MOCs for visualisation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We produce MOCs by excluding the high extinction regions. This allows to have a clear view of the position 
-of the galactic disc. 
+We produce MOCs by excluding the high extinction regions. This allows to have a clear view of the position
+of the galactic disc.
 
 .. jupyter-execute::
 
     # For the HEALPix in equatorial coordinate system
     low_extinction_index_equatorial = np.where((ext_map_equatorial_nested < 0.5))[0]
     moc_low_extinction_equatorial = MOC.from_healpix_cells(
-        low_extinction_index_equatorial,
-        np.full((len(low_extinction_index_equatorial)),norder)
+        ipix = low_extinction_index_equatorial,
+        depth = np.full((len(low_extinction_index_equatorial)),norder),
+        max_depth = norder
         )
 
     # For the HEALPix in galactic coordinate system
     low_extinction_index_galactic = np.where((extinction_values < 0.5))[0]
     moc_low_extinction_galactic = MOC.from_healpix_cells(
-        low_extinction_index_galactic,
-        np.full((len(low_extinction_index_galactic)),norder)
+        ipix = low_extinction_index_galactic,
+        depth = np.full((len(low_extinction_index_galactic)),norder),
+        max_depth = norder
         )
 
     # Plot the MOCs using matplotlib
     fig = plt.figure(figsize=(20, 10))
     # Define a astropy WCS from the mocpy.WCS class
-    with World2ScreenMPL(fig,
+    with WCS(fig,
         fov=120 * u.deg,
         center=SkyCoord(0, 0, unit='deg', frame='icrs'),
         coordsys="icrs",
         rotation=Angle(0, u.degree),
         projection="SIN") as wcs:
-        
+
         ax1 = fig.add_subplot(121, projection=wcs, aspect='equal', adjustable='datalim')
         ax2 = fig.add_subplot(122, projection=wcs, aspect='equal', adjustable='datalim')
         moc_low_extinction_galactic.fill(ax=ax1, wcs=wcs, alpha=0.5, fill=True, color="green")
