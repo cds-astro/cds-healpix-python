@@ -1,5 +1,20 @@
 # `cdshealpix-python` Change Log
 
+## 0.6.4
+
+Released 2023-02-27
+
+This release is mostly documentation and CI improvements
+
+### Changes
+
+* docstring update for ``bilinear_interpolation`` to highlight counter-intuitive use of False and True in ``np.mask``.
+* new extended example in documentation for coordinate system rotation using the pixel method
+* adopted black codestyle
+* BUGFIX : ``from_ring`` doctring example is fixed 
+
+--------------------------------------------------------------------------------
+
 ## 0.6.3
 
 Released 2022-10-20
