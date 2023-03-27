@@ -347,10 +347,12 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lat = lat.as_array_mut();
 
         let layer = healpix::nested::get(depth);
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
-        pool.install(||
-            if step == 1 {
-                Zip::from(lon.rows_mut())
+        #[cfg(not(target_arch = "wasm32" ))]
+        {
+            let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
+            pool.install(||
+              if step == 1 {
+                  Zip::from(lon.rows_mut())
                     .and(lat.rows_mut())
                     .and(&ipix)
                     .par_for_each(|mut lon, mut lat, &p| {
@@ -367,21 +369,57 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
                         lon[3] = w_lon;
                         lat[3] = w_lat;
                     });
-            } else {
-                Zip::from(lon.rows_mut())
+              } else {
+                  Zip::from(lon.rows_mut())
                     .and(lat.rows_mut())
                     .and(&ipix)
                     .par_for_each(|mut lon, mut lat, &p| {
                         let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
 
-                        for i in 0..(4*step) {
+                        for i in 0..(4 * step) {
                             let (l, b) = r[i];
                             lon[i] = l;
                             lat[i] = b;
                         }
                     });
+              }
+            );
+        }
+        #[cfg(target_arch = "wasm32" )]
+        {
+            if step == 1 {
+                Zip::from(lon.rows_mut())
+                  .and(lat.rows_mut())
+                  .and(&ipix)
+                  .for_each(|mut lon, mut lat, &p| {
+                      let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::nested::vertices(depth, p);
+                      lon[0] = s_lon;
+                      lat[0] = s_lat;
+
+                      lon[1] = e_lon;
+                      lat[1] = e_lat;
+
+                      lon[2] = n_lon;
+                      lat[2] = n_lat;
+
+                      lon[3] = w_lon;
+                      lat[3] = w_lat;
+                  });
+            } else {
+                Zip::from(lon.rows_mut())
+                  .and(lat.rows_mut())
+                  .and(&ipix)
+                  .for_each(|mut lon, mut lat, &p| {
+                      let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
+
+                      for i in 0..(4 * step) {
+                          let (l, b) = r[i];
+                          lon[i] = l;
+                          lat[i] = b;
+                      }
+                  });
             }
-        );
+        }
 
         Ok(())
     }
