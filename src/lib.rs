@@ -39,15 +39,25 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut ipix_ring = ipix_ring.as_array_mut();
 
         let layer = healpix::nested::get(depth);
-        let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
-        pool.install(||
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+          let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
+          pool.install(||
             Zip::from(&ipix)
-                .and(&mut ipix_ring)
-                .par_for_each(|&pix, pix_ring| {
-                    *pix_ring = layer.to_ring(pix);
-                })
-        );
-
+              .and(&mut ipix_ring)
+              .par_for_each(|&pix, pix_ring| {
+                *pix_ring = layer.to_ring(pix);
+              })
+          );
+        }
+      #[cfg(target_arch = "wasm32")]
+      {
+          Zip::from(&ipix)
+            .and(&mut ipix_ring)
+            .for_each(|&pix, pix_ring| {
+              *pix_ring = layer.to_ring(pix);
+            });
+      }
         Ok(())
     }
 
@@ -62,15 +72,25 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut ipix = ipix.as_array_mut();
 
         let layer = healpix::nested::get(depth);
-        
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&ipix_ring)
-                .and(&mut ipix)
-                .par_for_each(|&pix_ring, pix| {
-                    *pix = layer.from_ring(pix_ring);
-                })
+          Zip::from(&ipix_ring)
+            .and(&mut ipix)
+            .par_for_each(|&pix_ring, pix| {
+              *pix = layer.from_ring(pix_ring);
+            })
         );
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&ipix_ring)
+          .and(&mut ipix)
+          .for_each(|&pix_ring, pix| {
+            *pix = layer.from_ring(pix_ring);
+          });
+      }
 
         Ok(())
     }
@@ -93,22 +113,39 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut ipix = ipix.as_array_mut();
         let mut dx = dx.as_array_mut();
         let mut dy = dy.as_array_mut();
-        
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&mut ipix)
-                .and(&mut dx)
-                .and(&mut dy)
-                .and(&lon)
-                .and(&lat)
-                .and(&depth)
-                .par_for_each(|p, x, y, &lon, &lat, &d| {
-                    let r = healpix::nested::hash_with_dxdy(d, lon, lat);
-                    *p = r.0;
-                    *x = r.1;
-                    *y = r.2;
-                })
+          Zip::from(&mut ipix)
+            .and(&mut dx)
+            .and(&mut dy)
+            .and(&lon)
+            .and(&lat)
+            .and(&depth)
+            .par_for_each(|p, x, y, &lon, &lat, &d| {
+              let r = healpix::nested::hash_with_dxdy(d, lon, lat);
+              *p = r.0;
+              *x = r.1;
+              *y = r.2;
+            })
         );
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&mut ipix)
+          .and(&mut dx)
+          .and(&mut dy)
+          .and(&lon)
+          .and(&lat)
+          .and(&depth)
+          .for_each(|p, x, y, &lon, &lat, &d| {
+            let r = healpix::nested::hash_with_dxdy(d, lon, lat);
+            *p = r.0;
+            *x = r.1;
+            *y = r.2;
+          });
+      }
 
         Ok(())
     }
@@ -129,23 +166,39 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut ipix = ipix.as_array_mut();
         let mut dx = dx.as_array_mut();
         let mut dy = dy.as_array_mut();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&mut ipix)
-                .and(&mut dx)
-                .and(&mut dy)
-                .and(&lon)
-                .and(&lat)
-                .and(&nside)
-                .par_for_each(|p, x, y, &lon, &lat, &n| {
-                    let r = healpix::ring::hash_with_dxdy(n, lon, lat);
-                    *p = r.0;
-                    *x = r.1;
-                    *y = r.2;
-                })
+          Zip::from(&mut ipix)
+            .and(&mut dx)
+            .and(&mut dy)
+            .and(&lon)
+            .and(&lat)
+            .and(&nside)
+            .par_for_each(|p, x, y, &lon, &lat, &n| {
+              let r = healpix::ring::hash_with_dxdy(n, lon, lat);
+              *p = r.0;
+              *x = r.1;
+              *y = r.2;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&mut ipix)
+          .and(&mut dx)
+          .and(&mut dy)
+          .and(&lon)
+          .and(&lat)
+          .and(&nside)
+          .for_each(|p, x, y, &lon, &lat, &n| {
+            let r = healpix::ring::hash_with_dxdy(n, lon, lat);
+            *p = r.0;
+            *x = r.1;
+            *y = r.2;
+          });
+      }
         Ok(())
     }
 
@@ -164,20 +217,33 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lat = lat.as_array_mut();
         let ipix = ipix.as_array();
         let depth = depth.as_array();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&ipix)
-                .and(&depth)
-                .and(&mut lon)
-                .and(&mut lat)
-                .par_for_each(|&p, &d, lon, lat| {
-                    let (l, b) = healpix::nested::sph_coo(d, p, dx, dy);
-                    *lon = l;
-                    *lat = b;
-                })
+          Zip::from(&ipix)
+            .and(&depth)
+            .and(&mut lon)
+            .and(&mut lat)
+            .par_for_each(|&p, &d, lon, lat| {
+              let (l, b) = healpix::nested::sph_coo(d, p, dx, dy);
+              *lon = l;
+              *lat = b;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&ipix)
+          .and(&depth)
+          .and(&mut lon)
+          .and(&mut lat)
+          .for_each(|&p, &d, lon, lat| {
+            let (l, b) = healpix::nested::sph_coo(d, p, dx, dy);
+            *lon = l;
+            *lat = b;
+          });
+      }
         Ok(())
     }
 
@@ -195,20 +261,34 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut lat = lat.as_array_mut();
         let ipix = ipix.as_array();
         let nside = nside.as_array();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&ipix)
-                .and(&nside)
-                .and(&mut lon)
-                .and(&mut lat)
-                .par_for_each(|&p, &n, lon, lat| {
-                    let (l, b) = healpix::ring::sph_coo(n, p, dx, dy);
-                    *lon = l;
-                    *lat = b;
-                })
+          Zip::from(&ipix)
+            .and(&nside)
+            .and(&mut lon)
+            .and(&mut lat)
+            .par_for_each(|&p, &n, lon, lat| {
+              let (l, b) = healpix::ring::sph_coo(n, p, dx, dy);
+              *lon = l;
+              *lat = b;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&ipix)
+          .and(&nside)
+          .and(&mut lon)
+          .and(&mut lat)
+          .for_each(|&p, &n, lon, lat| {
+            let (l, b) = healpix::ring::sph_coo(n, p, dx, dy);
+            *lon = l;
+            *lat = b;
+          });
+        
+      }
         Ok(())
     }
 
@@ -225,21 +305,35 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut y = y.as_array_mut();
         let ipix = ipix.as_array();
         let depth = depth.as_array();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&ipix)
-                .and(&depth)
-                .and(&mut x)
-                .and(&mut y)
-                .par_for_each(|&p, &d, hpx, hpy| {
-                    let layer = healpix::nested::get(d);
-                    let (x, y) = layer.center_of_projected_cell(p);
-                    *hpx = x;
-                    *hpy = y;
-                })
+          Zip::from(&ipix)
+            .and(&depth)
+            .and(&mut x)
+            .and(&mut y)
+            .par_for_each(|&p, &d, hpx, hpy| {
+              let layer = healpix::nested::get(d);
+              let (x, y) = layer.center_of_projected_cell(p);
+              *hpx = x;
+              *hpy = y;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&ipix)
+          .and(&depth)
+          .and(&mut x)
+          .and(&mut y)
+          .for_each(|&p, &d, hpx, hpy| {
+            let layer = healpix::nested::get(d);
+            let (x, y) = layer.center_of_projected_cell(p);
+            *hpx = x;
+            *hpy = y;
+          });
+      }
         Ok(())
     }
 
@@ -255,20 +349,33 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut y = y.as_array_mut();
         let ipix = ipix.as_array();
         let nside = nside.as_array();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&ipix)
-                .and(&nside)
-                .and(&mut x)
-                .and(&mut y)
-                .par_for_each(|&p, &n, hpx, hpy| {
-                    let (x, y) = healpix::ring::center_of_projected_cell(n, p);
-                    *hpx = x;
-                    *hpy = y;
-                })
+          Zip::from(&ipix)
+            .and(&nside)
+            .and(&mut x)
+            .and(&mut y)
+            .par_for_each(|&p, &n, hpx, hpy| {
+              let (x, y) = healpix::ring::center_of_projected_cell(n, p);
+              *hpx = x;
+              *hpy = y;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&ipix)
+          .and(&nside)
+          .and(&mut x)
+          .and(&mut y)
+          .for_each(|&p, &n, hpx, hpy| {
+            let (x, y) = healpix::ring::center_of_projected_cell(n, p);
+            *hpx = x;
+            *hpy = y;
+          });
+      }
         Ok(())
     }
 
@@ -285,20 +392,33 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut y = y.as_array_mut();
         let lon = lon.as_array();
         let lat = lat.as_array();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&lon)
-                .and(&lat)
-                .and(&mut x)
-                .and(&mut y)
-                .par_for_each(|&l, &b, hpx, hpy| {
-                    let (x, y) = healpix::proj(l, b);
-                    *hpx = x;
-                    *hpy = y;
-                })
+          Zip::from(&lon)
+            .and(&lat)
+            .and(&mut x)
+            .and(&mut y)
+            .par_for_each(|&l, &b, hpx, hpy| {
+              let (x, y) = healpix::proj(l, b);
+              *hpx = x;
+              *hpy = y;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&lon)
+          .and(&lat)
+          .and(&mut x)
+          .and(&mut y)
+          .for_each(|&l, &b, hpx, hpy| {
+            let (x, y) = healpix::proj(l, b);
+            *hpx = x;
+            *hpy = y;
+          });
+      }
         Ok(())
     }
 
@@ -315,20 +435,33 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let y = y.as_array();
         let mut lon = lon.as_array_mut();
         let mut lat = lat.as_array_mut();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(&x)
-                .and(&y)
-                .and(&mut lon)
-                .and(&mut lat)
-                .par_for_each(|&hpx, &hpy, l, b| {
-                    let r = healpix::unproj(hpx, hpy);
-                    *l = r.0;
-                    *b = r.1;
-                })
+          Zip::from(&x)
+            .and(&y)
+            .and(&mut lon)
+            .and(&mut lat)
+            .par_for_each(|&hpx, &hpy, l, b| {
+              let r = healpix::unproj(hpx, hpy);
+              *l = r.0;
+              *b = r.1;
+            })
         );
-
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(&x)
+          .and(&y)
+          .and(&mut lon)
+          .and(&mut lat)
+          .for_each(|&hpx, &hpy, l, b| {
+            let r = healpix::unproj(hpx, hpy);
+            *l = r.0;
+            *b = r.1;
+          });
+      }
         Ok(())
     }
 
@@ -436,28 +569,49 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let ipix = ipix.as_array();
         let mut lon = lon.as_array_mut();
         let mut lat = lat.as_array_mut();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(lon.rows_mut())
-                .and(lat.rows_mut())
-                .and(&ipix)
-                .par_for_each(|mut lon, mut lat, &p| {
-                    let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::ring::vertices(nside, p);
-                    lon[0] = s_lon;
-                    lat[0] = s_lat;
+          Zip::from(lon.rows_mut())
+            .and(lat.rows_mut())
+            .and(&ipix)
+            .par_for_each(|mut lon, mut lat, &p| {
+              let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::ring::vertices(nside, p);
+              lon[0] = s_lon;
+              lat[0] = s_lat;
 
-                    lon[1] = e_lon;
-                    lat[1] = e_lat;
+              lon[1] = e_lon;
+              lat[1] = e_lat;
 
-                    lon[2] = n_lon;
-                    lat[2] = n_lat;
+              lon[2] = n_lon;
+              lat[2] = n_lat;
 
-                    lon[3] = w_lon;
-                    lat[3] = w_lat;
-                })
+              lon[3] = w_lon;
+              lat[3] = w_lat;
+            })
         );
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(lon.rows_mut())
+          .and(lat.rows_mut())
+          .and(&ipix)
+          .for_each(|mut lon, mut lat, &p| {
+            let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] = healpix::ring::vertices(nside, p);
+            lon[0] = s_lon;
+            lat[0] = s_lat;
 
+            lon[1] = e_lon;
+            lat[1] = e_lat;
+
+            lon[2] = n_lon;
+            lat[2] = n_lat;
+
+            lon[3] = w_lon;
+            lat[3] = w_lat;
+          });
+      }
         Ok(())
     }
 
@@ -473,35 +627,61 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     -> PyResult<()> {
         let ipix = ipix.as_array();
         let mut neighbours = neighbours.as_array_mut();
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(neighbours.rows_mut())
-                .and(&ipix)
-                .par_for_each(|mut n, &p| {
-                    let map = healpix::nested::neighbours(depth, p, true);
+          Zip::from(neighbours.rows_mut())
+            .and(&ipix)
+            .par_for_each(|mut n, &p| {
+              let map = healpix::nested::neighbours(depth, p, true);
 
-                    n[0] = map.get(MainWind::S)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[1] = map.get(MainWind::SE)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[2] = map.get(MainWind::E)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[3] = map.get(MainWind::SW)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[4] = p as i64;
-                    n[5] = map.get(MainWind::NE)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[6] = map.get(MainWind::W)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[7] = map.get(MainWind::NW)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                    n[8] = map.get(MainWind::N)
-                        .map_or_else(|| -1_i64, |&val| val as i64);
-                })
+              n[0] = map.get(MainWind::S)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[1] = map.get(MainWind::SE)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[2] = map.get(MainWind::E)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[3] = map.get(MainWind::SW)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[4] = p as i64;
+              n[5] = map.get(MainWind::NE)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[6] = map.get(MainWind::W)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[7] = map.get(MainWind::NW)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+              n[8] = map.get(MainWind::N)
+                .map_or_else(|| -1_i64, |&val| val as i64);
+            })
         );
-        
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(neighbours.rows_mut())
+          .and(&ipix)
+          .for_each(|mut n, &p| {
+            let map = healpix::nested::neighbours(depth, p, true);
 
+            n[0] = map.get(MainWind::S)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[1] = map.get(MainWind::SE)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[2] = map.get(MainWind::E)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[3] = map.get(MainWind::SW)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[4] = p as i64;
+            n[5] = map.get(MainWind::NE)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[6] = map.get(MainWind::W)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[7] = map.get(MainWind::NW)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+            n[8] = map.get(MainWind::N)
+              .map_or_else(|| -1_i64, |&val| val as i64);
+          });
+      }
         Ok(())
     }
 
@@ -633,51 +813,97 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut edges = edges.as_array_mut();
 
         let layer = healpix::nested::get(depth);
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(corners.rows_mut())
-                .and(edges.rows_mut())
-                .and(&ipix)
-                .par_for_each(|mut c, mut e, &p| {
-                    let external_edges = layer.external_edge_struct(p, delta_depth);
+          Zip::from(corners.rows_mut())
+            .and(edges.rows_mut())
+            .and(&ipix)
+            .par_for_each(|mut c, mut e, &p| {
+              let external_edges = layer.external_edge_struct(p, delta_depth);
 
-                    c[0] = external_edges.get_corner(&Cardinal::S)
-                        .map_or_else(|| -1_i64, |val| val as i64);
-                    c[1] = external_edges.get_corner(&Cardinal::E)
-                        .map_or_else(|| -1_i64, |val| val as i64);
-                    c[2] = external_edges.get_corner(&Cardinal::N)
-                        .map_or_else(|| -1_i64, |val| val as i64);
-                    c[3] = external_edges.get_corner(&Cardinal::W)
-                        .map_or_else(|| -1_i64, |val| val as i64);
+              c[0] = external_edges.get_corner(&Cardinal::S)
+                .map_or_else(|| -1_i64, |val| val as i64);
+              c[1] = external_edges.get_corner(&Cardinal::E)
+                .map_or_else(|| -1_i64, |val| val as i64);
+              c[2] = external_edges.get_corner(&Cardinal::N)
+                .map_or_else(|| -1_i64, |val| val as i64);
+              c[3] = external_edges.get_corner(&Cardinal::W)
+                .map_or_else(|| -1_i64, |val| val as i64);
 
-                    let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
-                    let mut offset = 0;
-                    // SE
-                    let se_edge = external_edges.get_edge(&Ordinal::SE);
-                    for i in 0..num_cells_per_edge {
-                        e[offset + i] = se_edge[i];
-                    }
-                    offset += num_cells_per_edge;
-                    // NE
-                    let ne_edge = external_edges.get_edge(&Ordinal::NE);
-                    for i in 0..num_cells_per_edge {
-                        e[offset + i] = ne_edge[i];
-                    }
-                    offset += num_cells_per_edge;
-                    // NW
-                    let nw_edge = external_edges.get_edge(&Ordinal::NW);
-                    for i in 0..num_cells_per_edge {
-                        e[offset + i] = nw_edge[i];
-                    }
-                    offset += num_cells_per_edge;
-                    // SW
-                    let sw_edge = external_edges.get_edge(&Ordinal::SW);
-                    for i in 0..num_cells_per_edge {
-                        e[offset + i] = sw_edge[i];
-                    }
+              let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
+              let mut offset = 0;
+              // SE
+              let se_edge = external_edges.get_edge(&Ordinal::SE);
+              for i in 0..num_cells_per_edge {
+                e[offset + i] = se_edge[i];
+              }
+              offset += num_cells_per_edge;
+              // NE
+              let ne_edge = external_edges.get_edge(&Ordinal::NE);
+              for i in 0..num_cells_per_edge {
+                e[offset + i] = ne_edge[i];
+              }
+              offset += num_cells_per_edge;
+              // NW
+              let nw_edge = external_edges.get_edge(&Ordinal::NW);
+              for i in 0..num_cells_per_edge {
+                e[offset + i] = nw_edge[i];
+              }
+              offset += num_cells_per_edge;
+              // SW
+              let sw_edge = external_edges.get_edge(&Ordinal::SW);
+              for i in 0..num_cells_per_edge {
+                e[offset + i] = sw_edge[i];
+              }
             })
         );
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(corners.rows_mut())
+          .and(edges.rows_mut())
+          .and(&ipix)
+          .for_each(|mut c, mut e, &p| {
+            let external_edges = layer.external_edge_struct(p, delta_depth);
 
+            c[0] = external_edges.get_corner(&Cardinal::S)
+              .map_or_else(|| -1_i64, |val| val as i64);
+            c[1] = external_edges.get_corner(&Cardinal::E)
+              .map_or_else(|| -1_i64, |val| val as i64);
+            c[2] = external_edges.get_corner(&Cardinal::N)
+              .map_or_else(|| -1_i64, |val| val as i64);
+            c[3] = external_edges.get_corner(&Cardinal::W)
+              .map_or_else(|| -1_i64, |val| val as i64);
+
+            let num_cells_per_edge = 2_i32.pow(delta_depth as u32) as usize;
+            let mut offset = 0;
+            // SE
+            let se_edge = external_edges.get_edge(&Ordinal::SE);
+            for i in 0..num_cells_per_edge {
+              e[offset + i] = se_edge[i];
+            }
+            offset += num_cells_per_edge;
+            // NE
+            let ne_edge = external_edges.get_edge(&Ordinal::NE);
+            for i in 0..num_cells_per_edge {
+              e[offset + i] = ne_edge[i];
+            }
+            offset += num_cells_per_edge;
+            // NW
+            let nw_edge = external_edges.get_edge(&Ordinal::NW);
+            for i in 0..num_cells_per_edge {
+              e[offset + i] = nw_edge[i];
+            }
+            offset += num_cells_per_edge;
+            // SW
+            let sw_edge = external_edges.get_edge(&Ordinal::SW);
+            for i in 0..num_cells_per_edge {
+              e[offset + i] = sw_edge[i];
+            }
+          })
+      }
         Ok(())
     }
 
@@ -700,28 +926,49 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         let mut weights = weights.as_array_mut();
     
         let layer = healpix::nested::get(depth);
-
+      #[cfg(not(target_arch = "wasm32"))]
+      {
         let pool = rayon::ThreadPoolBuilder::new().num_threads(nthreads as usize).build().unwrap();
         pool.install(||
-            Zip::from(ipix.rows_mut())
-                .and(weights.rows_mut())
-                .and(&lon)
-                .and(&lat)
-                .par_for_each(|mut pix, mut w, &l, &b| {
-                    let [(p1, w1), (p2, w2), (p3, w3), (p4, w4)] = layer.bilinear_interpolation(l, b);
+          Zip::from(ipix.rows_mut())
+            .and(weights.rows_mut())
+            .and(&lon)
+            .and(&lat)
+            .par_for_each(|mut pix, mut w, &l, &b| {
+              let [(p1, w1), (p2, w2), (p3, w3), (p4, w4)] = layer.bilinear_interpolation(l, b);
 
-                    pix[0] = p1;
-                    pix[1] = p2;
-                    pix[2] = p3;
-                    pix[3] = p4;
+              pix[0] = p1;
+              pix[1] = p2;
+              pix[2] = p3;
+              pix[3] = p4;
 
-                    w[0] = w1;
-                    w[1] = w2;
-                    w[2] = w3;
-                    w[3] = w4;
-                })
+              w[0] = w1;
+              w[1] = w2;
+              w[2] = w3;
+              w[3] = w4;
+            })
         );
+      }
+      #[cfg(target_arch = "wasm32")]
+      {
+        Zip::from(ipix.rows_mut())
+          .and(weights.rows_mut())
+          .and(&lon)
+          .and(&lat)
+          .for_each(|mut pix, mut w, &l, &b| {
+            let [(p1, w1), (p2, w2), (p3, w3), (p4, w4)] = layer.bilinear_interpolation(l, b);
 
+            pix[0] = p1;
+            pix[1] = p2;
+            pix[2] = p3;
+            pix[3] = p4;
+
+            w[0] = w1;
+            w[1] = w2;
+            w[2] = w3;
+            w[3] = w4;
+          });
+      }
         Ok(())
     }
   
