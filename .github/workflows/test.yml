@@ -43,7 +43,7 @@ jobs:
      - name: "Build and test wheels"
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[78910]*/bin; do
+         for PYBIN in /opt/python/cp3[8910]*/bin; do
            echo "Loop on PYBIN: $PYBIN"
            # With maturin develop, we have to use virtualenv
            "${PYBIN}/pip" install virtualenv
@@ -205,7 +205,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
      # Checkout the project
      - name: "Checkout branch ${{ github.head_ref }}"
@@ -251,7 +251,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
