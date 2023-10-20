@@ -1,3 +1,4 @@
-astropy
+astropy<5.3; python_version == '3.8'
+astropy; python_version > '3.8'
 pre-commit==2.21.*
 pytest
