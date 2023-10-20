@@ -36,15 +36,18 @@ jobs:
        run: |
          source $HOME/.cargo/env
          for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
-           "${PYBIN}/pip" install --upgrade pip
-           "${PYBIN}/pip" install maturin
-           "${PYBIN}/maturin" -V
-           rustc -vV
-           echo "${PYBIN}/python"
-           "${PYBIN}/maturin" develop --release
-           "${PYBIN}/pip" install -r requirements-dev.txt
-           "${PYBIN}/pytest" python/cdshealpix/tests/test_nested_healpix.py
-           "${PYBIN}/pytest" python/cdshealpix/tests/test_ring_healpix.py
+           "${PYBIN}/pip" install virtualenv
+           "${PYBIN}/virtualenv" cdshealpixenv
+           source cdshealpixenv/bin/activate
+           pip install --upgrade pip
+           pip install maturin
+           maturin build --release --compatibility manylinux2014
+           maturin develop --release
+           pip install -r requirements-dev.txt
+           python -m pytest python/cdshealpix/tests/test_nested_healpix.py
+           python -m pytest python/cdshealpix/tests/test_ring_healpix.py
+           deactivate
+           rm -r cdshealpixenv
          done
 
   ## So far desactivated because too long to build astropy wheels
