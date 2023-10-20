@@ -43,7 +43,7 @@ jobs:
         MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3[78910]*/bin; do
+         for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
            "${PYBIN}/pip" install --upgrade pip
            "${PYBIN}/pip" install maturin
            "${PYBIN}/maturin" -V
@@ -112,7 +112,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp3[8910]*/bin; do
+           for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install --upgrade pip
              "${PYBIN}/pip" install maturin
@@ -146,7 +146,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp3[78910]*/bin; do
+           for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install maturin
              "${PYBIN}/maturin" -V
@@ -165,7 +165,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
      # Checkout the project
      - uses: actions/checkout@v3
@@ -200,7 +200,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
      # Checkout the project
      - uses: actions/checkout@v3
@@ -227,46 +227,3 @@ jobs:
          echo "${PYBIN}/python"
          maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --universal2 --skip-existing  --username "$MATURIN_USERNAME"
          maturin publish --interpreter python${{matrix.python_version}}  --no-sdist              --skip-existing  --username "$MATURIN_USERNAME"
-
-
-  # See e.g.: https://blog.flozz.fr/2020/09/21/deployer-automatiquement-sur-github-pages-avec-github-actions/
-  #    using: https://github.com/JamesIves/github-pages-deploy-action
-  deploy-doc:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout branch ${{ github.head_ref }}"
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: "Set up Python 3.9 on Ubuntu"
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - name: "Build doc"
-        run: |
-          # Build the doc
-          # - Install virtualenv
-          pip install --upgrade pip
-          pip install virtualenv
-          # - Create and activate a new virtualenv
-          virtualenv cdshealpixenv
-          source cdshealpixenv/bin/activate
-          pip install --upgrade pip
-          # - Install maturin
-          pip install maturin
-          # - Build and install cdshealpix
-          maturin develop --release
-          # - Install dependencies needed to run benches
-          pip install -r requirements-doc.txt
-          # - Build the doc: once done, it is in docs/_build/html/
-          cd ./docs
-          make html
-          cd ..
-          # Switch of the virtualenv
-          deactivate
-      - name: "Publish doc on github pages (commit on branch gh-pages)"
-        uses: JamesIves/github-pages-deploy-action@4.1.0
-        with:
-          branch: gh-pages
-          folder: docs/_build/html/
-
