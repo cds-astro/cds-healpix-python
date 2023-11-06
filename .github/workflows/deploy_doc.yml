@@ -22,11 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch ${{ github.head_ref }}"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
       - name: "Set up Python 3.11 on Ubuntu"
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
       - name: "Build doc"
@@ -53,7 +53,7 @@ jobs:
           # Switch of the virtualenv
           deactivate
       - name: "Publish doc on github pages (commit on branch gh-pages)"
-        uses: JamesIves/github-pages-deploy-action@4.1.0
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: docs/_build/html/

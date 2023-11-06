@@ -23,8 +23,8 @@ jobs:
     # We are now in CentOS 7 64 bits
     steps:
      - name: "Checkout the full project"
-       uses: actions/checkout@v3
-     # We need to install rust in the docker image (else, cargo is already available in github action)  
+       uses: actions/checkout@v4
+     # We need to install rust in the docker image (else, cargo is already available in github action)
      - name: "Install Rust"
        run: |
          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -57,7 +57,7 @@ jobs:
   #    img: quay.io/pypa/manylinux2014_aarch64
   #  steps:
   #    - name: Checkout
-  #      uses: actions/checkout@v3
+  #      uses: actions/checkout@v4
   #    - name: "Set up QEMU"
   #      id: qemu
   #      uses: docker/setup-qemu-action@v1
@@ -96,7 +96,7 @@ jobs:
     steps:
      # Checkout the project
      - name: "Checkout branch ${{ github.head_ref }}"
-       uses: actions/checkout@v3
+       uses: actions/checkout@v4
        with:
          ref: ${{ github.head_ref }}
      # Test Rust code
@@ -104,7 +104,7 @@ jobs:
      #  run: cargo test --verbose -- --nocapture
      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: "Set up Python ${{ matrix.python-version }} on MacOS"
-       uses: actions/setup-python@v2
+       uses: actions/setup-python@v4
        with:
          python-version: ${{ matrix.python-version }}
      # Test python code
@@ -142,7 +142,7 @@ jobs:
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
       # Test Rust code
@@ -150,7 +150,7 @@ jobs:
       #  run: cargo test --verbose -- --nocapture
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
       - name: "Set up Python ${{ matrix.python-version }} on Windows"
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       # Test python code
@@ -180,13 +180,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch ${{ github.head_ref }}"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - name: "Set up Python 3.9 on Ubuntu"
+      - name: "Set up Python 3.11 on Ubuntu"
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
       - name: "Build and test doc"
         run: |
           # Install virtualenv
