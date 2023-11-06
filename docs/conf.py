@@ -15,33 +15,39 @@
 import os
 import sys
 
+# Get configuration information from toml
+import tomllib
+import datetime
+
+with open("../Cargo.toml", "rb") as config:
+    cargotoml = tomllib.load(config)
+
 sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "cdshealpix"
-copyright = "2019, François-Xavier Pineau, Matthieu Baumann"
-author = "François-Xavier Pineau, Matthieu Baumann"
+project = cargotoml["package"]["name"]
+author = " ".join(cargotoml["package"]["authors"])
+copyright = f"{datetime.datetime.now().year}, {author}"
+
 
 # The short X.Y version
-version = ""
+version = cargotoml["package"]["version"].rsplit(".", 1)[0]
 # The full version, including alpha/beta/rc tags
-release = ""
+release = cargotoml["package"]["version"]
 
 
 # -- General configuration ---------------------------------------------------
 
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
+# By default, highlight as Python 3.
+highlight_language = "python3"
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
+    # to allow usage of a folder not in docs
+    "sphinxcontrib.collections",
     "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
     # Extension for plotting image in the doc
@@ -51,12 +57,17 @@ extensions = [
     "numpydoc",
     "sphinxcontrib.bibtex",
     "sphinx.ext.mathjax",
-    "jupyter_sphinx",
+    # for notebooks
+    "nbsphinx",
+    # to add copypaste of notebook cells
+    "sphinx_copybutton",
+    "sphinx_gallery.load_style",
 ]
 default_role = "py:obj"
 numpydoc_class_members_toctree = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
+bibtex_bibfiles = ["references.bib"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -116,6 +127,21 @@ html_static_path = ["_static"]
 #
 # html_sidebars = {}
 
+# -- Add the notebooks to Sphinx root folder with collections ----------------
+
+collections = {
+    "notebooks": {
+        "driver": "copy_folder",
+        "source": "../notebooks/",
+        "target": "notebooks",
+        "ignore": [".fits", ".ipynb_checkpoints/*"],
+    }
+}
+
+# -- Configuration for nbsphinx ----------------------------------------------
+
+nbsphinx_allow_errors = True
+
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -143,12 +169,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
+title = "cdshealpix Documentation"
 latex_documents = [
     (
         master_doc,
         "cdshealpix.tex",
-        "cdshealpix Documentation",
-        "François-Xavier Pineau, Matthieu Baumann",
+        title,
+        author,
         "manual",
     ),
 ]
@@ -158,7 +185,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "cdshealpix", "cdshealpix Documentation", [author], 1)]
+man_pages = [(master_doc, "cdshealpix", title, author, 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -169,12 +196,12 @@ man_pages = [(master_doc, "cdshealpix", "cdshealpix Documentation", [author], 1)
 texinfo_documents = [
     (
         master_doc,
-        "cdshealpix",
-        "cdshealpix Documentation",
+        project,
+        title,
         author,
-        "cdshealpix",
-        "One line description of project.",
-        "Miscellaneous",
+        project,
+        cargotoml["package"]["description"],
+        cargotoml["package"]["categories"],
     ),
 ]
 
@@ -206,6 +233,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/", None),
     "astropy": ("http://docs.astropy.org/en/latest/", None),
     "numpy": ("http://docs.scipy.org/doc/numpy/", None),
+    "matplotlib": ("https://matplotlib.org/", None),
 }
 
 

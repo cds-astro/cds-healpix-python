@@ -1,8 +1,11 @@
 astropy_sphinx_theme
-jupyter-sphinx
 matplotlib
 maturin>=0.13
 mocpy
+nbsphinx
 numpydoc
 sphinx
-sphinxcontrib-bibtex<2.0.0
+sphinx-collections
+sphinx-copybutton
+sphinx-gallery
+sphinxcontrib-bibtex

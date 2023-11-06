@@ -19,11 +19,11 @@ jobs:
         python-version: [3.8]
     steps:
     - name: "Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}"
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: "Checkout the branch ${{ github.head_ref }}"
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: ${{ github.head_ref }}
     - name: "Install virtual env, build project and run benches"
