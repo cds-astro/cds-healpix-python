@@ -45,6 +45,7 @@ jobs:
           maturin develop --release
           # - Install dependencies needed to build docs
           pip install -r requirements-doc.txt
+          sudo apt-get install pandoc
           # - Build the doc: once done, it is in docs/_build/html/
           cd ./docs
           make doctest

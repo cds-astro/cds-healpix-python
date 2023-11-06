@@ -23,7 +23,7 @@ jobs:
     # We are now in CentOS 7 64 bits
     steps:
      - name: "Checkout the full project"
-       uses: actions/checkout@v4
+       uses: actions/checkout@v3
      # We need to install rust in the docker image (else, cargo is already available in github action)
      - name: "Install Rust"
        run: |
@@ -197,6 +197,7 @@ jobs:
           # Install maturin
           pip install --upgrade pip
           pip install maturin
+          sudo apt-get install pandoc
           maturin -V
           # Build and install cdshealpix
           maturin develop --release
