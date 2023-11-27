@@ -1,25 +1,25 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to cdshealpix’s documentation! &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
+    <title>Welcome to cdshealpix’s documentation! &#8212; cdshealpix 0.6.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=9d21690f" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/thebelab-helper.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/documentation_options.js?v=73d9a94e"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -57,7 +57,7 @@
 	</a>
       </li>
       <li>
-	<a href="#">cdshealpix  documentation</a>
+	<a href="#">cdshealpix 0.6.4 documentation</a>
 	 &#187;
       </li>
       
@@ -72,7 +72,7 @@
           <div class="body" role="main">
             
   <section id="welcome-to-cdshealpix-s-documentation">
-<h1>Welcome to cdshealpix’s documentation!<a class="headerlink" href="#welcome-to-cdshealpix-s-documentation" title="Permalink to this heading">¶</a></h1>
+<h1>Welcome to cdshealpix’s documentation!<a class="headerlink" href="#welcome-to-cdshealpix-s-documentation" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -81,7 +81,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples.html#cone-search">Cone search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples.html#elliptical-cone-search">Elliptical cone search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples.html#polygon-search">Polygon search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#coordinate-conversion">Coordinate conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#notebook-examples">Notebook examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
@@ -107,7 +107,7 @@ is available for Python 3.5, 3.6 and 3.7 through the following architectures:</p
 <li><p>MacOS</p></li>
 </ul>
 <section id="what-is-healpix">
-<h2>What is HEALPix ?<a class="headerlink" href="#what-is-healpix" title="Permalink to this heading">¶</a></h2>
+<h2>What is HEALPix ?<a class="headerlink" href="#what-is-healpix" title="Link to this heading">¶</a></h2>
 <p>HEALPix describes a partionning of the sky into several equal area cells.
 This partionning is hierarchical meaning that each cell has a depth associated to it.
 Possible depths are in <span class="math notranslate nohighlight">\([0, 29]\)</span>. A cell of depth <span class="math notranslate nohighlight">\(N\)</span> can be subdivided into
@@ -123,40 +123,42 @@ its four children of depth <span class="math notranslate nohighlight">\(N+1\)</s
 <p>The HEALPix nested scheme relies on the following papers that you can check it out if you want to know
 more about HEALPix:</p>
 <ul class="simple">
-<li><p><a class="bibtex reference internal" href="#gorski-2004by" id="id1">[GHB+05]</a></p></li>
-<li><p><a class="bibtex reference internal" href="#calabretta-2004vi" id="id2">[Cal04]</a></p></li>
-<li><p><a class="bibtex reference internal" href="#mnras-381-865c" id="id3">[CalabrettaRoukema07]</a></p></li>
-<li><p><a class="bibtex reference internal" href="#datastructure2dgrid" id="id4">[ReineckeHivon15]</a></p></li>
+<li><p><span id="id1">[<a class="reference internal" href="#id6" title="K. M. Gorski, Eric Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelman. HEALPix - A Framework for high resolution discretization, and fast analysis of data distributed on the sphere. Astrophys. J., 622:759-771, 2005. arXiv:astro-ph/0409513, doi:10.1086/427976.">GHB+05</a>]</span></p></li>
+<li><p><span id="id2">[<a class="reference internal" href="#id7" title="Mark R. Calabretta. Mapping on the HEALPix grid. Submitted to: Astron. Astrophys., 2004. arXiv:astro-ph/0412607.">Cal04</a>]</span></p></li>
+<li><p><span id="id3">[<a class="reference internal" href="#id8" title="M. R. Calabretta and B. F. Roukema. Mapping on the HEALPix grid. \mnras , 381:865-872, October 2007. doi:10.1111/j.1365-2966.2007.12297.x.">CalabrettaRoukema07</a>]</span></p></li>
+<li><p><span id="id4">[<a class="reference internal" href="#id9" title="M. Reinecke and E. Hivon. Efficient data structures for masks on 2D grids. \aap , 580:A132, Aug 2015. doi:10.1051/0004-6361/201526549.">ReineckeHivon15</a>]</span></p></li>
 </ul>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
-<p id="bibtex-bibliography-index-0"><div class="citation bibtex" id="calabretta-2004vi" role="doc-biblioentry">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<div class="docutils container" id="id5">
+<div role="list" class="citation-list">
+<div class="citation" id="id7" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Cal04</a><span class="fn-bracket">]</span></span>
 <p>Mark R. Calabretta. Mapping on the HEALPix grid. <em>Submitted to: Astron. Astrophys.</em>, 2004. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0412607">arXiv:astro-ph/0412607</a>.</p>
 </div>
-<div class="citation bibtex" id="gorski-2004by" role="doc-biblioentry">
+<div class="citation" id="id6" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">GHB+05</a><span class="fn-bracket">]</span></span>
 <p>K. M. Gorski, Eric Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelman. HEALPix - A Framework for high resolution discretization, and fast analysis of data distributed on the sphere. <em>Astrophys. J.</em>, 622:759–771, 2005. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0409513">arXiv:astro-ph/0409513</a>, <a class="reference external" href="https://doi.org/10.1086/427976">doi:10.1086/427976</a>.</p>
 </div>
-<div class="citation bibtex" id="schlegel-1998" role="doc-biblioentry">
+<div class="citation" id="id10" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>SFD98<span class="fn-bracket">]</span></span>
 <p>David J. Schlegel, Douglas P. Finkbeiner, and Marc Davis. Maps of dust infrared emission for use in estimation of reddening and cosmic microwave background radiation foregrounds. <em>The Astrophysical Journal</em>, 500(2):525, jun 1998. <a class="reference external" href="https://doi.org/10.1086/305772">doi:10.1086/305772</a>.</p>
 </div>
-<div class="citation bibtex" id="mnras-381-865c" role="doc-biblioentry">
+<div class="citation" id="id8" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">CalabrettaRoukema07</a><span class="fn-bracket">]</span></span>
 <p>M. R. Calabretta and B. F. Roukema. Mapping on the HEALPix grid. <em>\mnras </em>, 381:865–872, October 2007. <a class="reference external" href="https://doi.org/10.1111/j.1365-2966.2007.12297.x">doi:10.1111/j.1365-2966.2007.12297.x</a>.</p>
 </div>
-<div class="citation bibtex" id="datastructure2dgrid" role="doc-biblioentry">
+<div class="citation" id="id9" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">ReineckeHivon15</a><span class="fn-bracket">]</span></span>
 <p>M. Reinecke and E. Hivon. Efficient data structures for masks on 2D grids. <em>\aap </em>, 580:A132, Aug 2015. <a class="reference external" href="https://doi.org/10.1051/0004-6361/201526549">doi:10.1051/0004-6361/201526549</a>.</p>
 </div>
 </div>
-</p>
+</div>
 </section>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
@@ -208,8 +210,8 @@ more about HEALPix:</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
   </p>
 </footer>
   </body>

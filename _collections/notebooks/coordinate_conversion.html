@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Coordinate conversion &#8212; cdshealpix 0.6.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-astropy.css?v=9d21690f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+    
+    <script src="../../_static/documentation_options.js?v=73d9a94e"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="External Neighbours" href="external_neighbours.html" />
+    <link rel="prev" title="Examples" href="../../examples/examples.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../index.html"><span id="logotext1">cds</span><span id="logotext2">healpix</span><span id="logotext3">:docs</span></a>
+  <ul>
+    
+    <li><a class="homelink" title="Astropy Homepage" href="http://www.astropy.org"></a></li>
+    <li><a title="General Index" href="../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="external_neighbours.html" title="External Neighbours">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="../../examples/examples.html" title="Examples">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../../index.html">cdshealpix 0.6.4 documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../../examples/examples.html" accesskey="U">Examples</a> &#187;</li>
+      
+      <li>Coordinate conversion</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="Coordinate-conversion">
+<h1>Coordinate conversion<a class="headerlink" href="#Coordinate-conversion" title="Link to this heading">¶</a></h1>
+<p>In this example, we will load an archival all-sky Galactic reddening map, E(B-V), based on the derived reddening maps of Schlegel, Finkbeiner and Davis (1998). It has been translated into an HEALPix map in galactic coordinates by the Legacy Archive for Microwave Background Data Analysis <a class="reference external" href="http://lambda.gsfc.nasa.gov/">LAMBDA</a>. We’ll rotate it into equatorial coordinates for demonstration purpose.</p>
+<section id="Algorithm">
+<h2>Algorithm<a class="headerlink" href="#Algorithm" title="Link to this heading">¶</a></h2>
+<p>It follows the following reasoning:</p>
+<ul class="simple">
+<li><p>get the coordinates of the centers of the HEALPix map in galactic coordinates,</p></li>
+<li><p>converts those to equatorial coordinates with the astropy library,</p></li>
+<li><p>find the bilinear interpolation for the neighbors of each of these new coordinates using cdshealpix methods,</p></li>
+<li><p>apply it to form a HEALPix map in the new coordinate system.</p></li>
+</ul>
+</section>
+<section id="Disclaimer">
+<h2>Disclaimer<a class="headerlink" href="#Disclaimer" title="Link to this heading">¶</a></h2>
+<p>This example was designed to illustrate the use of this library. This transformation is not the most precise you could get and should be used for visualizations or to have a quick view at maps in different coordinate systems. For scientific use, please have a look at the method rotate_alm in <a class="reference external" href="https://github.com/healpy/healpy">healpy</a> or at the sht module of the <a class="reference external" href="https://gitlab.mpcdf.mpg.de/mtr/ducc">ducc</a> library that both implement the rotation in the spherical harmonics space.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import cdshealpix
+
+from mocpy import MOC, WCS
+import astropy.units as u
+
+from astropy.io import fits
+from astropy.coordinates import SkyCoord, Angle
+
+import matplotlib.pyplot as plt
+import numpy as np
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Fetching-the-HEALPix-map-from-NASA-archives">
+<h2>Fetching the HEALPix map from NASA archives<a class="headerlink" href="#Fetching-the-HEALPix-map-from-NASA-archives" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ext_map = fits.open(
+    &quot;https://lambda.gsfc.nasa.gov/data/foregrounds/SFD/&quot; + &quot;lambda_sfd_ebv.fits&quot;
+)  # dowloading the map from the nasa archive
+hdr = ext_map[0].header  # extracts the header
+data_header = ext_map[1].header
+data = ext_map[1].data  # extracts the data
+ext_map.close()
+
+hdr
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+SIMPLE  =                    T / file does conform to FITS standard
+BITPIX  =                   32 / number of bits per data pixel
+NAXIS   =                    0 / number of data axes
+EXTEND  =                    T / FITS dataset may contain extensions
+COMMENT   FITS (Flexible Image Transport System) format is defined in &#39;Astronomy
+COMMENT   and Astrophysics&#39;, volume 376, page 359; bibcode: 2001A&amp;A...376..359H
+DATE    = &#39;2003-02-05T00:00:00&#39; /file creation date (YYYY-MM-DDThh:mm:ss UT)
+OBJECT  = &#39;ALL-SKY &#39;           / Portion of sky given
+COMMENT   This file contains an all-sky Galactic reddening map, E(B-V), based on
+COMMENT   the derived reddening maps of Schlegel, Finkbeiner and Davis (1998).
+COMMENT   Software and data files downloaded from their website were used to
+COMMENT   interpolate their high resolution dust maps onto pixel centers
+COMMENT   appropriate for a HEALPix Nside=512 projection in Galactic
+COMMENT   coordinates. This file is distributed and maintained by LAMBDA.
+REFERENC= &#39;Legacy Archive for Microwave Background Data Analysis (LAMBDA)      &#39;
+REFERENC= &#39;                http://lambda.gsfc.nasa.gov/                        &#39;
+REFERENC= &#39;Maps of Dust Infrared Emission for Use in Estimation of Reddening an&#39;
+REFERENC= &#39; Cosmic Microwave Background Radiation Foregrounds&#39;,                &#39;
+REFERENC= &#39; Schlegel, Finkbeiner &amp; Davis 1998 ApJ 500, 525                     &#39;
+REFERENC= &#39;Berkeley mirror site for SFD98 data: http://astron.berkeley.edu/dust&#39;
+REFERENC= &#39;Princeton mirror site for SFD98 data:                               &#39;
+REFERENC= &#39;                           http://astro/princeton.edu/~schlegel/dust&#39;
+REFERENC= &#39;HEALPix Home Page: http://www.eso.org/science/healpix/              &#39;
+RESOLUTN=                    9 / Resolution index
+SKYCOORD= &#39;Galactic&#39;           / Coordinate system
+PIXTYPE = &#39;HEALPIX &#39;           / Pixel algorithm
+ORDERING= &#39;NESTED  &#39;           / Ordering scheme
+NSIDE   =                  512 / Resolution parameter
+NPIX    =              3145728 / # of pixels
+FIRSTPIX=                    0 / First pixel (0 based)
+LASTPIX =              3145727 / Last pixel (0 based)
+</pre></div></div>
+</div>
+<p>Let’s also have a look at the data header</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data_header
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+XTENSION= &#39;BINTABLE&#39;           /binary table extension
+BITPIX  =                    8 /8-bit bytes
+NAXIS   =                    2 /2-dimensional binary table
+NAXIS1  =                    8 /width of table in bytes
+NAXIS2  =              3145728 /number of rows in table
+PCOUNT  =                    0 /size of special data area
+GCOUNT  =                    1 /one data group (required keyword)
+TFIELDS =                    2 /number of fields in each row
+COMMENT
+COMMENT  *** End of mandatory fields ***
+COMMENT
+COMMENT
+COMMENT  *** Column names ***
+COMMENT
+TTYPE1  = &#39;TEMPERATURE&#39;        /label for field   1
+COMMENT
+COMMENT  *** Column formats ***
+COMMENT
+TFORM1  = &#39;E       &#39;           /data format of field: 4-byte REAL
+TUNIT1  = &#39;magnitudes&#39;         /physical unit of field
+TTYPE2  = &#39;N_OBS   &#39;           /label for field   2
+TFORM2  = &#39;E       &#39;           /data format of field: 4-byte REAL
+TUNIT2  = &#39;counts  &#39;           /physical unit of field
+EXTNAME = &#39;Archive Map Table&#39;  /name of this binary table extension
+DATE    = &#39;2003-02-05T00:00:00&#39; /Table creation date
+PIXTYPE = &#39;HEALPIX &#39;           /Pixel algorithm
+ORDERING= &#39;NESTED  &#39;           /Ordering scheme
+NSIDE   =                  512 /Resolution parameter
+FIRSTPIX=                    0 /First pixel (0 based)
+LASTPIX =              3145727 /Last pixel (0 based)
+COMMENT   The TEMPERATURE field contains E(B-V) in magnitudes.
+COMMENT   N_obs is set to 1 for all pixels. The N_obs field is filled
+COMMENT    only to provide a format consistent with that used by
+COMMENT    WMAP products.
+</pre></div></div>
+</div>
+<p>After learning that the magnitudes are stored in <code class="docutils literal notranslate"><span class="pre">'TEMPERATURE'</span></code>, we can extract all useful information.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>extinction_values = data[&quot;TEMPERATURE&quot;]
+nside = hdr[&quot;NSIDE&quot;]
+norder = hdr[&quot;RESOLUTN&quot;]
+</pre></div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h2>Coordinate conversion<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>We first create an HEALPix grid at order 9 (like the original) in nested ordering</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>healpix_index = np.arange(12 * 4**norder, dtype=np.uint64)
+print(
+    f&quot;We can check that the NPIX value corresponds to the one in the header here: {len(healpix_index)}&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+We can check that the NPIX value corresponds to the one in the header here: 3145728
+</pre></div></div>
+</div>
+<p>Then, we get the coordinates of the centers of these healpix cells</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>center_coordinates_in_equatorial = cdshealpix.healpix_to_skycoord(
+    healpix_index, depth=norder
+)  # this function works for nested maps, see cdshealpix documentation
+center_coordinates_in_equatorial
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;SkyCoord (ICRS): (ra, dec) in deg
+    [( 45.        ,  0.0746039 ), ( 45.08789062,  0.14920793),
+     ( 44.91210938,  0.14920793), ..., (315.08789062, -0.14920793),
+     (314.91210938, -0.14920793), (315.        , -0.0746039 )]&gt;
+</pre></div></div>
+</div>
+<p>Conversion into galactic coordinates with astropy method</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>center_coordinates_in_galactic = center_coordinates_in_equatorial.galactic
+center_coordinates_in_galactic
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;SkyCoord (Galactic): (l, b) in deg
+    [(176.8796283 , -48.85086427), (176.89078038, -48.7358142 ),
+     (176.70525363, -48.86216423), ..., ( 48.82487228, -28.4122831 ),
+     ( 48.7216889 , -28.26178141), ( 48.84578935, -28.29847774)]&gt;
+</pre></div></div>
+</div>
+<p>Calculate the bilinear interpolation that must be applied to each HEALPix cell to obtain the magnitude values in the other coordinate system.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>healpix, weights = cdshealpix.bilinear_interpolation(
+    center_coordinates_in_galactic.l, center_coordinates_in_galactic.b, depth=norder
+)
+# then apply the interpolation
+ext_map_equatorial_nested = (extinction_values[healpix.data] * weights.data).sum(axis=1)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Convert-the-two-HEALPix-into-MOCs-for-visualization">
+<h2>Convert the two HEALPix into MOCs for visualization<a class="headerlink" href="#Convert-the-two-HEALPix-into-MOCs-for-visualization" title="Link to this heading">¶</a></h2>
+<p>We produce the extinction MOCs by excluding the high extinction regions. This allows to have a clear view of the position of the galactic disc.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># For the HEALPix in equatorial coordinate system
+low_extinction_index_equatorial = np.where(ext_map_equatorial_nested &lt; 0.5)[0]
+moc_low_extinction_equatorial = MOC.from_healpix_cells(
+    ipix=low_extinction_index_equatorial,
+    depth=np.full((len(low_extinction_index_equatorial)), norder),
+    max_depth=norder,
+)
+
+# For the HEALPix in galactic coordinate system
+low_extinction_index_galactic = np.where(extinction_values &lt; 0.5)[0]
+moc_low_extinction_galactic = MOC.from_healpix_cells(
+    ipix=low_extinction_index_galactic,
+    depth=np.full((len(low_extinction_index_galactic)), norder),
+    max_depth=norder,
+)
+
+# Plot the MOCs using matplotlib
+fig = plt.figure(figsize=(15, 10))
+# Define a astropy WCS from the mocpy.WCS class
+with WCS(
+    fig,
+    fov=120 * u.deg,
+    center=SkyCoord(0, 0, unit=&quot;deg&quot;, frame=&quot;icrs&quot;),
+    coordsys=&quot;icrs&quot;,
+    rotation=Angle(0, u.degree),
+    projection=&quot;SIN&quot;,
+) as wcs:
+    ax1 = fig.add_subplot(121, projection=wcs, aspect=&quot;equal&quot;, adjustable=&quot;datalim&quot;)
+    ax2 = fig.add_subplot(122, projection=wcs, aspect=&quot;equal&quot;, adjustable=&quot;datalim&quot;)
+    moc_low_extinction_galactic.fill(
+        ax=ax1, wcs=wcs, alpha=0.5, fill=True, color=&quot;green&quot;
+    )
+    moc_low_extinction_equatorial.fill(
+        ax=ax2, wcs=wcs, alpha=0.5, fill=True, color=&quot;green&quot;
+    )
+
+ax1.set(xlabel=&quot;l&quot;, ylabel=&quot;b&quot;, title=&quot;galactic&quot;)
+ax2.set(xlabel=&quot;ra&quot;, ylabel=&quot;dec&quot;, title=&quot;ICRS&quot;)
+
+ax1.grid(color=&quot;black&quot;, linestyle=&quot;dotted&quot;)
+ax2.grid(color=&quot;black&quot;, linestyle=&quot;dotted&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/_collections_notebooks_coordinate_conversion_17_0.png" src="../../_images/_collections_notebooks_coordinate_conversion_17_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+<ul>
+<li><a class="reference internal" href="#">Coordinate conversion</a><ul>
+<li><a class="reference internal" href="#Algorithm">Algorithm</a></li>
+<li><a class="reference internal" href="#Disclaimer">Disclaimer</a></li>
+<li><a class="reference internal" href="#Fetching-the-HEALPix-map-from-NASA-archives">Fetching the HEALPix map from NASA archives</a></li>
+<li><a class="reference internal" href="#id1">Coordinate conversion</a></li>
+<li><a class="reference internal" href="#Convert-the-two-HEALPix-into-MOCs-for-visualization">Convert the two HEALPix into MOCs for visualization</a></li>
+</ul>
+</li>
+</ul>
+
+
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../../examples/examples.html"
+                          title="previous chapter">Examples</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="external_neighbours.html"
+                          title="next chapter">External Neighbours</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/_collections/notebooks/coordinate_conversion.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right">
+    <a href="../../_sources/_collections/notebooks/coordinate_conversion.ipynb.txt"
+       rel="nofollow">Page Source</a> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

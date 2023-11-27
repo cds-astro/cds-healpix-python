@@ -1,31 +1,31 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API &#8212; cdshealpix  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
+    <title>API &#8212; cdshealpix 0.6.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=9d21690f" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/thebelab-helper.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/documentation_options.js?v=73d9a94e"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="cdshealpix.to_ring" href="stubs/cdshealpix.to_ring.html" />
-    <link rel="prev" title="Examples" href="examples/examples.html" />
+    <link rel="prev" title="External Neighbours" href="_collections/notebooks/external_neighbours.html" />
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
 
   </head><body>
@@ -58,13 +58,13 @@
 	</a>
       </li>
       <li class="right">
-	<a href="examples/examples.html" title="Examples">
+	<a href="_collections/notebooks/external_neighbours.html" title="External Neighbours">
 	  &laquo; previous
 	</a>
 	 |
       </li>
       <li>
-	<a href="index.html">cdshealpix  documentation</a>
+	<a href="index.html">cdshealpix 0.6.4 documentation</a>
 	 &#187;
       </li>
       
@@ -79,12 +79,12 @@
           <div class="body" role="main">
             
   <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Permalink to this heading">¶</a></h1>
+<h1>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h1>
 <p>This is the API for the <a class="reference external" href="https://github.com/cds-astro/cds-healpix-python">cdshealpix</a> Python package.</p>
 <p>This package is a wrapper around the Rust <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix</a>  crate.
 The functions currently implemented by <a class="reference external" href="https://github.com/cds-astro/cds-healpix-python">cdshealpix</a> are the following:</p>
 <section id="cdshealpix">
-<h2>cdshealpix<a class="headerlink" href="#cdshealpix" title="Permalink to this heading">¶</a></h2>
+<h2>cdshealpix<a class="headerlink" href="#cdshealpix" title="Link to this heading">¶</a></h2>
 <p>The HEALPix cells can be represented following two schema.
 The nested and the ring one.</p>
 <p>Here are two methods in the <code class="docutils literal notranslate"><span class="pre">cdshealpix</span></code> base module allowing to
@@ -102,11 +102,11 @@ represented in the ring scheme and vice versa.</p>
 </table>
 </section>
 <section id="module-cdshealpix.nested">
-<span id="cdshealpix-nested"></span><h2>cdshealpix.nested<a class="headerlink" href="#module-cdshealpix.nested" title="Permalink to this heading">¶</a></h2>
+<span id="cdshealpix-nested"></span><h2>cdshealpix.nested<a class="headerlink" href="#module-cdshealpix.nested" title="Link to this heading">¶</a></h2>
 <figure class="align-default" id="id2">
 <img alt="_images/nested.png" src="_images/nested.png" />
 <figcaption>
-<p><span class="caption-text">The HEALPix cells at <span class="math notranslate nohighlight">\(depth=1\)</span> represented in the nested scheme</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">The HEALPix cells at <span class="math notranslate nohighlight">\(depth=1\)</span> represented in the nested scheme</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <table class="autosummary longtable docutils align-default">
@@ -160,7 +160,7 @@ represented in the ring scheme and vice versa.</p>
 </table>
 </section>
 <section id="cdshealpix-ring">
-<h2>cdshealpix.ring<a class="headerlink" href="#cdshealpix-ring" title="Permalink to this heading">¶</a></h2>
+<h2>cdshealpix.ring<a class="headerlink" href="#cdshealpix-ring" title="Link to this heading">¶</a></h2>
 <p>The ring scheme HEALPix methods take a <code class="docutils literal notranslate"><span class="pre">nside</span></code> parameter instead
 of a <code class="docutils literal notranslate"><span class="pre">depth</span></code> one.
 <code class="docutils literal notranslate"><span class="pre">nside</span></code> refers to the number of cells being contained in the side
@@ -171,7 +171,7 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
 <span class="target" id="module-cdshealpix.ring"></span><figure class="align-default" id="id3">
 <img alt="_images/ring.png" src="_images/ring.png" />
 <figcaption>
-<p><span class="caption-text">The HEALPix cells at <span class="math notranslate nohighlight">\(N_{side}=2\)</span> represented in the ring scheme</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">The HEALPix cells at <span class="math notranslate nohighlight">\(N_{side}=2\)</span> represented in the ring scheme</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <table class="autosummary longtable docutils align-default">
@@ -221,8 +221,8 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
 
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="examples/examples.html"
-                          title="previous chapter">Examples</a></p>
+    <p class="topless"><a href="_collections/notebooks/external_neighbours.html"
+                          title="previous chapter">External Neighbours</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -251,8 +251,8 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2019, François-Xavier Pineau, Matthieu Baumann.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
   </p>
 </footer>
   </body>
