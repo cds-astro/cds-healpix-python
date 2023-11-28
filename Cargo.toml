@@ -1,11 +1,11 @@
 [package]
 name = "cdshealpix"
-version = "0.6.4"
+version = "0.6.5"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 description = "Python cdshealpix package wrapping code of the cdshealpix crate"
 license = "BSD-3-Clause"
 readme = "README.md"
-categories = ["algorithms", "science"] 
+categories = ["algorithms", "science"]
 keywords = ["healpix", "astronomy"]
 documentation = "https://cds-astro.github.io/cds-healpix-python"
 homepage = "https://github.com/cds-astro/cds-healpix-python"
@@ -20,7 +20,7 @@ name = "cdshealpix"
 crate-type = ["cdylib"]
 
 [dependencies]
-healpix = { package = "cdshealpix", version = "0.6.4" }
+healpix = { package = "cdshealpix", version = "0.6.5" }
 rayon = "1.5.3"
 
 [dependencies.numpy]

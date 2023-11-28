@@ -1,5 +1,15 @@
 # `cdshealpix-python` Change Log
 
+## 0.6.5
+
+Released 2023-11-28
+
+### Changed
+
+* supported python versions are now from 3.8 to 3.12. For python 3.8, the astropy dependency is fixed to <5.3.
+This will prevent from using new functionalities of astropy until python 3.8 end of life. [#18]
+* the documentation now have a section for notebooks in the examples [#19]
+
 ## 0.6.4
 
 Released 2023-02-27
@@ -11,7 +21,7 @@ This release is mostly documentation and CI improvements
 * docstring update for ``bilinear_interpolation`` to highlight counter-intuitive use of False and True in ``np.mask``.
 * new extended example in documentation for coordinate system rotation using the pixel method
 * adopted black codestyle
-* BUGFIX : ``from_ring`` doctring example is fixed 
+* BUGFIX : ``from_ring`` doctring example is fixed
 
 ### Fix
 
