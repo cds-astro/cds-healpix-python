@@ -364,8 +364,8 @@ def vertices(ipix, depth, step=1, num_threads=0):
     ipix = ipix.astype(np.uint64)
 
     # Allocation of the array containing the resulting coordinates
-    lon = np.zeros(ipix.shape + (4 * step,))
-    lat = np.zeros(ipix.shape + (4 * step,))
+    lon = np.zeros((*ipix.shape, 4 * step))
+    lat = np.zeros((*ipix.shape, 4 * step))
     num_threads = np.uint16(num_threads)
 
     cdshealpix.vertices(depth, ipix, step, lon, lat, num_threads)
@@ -465,7 +465,7 @@ def neighbours(ipix, depth, num_threads=0):
     ipix = ipix.astype(np.uint64)
 
     # Allocation of the array containing the neighbours
-    neighbours = np.zeros(ipix.shape + (9,), dtype=np.int64)
+    neighbours = np.zeros((*ipix.shape, 9), dtype=np.int64)
     num_threads = np.uint16(num_threads)
     cdshealpix.neighbours(depth, ipix, neighbours, num_threads)
 
@@ -511,8 +511,8 @@ def external_neighbours(ipix, depth, delta_depth, num_threads=0):
 
     # Allocation of the array containing the neighbours
     num_external_cells_on_edges = 4 << delta_depth
-    edge_cells = np.zeros(ipix.shape + (num_external_cells_on_edges,), dtype=np.uint64)
-    corner_cells = np.zeros(ipix.shape + (4,), dtype=np.int64)
+    edge_cells = np.zeros((*ipix.shape, num_external_cells_on_edges), dtype=np.uint64)
+    corner_cells = np.zeros((*ipix.shape, 4), dtype=np.int64)
 
     num_threads = np.uint16(num_threads)
     cdshealpix.external_neighbours(
@@ -665,13 +665,13 @@ def polygon_search(lon, lat, depth, flat=False):
     num_vertices = lon.shape[0]
 
     if num_vertices < 3:
-        raise IndexError("There must be at least 3 vertices in order to form a polygon")
+        raise ValueError("There must be at least 3 vertices in order to form a polygon")
 
     # Check that there is at least 3 distinct vertices.
     vertices = np.vstack((lon, lat)).T
     distinct_vertices = np.unique(vertices, axis=0)
     if distinct_vertices.shape[0] < 3:
-        raise IndexError(
+        raise ValueError(
             "There must be at least 3 distinct vertices in order to form a polygon"
         )
 
@@ -1031,8 +1031,8 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
 
     mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
 
-    ipix = np.empty(shape=num_coords + (4,), dtype=np.uint64)
-    weights = np.empty(shape=num_coords + (4,), dtype=np.float64)
+    ipix = np.empty(shape=(*num_coords, 4), dtype=np.uint64)
+    weights = np.empty(shape=(*num_coords, 4), dtype=np.float64)
 
     num_threads = np.uint16(num_threads)
 
