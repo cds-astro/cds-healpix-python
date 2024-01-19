@@ -427,10 +427,11 @@ def test_bilinear_interpolation(depth):
     assert ((ipix >= 0) & (ipix < 12 * (4**depth))).all()
 
 
-@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
-def test_bilinear_interpolation2(depth):
-    lon = Longitude([10, 25, 0], u.deg)
-    lat = Latitude([5, 10, 45], u.deg)
+def test_bilinear_interpolation_accepts_nan():
+    lon = Longitude([10, np.nan], unit="deg")
+    lat = Latitude([5, np.nan], unit="deg")
     depth = 5
 
-    ipix, weights = bilinear_interpolation(lon, lat, depth)
+    ipix, _ = bilinear_interpolation(lon, lat, depth)
+
+    assert np.all(ipix.mask == [[False, False, False, False], [True, True, True, True]])
