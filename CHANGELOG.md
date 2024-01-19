@@ -1,5 +1,11 @@
 # `cdshealpix-python` Change Log
 
+## Unreleased
+
+### Fix
+
+* bilinear_interpolation now accepts longitudes and latitudes with nan values (will be reflected by a masked value in the output) [#21]
+
 ## 0.6.5
 
 Released 2023-11-28

@@ -1004,30 +1004,27 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     if not (isinstance(lat, Latitude)):
         raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
-    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
-    # Although `to_value` is more generical (method of Quantity),
-    # Longitude/Latitude ensure that the values given to the contain are in the correct ranges.
-    lon = np.atleast_1d(lon.rad)
-    lat = np.atleast_1d(lat.rad)
-
     if depth < 0 or depth > 29:
         raise ValueError("Depth must be in the [0, 29] closed range")
+
+    lon = np.atleast_1d(lon.rad)
+    lat = np.atleast_1d(lat.rad)
 
     if lon.shape != lat.shape:
         raise ValueError(
             "The number of longitudes does not match with the number of latitudes given"
         )
 
-    # Useless since we test isinstance at the beginning of the function
-    # if ((lat < np.pi/2.0) | (lat > np.pi/2.0)).any():
-    #    raise ValueError("Lat must be in [-pi/2, 2pi/2]")
-
     num_coords = lon.shape
 
     # Retrieve nan and infinite values
-    mask_lon_invalid = np.isnan(lon) | ~np.isfinite(lon)
-    mask_lat_invalid = np.isnan(lat) | ~np.isfinite(lat)
+    mask_lon_invalid = np.ma.masked_invalid(lon).mask
+    mask_lat_invalid = np.ma.masked_invalid(lat).mask
+
     mask_invalid = mask_lon_invalid | mask_lat_invalid
+
+    lon = np.ma.fix_invalid(lon, mask_invalid, fill_value=0 * u.deg)
+    lat = np.ma.fix_invalid(lat, mask_invalid, fill_value=0 * u.deg)
 
     mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
 
