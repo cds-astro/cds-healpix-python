@@ -1,5 +1,6 @@
 # Standard Library
 import pathlib
+import re
 
 # Astropy tools
 # General Astronomy tools
@@ -46,62 +47,64 @@ def test_lonlat_to_healpix(size):
     npix = 12 * 4 ** (depth)
     assert ((ipixels >= 0) & (ipixels < npix)).all()
     assert ((dx >= 0) & (dx <= 1)).all()
+    assert ((dy >= 0) & (dy <= 1)).all()
 
 
 @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
 def test_healpix_to_lonlat(size):
     depth = np.random.randint(30)
-    size = 10000
     ipixels = np.random.randint(12 * 4**depth, size=size, dtype=np.uint64)
 
     lon, lat = healpix_to_lonlat(ipix=ipixels, depth=depth)
     assert lon.shape == lat.shape
 
 
-def test_healpix_to_lonlat_on_broadcasted_arrays():
+@pytest.mark.parametrize(
+    "ipix",
+    [
+        np.arange(100)[::2],
+        np.broadcast_to(np.array([1, 2, 3]), (10000, 3)),
+        np.broadcast_to(3, (3, 4, 5)),
+    ],
+)
+def test_healpix_to_lonlat_on_broadcasted_arrays(ipix):
     depth = 12
-    x = np.arange(1000000)
-    healpix_to_lonlat(ipix=x, depth=depth)
-    y = x[::2]
-    healpix_to_lonlat(ipix=y, depth=depth)
-
-    z = np.array([1, 2, 3])
-    a = np.broadcast_to(z, (10000, 3))
-    healpix_to_lonlat(ipix=a, depth=depth)
-
-    b = np.broadcast_to(3, (3, 4, 5))
-    healpix_to_lonlat(ipix=b, depth=depth)
+    lon, _ = healpix_to_lonlat(ipix=ipix, depth=depth)
+    assert lon.shape == ipix.shape
 
 
 def test_healpix_to_lonlat_on_broadcasted_arrays2():
-    level = np.arange(2)
+    depth = np.arange(2)
     ipix = np.arange(3)
-    lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], level[np.newaxis, :])
+    lon, lat = healpix_to_lonlat(ipix[:, np.newaxis], depth[np.newaxis, :])
     assert lon.shape == lat.shape and lon.shape == (3, 2)
 
 
 def test_invalid_depth_exception():
-    size = 10000
+    size = 1000
     ipix = np.zeros(size)
-    with pytest.raises(Exception):
+    match = re.escape("Depth must be in the [0, 29] closed range")
+    with pytest.raises(ValueError, match=match):
         healpix_to_lonlat(ipix, -2)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         healpix_to_lonlat(ipix, 30)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         lonlat_to_healpix(Longitude(0, u.deg), Latitude(0, u.deg), -2)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         vertices(ipix, -2)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         neighbours(ipix, -2)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         cone_search(Longitude(0, u.deg), Latitude(0, u.deg), 15 * u.deg, -2)
 
 
 def test_lonlat_shape_exception():
     lon = Longitude([2, 5], u.deg)
     lat = Latitude([5], u.deg)
-
-    with pytest.raises(Exception):
+    with pytest.raises(
+        ValueError,
+        match="The number of longitudes does not match with the number of latitudes given",
+    ):
         lonlat_to_healpix(lon, lat, 12)
 
 
@@ -110,13 +113,14 @@ def test_invalid_ipix_exception(depth):
     npix = 12 * 4**depth
     invalid_ipix1 = np.array([-20, 0, 11])
     invalid_ipix2 = np.array([0, npix + 1, 11])
-    with pytest.raises(Exception):
+    match = "The input HEALPix array contains values out of *"
+    with pytest.raises(ValueError, match=match):
         healpix_to_lonlat(invalid_ipix1, depth)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         healpix_to_lonlat(invalid_ipix2, depth)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         vertices(invalid_ipix1, depth)
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError, match=match):
         neighbours(invalid_ipix1, depth)
 
 
@@ -128,7 +132,7 @@ def test_healpix_to_skycoord():
 
 def test_vertices_lonlat():
     depth = 12
-    size = 100000
+    size = 10000
     ipixels = np.random.randint(12 * 4**depth, size=size)
 
     lon, lat = vertices(ipix=ipixels, depth=depth)
@@ -138,7 +142,7 @@ def test_vertices_lonlat():
 
 def test_neighbours():
     depth = 0
-    size = 100000
+    size = 10000
     ipixels = np.random.randint(12 * 4 ** (depth), size=size)
 
     neigh = neighbours(ipix=ipixels, depth=depth)
@@ -154,7 +158,7 @@ def test_cone_search():
     radius = (np.random.rand(1)[0] * 45) * u.deg
     max_depth = 5
 
-    ipix, depth, fully_covered = cone_search(
+    ipix, depth, _ = cone_search(
         lon=lon, lat=lat, radius=radius, depth=max_depth, flat=True
     )
 
@@ -162,7 +166,9 @@ def test_cone_search():
     assert ((depth >= 0) & (depth <= max_depth)).all()
     assert ((ipix >= 0) & (ipix < npix)).all()
 
-    with pytest.raises(Exception):
+    with pytest.raises(
+        ValueError, match="The longitude, latitude and radius must be scalar objects"
+    ):
         cone_search(
             Longitude([5, 4], u.deg), Latitude([5, 4], u.deg), 15 * u.deg, depth=12
         )
@@ -175,10 +181,13 @@ def test_polygon_search(size):
     lat = Latitude(np.random.rand(size) * 180 - 90, u.deg)
 
     if size < 3:
-        with pytest.raises(Exception):
+        with pytest.raises(
+            ValueError,
+            match="There must be at least 3 vertices in order to form a polygon",
+        ):
             polygon_search(lon=lon, lat=lat, depth=max_depth)
     else:
-        ipix, depth, fully_covered = polygon_search(lon=lon, lat=lat, depth=max_depth)
+        ipix, depth, _ = polygon_search(lon=lon, lat=lat, depth=max_depth)
 
         npix = 12 * 4 ** (max_depth)
         assert ((depth >= 0) & (depth <= max_depth)).all()
@@ -207,7 +216,10 @@ def test_polygon_search_issue57():
 
 def test_polygon_search_not_enough_vertices_exception():
     # 4 total vertices but only 2 distincts. This should fail
-    with pytest.raises(Exception):
+    with pytest.raises(
+        ValueError,
+        match="There must be at least 3 distinct vertices in order to form a polygon",
+    ):
         polygon_search(
             Longitude([1, 1, 2, 1], u.deg), Latitude([1, 1, 3, 1], u.deg), depth=12
         )
@@ -237,7 +249,7 @@ def test_elliptical_cone_search():
     pa = Angle(0, unit="deg")
     max_depth = 12
 
-    ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
+    ipix, depth, _ = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
 
     npix = 12 * 4 ** (max_depth)
     assert ((depth >= 0) & (depth <= max_depth)).all()
@@ -415,10 +427,11 @@ def test_bilinear_interpolation(depth):
     assert ((ipix >= 0) & (ipix < 12 * (4**depth))).all()
 
 
-@pytest.mark.parametrize("depth", [5, 0, 7, 12, 20, 29])
-def test_bilinear_interpolation2(depth):
-    lon = Longitude([10, 25, 0], u.deg)
-    lat = Latitude([5, 10, 45], u.deg)
+def test_bilinear_interpolation_accepts_nan():
+    lon = Longitude([10, np.nan], unit="deg")
+    lat = Latitude([5, np.nan], unit="deg")
     depth = 5
 
-    ipix, weights = bilinear_interpolation(lon, lat, depth)
+    ipix, _ = bilinear_interpolation(lon, lat, depth)
+
+    assert np.all(ipix.mask == [[False, False, False, False], [True, True, True, True]])
