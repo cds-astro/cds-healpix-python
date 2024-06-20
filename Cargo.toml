@@ -20,18 +20,18 @@ name = "cdshealpix"
 crate-type = ["cdylib"]
 
 [dependencies]
-healpix = { package = "cdshealpix", version = "0.6.5" }
-rayon = "1.5.3"
+healpix = { package = "cdshealpix", version = "0.6" }
+rayon = "1.10"
 
 [dependencies.numpy]
-version = "0.17.2"
+version = "0.20"
 
 [dependencies.pyo3]
-version = "0.17.2"
+version = "0.20"
 features = ["extension-module"]
 
 [dependencies.ndarray]
-version = "0.15.6"
+version = "0.15"
 default-features = false # do not include the default features, and optionally
                          # cherry-pick individual features
 features = ["rayon"]
