@@ -844,42 +844,42 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     )
   }
 
-    /// A box is defined by a center, two angles on the sides
-    /// and one rotation angle. Its sides follow great circles.
-    ///
-    /// # Arguments
-    ///
-    /// * ``depth``
-    /// * ``lon`` - center longitude, in degrees
-    /// * ``lat`` - center latitude in degrees
-    /// * ``a`` - size in degrees
-    /// * ``b`` - size in degrees
-    /// * ``pa`` -rotation angle in degrees
-    #[pyfn(m)]
-    fn box_search(
-      py: Python,
-      depth: u8,
-      lon: f64,
-      lat: f64,
-      a: f64,
-      b: f64,
-      pa: f64,
-      flat: bool,
-    ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
-      let bmoc = healpix::nested::box_coverage(depth, lon, lat, a, b, pa);
+  /// A box is defined by a center, two angles on the sides
+  /// and one rotation angle. Its sides follow great circles.
+  ///
+  /// # Arguments
+  ///
+  /// * ``depth``
+  /// * ``lon`` - center longitude, in degrees
+  /// * ``lat`` - center latitude in degrees
+  /// * ``a`` - size in degrees
+  /// * ``b`` - size in degrees
+  /// * ``pa`` -rotation angle in degrees
+  #[pyfn(m)]
+  fn box_search(
+    py: Python,
+    depth: u8,
+    lon: f64,
+    lat: f64,
+    a: f64,
+    b: f64,
+    pa: f64,
+    flat: bool,
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
+    let bmoc = healpix::nested::box_coverage(depth, lon, lat, a, b, pa);
 
-      let (ipix, depth, fully_covered) = if flat {
-        get_flat_cells(bmoc)
-      } else {
-        get_cells(bmoc)
-      };
+    let (ipix, depth, fully_covered) = if flat {
+      get_flat_cells(bmoc)
+    } else {
+      get_cells(bmoc)
+    };
 
-      (
-        ipix.into_pyarray(py).to_owned(),
-        depth.into_pyarray(py).to_owned(),
-        fully_covered.into_pyarray(py).to_owned(),
-      )
-    }
+    (
+      ipix.into_pyarray(py).to_owned(),
+      depth.into_pyarray(py).to_owned(),
+      fully_covered.into_pyarray(py).to_owned(),
+    )
+  }
 
   #[pyfn(m)]
   unsafe fn external_neighbours(
