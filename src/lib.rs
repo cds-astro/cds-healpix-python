@@ -764,7 +764,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     lat: f64,
     radius: f64,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let bmoc = healpix::nested::cone_coverage_approx_custom(depth, delta_depth, lon, lat, radius);
 
     let (ipix, depth, fully_covered) = if flat {
@@ -792,7 +792,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     b: f64,
     pa: f64,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let bmoc =
       healpix::nested::elliptical_cone_coverage_custom(depth, delta_depth, lon, lat, a, b, pa);
 
@@ -817,7 +817,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     lon: &PyArrayDyn<f64>,
     lat: &PyArrayDyn<f64>,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let lon = lon.as_array();
     let lat = lat.as_array();
 
@@ -1037,16 +1037,16 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
   Ok(())
 }
 
-fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<u8>) {
+fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
   let len = bmoc.entries.len();
   let mut ipix = Vec::<u64>::with_capacity(len);
   let mut depth = Vec::<u8>::with_capacity(len);
-  let mut fully_covered = Vec::<u8>::with_capacity(len);
+  let mut fully_covered = Vec::<bool>::with_capacity(len);
 
   for c in bmoc.into_iter() {
     ipix.push(c.hash);
     depth.push(c.depth);
-    fully_covered.push(c.is_full as u8);
+    fully_covered.push(c.is_full);
   }
 
   depth.shrink_to_fit();
@@ -1056,16 +1056,16 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
   (ipix.into(), depth.into(), fully_covered.into())
 }
 
-fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<u8>) {
+fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
   let len = bmoc.deep_size();
   let mut ipix = Vec::<u64>::with_capacity(len);
   let mut depth = Vec::<u8>::with_capacity(len);
-  let mut fully_covered = Vec::<u8>::with_capacity(len);
+  let mut fully_covered = Vec::<bool>::with_capacity(len);
 
   for c in bmoc.flat_iter_cell() {
     ipix.push(c.hash);
     depth.push(c.depth);
-    fully_covered.push(c.is_full as u8);
+    fully_covered.push(c.is_full);
   }
 
   depth.shrink_to_fit();
