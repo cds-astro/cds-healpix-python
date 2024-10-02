@@ -19,6 +19,12 @@ Polygon search
 .. plot:: examples/polygon_search.py
     :include-source:
 
+Box search
+----------
+
+.. plot:: examples/box_search.py
+    :include-source:
+
 Notebook examples
 -----------------
 
