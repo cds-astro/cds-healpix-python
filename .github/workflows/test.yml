@@ -20,6 +20,7 @@ jobs:
     # See https://github.com/pypa/manylinux for this particular container:
     # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
     container: quay.io/pypa/manylinux2014_x86_64
+    env: {ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true} # Allow using Node16 actions required for CentOS7
     # We are now in CentOS 7 64 bits
     steps:
      - name: "Checkout the full project"
