@@ -9,3 +9,4 @@ docs/_build
 docs/_templates
 publish_docs.sh
 .idea
+*.so
