@@ -40,6 +40,6 @@ repos:
       - id: cargofmt
         name: cargofmt
         entry: rustfmt
-        files: rs
+        files: \.rs$
         language: system
 
