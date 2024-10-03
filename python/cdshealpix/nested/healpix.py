@@ -21,6 +21,7 @@ __all__ = [
     "external_neighbours",
     "cone_search",
     "box_search",
+    "zone_search",
     "polygon_search",
     "elliptical_cone_search",
     "healpix_to_xy",
@@ -670,6 +671,75 @@ def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
         np.float64(a.to_value(u.rad)),
         np.float64(b.to_value(u.rad)),
         np.float64(angle.to_value(u.rad)),
+        bool(flat),
+    )
+
+
+def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
+    """Get the HEALPix cells contained in a zone at a given depth.
+
+    A zone is defined by its corners. All points inside will have lon_min < lon < lon_max
+    and lat_min < lat < lat_max.
+
+    Parameters
+    ----------
+    lon_min : `~astropy.coordinates.Longitude`
+        Longitude of bottom left corner.
+    lat_min : `~astropy.coordinates.Latitude`
+        Latitude of the bottom left corner
+    lon_max : `~astropy.coordinates.Longitude`
+        Longitude of the upper right corner.
+    lat_max : `~astropy.coordinates.Latitude`
+        Latitude of the upper right corner
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+    flat : boolean, optional
+        False by default (i.e. returns a consistent MOC). If True, the HEALPix cells
+        returned will all be at depth indicated by `depth`.
+
+    Returns
+    -------
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
+        A tuple containing 3 numpy arrays of identical size:
+
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully
+           covered by the cone.
+
+    Examples
+    --------
+    >>> from cdshealpix import zone_search
+    >>> from astropy.coordinates import Longitude, Latitude, Angle
+    >>> import astropy.units as u
+    >>> ipix, depth, fully_covered = zone_search(
+    ...     lon_min=Longitude(0 * u.deg), lat_min=Latitude(0 * u.deg),
+    ...     lon_max=Longitude(10 * u.deg), lat_max=Latitude(10 * u.deg), depth=10
+    ... )
+    """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    if (
+        not lon_min.isscalar
+        or not lat_min.isscalar
+        or not lon_max.isscalar
+        or not lat_max.isscalar
+    ):
+        raise ValueError("The longitudes and latitudes must be scalar objects")
+
+    if not isinstance(lon_min, Longitude) or not isinstance(lon_max, Longitude):
+        raise ValueError("longitudes must be of type `astropy.coordinates.Longitude`")
+
+    if not isinstance(lat_min, Latitude) or not isinstance(lat_max, Latitude):
+        raise ValueError("latitudes must be of type `astropy.coordinates.Latitude`")
+
+    return cdshealpix.zone_search(
+        np.uint8(depth),
+        np.float64(lon_min.rad),
+        np.float64(lat_min.rad),
+        np.float64(lon_max.rad),
+        np.float64(lat_max.rad),
         bool(flat),
     )
 

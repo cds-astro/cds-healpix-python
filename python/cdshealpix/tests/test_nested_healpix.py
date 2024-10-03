@@ -15,6 +15,7 @@ from ..nested.healpix import (
     bilinear_interpolation,
     cone_search,
     box_search,
+    zone_search,
     elliptical_cone_search,
     external_neighbours,
     healpix_to_lonlat,
@@ -181,6 +182,22 @@ def test_box_search():
     _, depth, fully_covered = box_search(lon, lat, 1 * u.deg, 1 * u.deg, 0 * u.deg)
     assert all(depth <= 14)
     assert not all(fully_covered)
+
+
+def test_zone_search():
+    lon_min = Longitude(-5 * u.deg)
+    lat_min = Latitude(-5 * u.deg)
+    lon_max = Longitude(5 * u.deg)
+    lat_max = Latitude(5 * u.deg)
+    ipix, depth, fully_covered = zone_search(
+        lon_min, lat_min, lon_max, lat_max, depth=6
+    )
+    centers_lon, center_lat = healpix_to_lonlat(
+        ipix[fully_covered], depth[fully_covered]
+    )
+    assert all(
+        centers_lon.wrap_at(180 * u.deg).radian >= lon_min.wrap_at(180 * u.deg).radian
+    )
 
 
 @pytest.mark.parametrize("size", [0, 1, 2, 3, 5, 6, 9])

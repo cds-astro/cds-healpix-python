@@ -885,6 +885,41 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     )
   }
 
+  /// A zone is defined by its corners. Its sides follow great circles along the
+  /// north/south axis and small circles along the east/west axis.
+  ///
+  /// # Arguments
+  ///
+  /// * ``depth``
+  /// * ``lon_min`` - west south corner longitude
+  /// * ``lat_min`` - west south corner latitude
+  /// * ``lon_max`` - east north corner longitude
+  /// * ``lat_max`` - east north corner latitude
+  #[pyfn(m)]
+  fn zone_search(
+    py: Python,
+    depth: u8,
+    lon_min: f64,
+    lat_min: f64,
+    lon_max: f64,
+    lat_max: f64,
+    flat: bool,
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
+    let bmoc = healpix::nested::zone_coverage(depth, lon_min, lat_min, lon_max, lat_max);
+
+    let (ipix, depth, fully_covered) = if flat {
+      get_flat_cells(bmoc)
+    } else {
+      get_cells(bmoc)
+    };
+
+    (
+      ipix.into_pyarray(py).to_owned(),
+      depth.into_pyarray(py).to_owned(),
+      fully_covered.into_pyarray(py).to_owned(),
+    )
+  }
+
   #[pyfn(m)]
   unsafe fn external_neighbours(
     _py: Python,
