@@ -11,7 +11,10 @@
 * :warning: breaking change. All `fully_covered` returned values have changed from arrays
   of 0 and 255 to boolean arrays. This concerns: `box_search`, `cone_search`,
   `polygon_search`, `elliptical_cone_search`, and `elliptic-search`.
-* bilinear_interpolation now accepts longitudes and latitudes with nan values (will be a masked value in the output) [#22]
+* bilinear_interpolation now accepts longitudes and latitudes with nan values
+  (will be a masked value in the output) [#22]
+* `nested.healpix_to_lonlat`, failed into rust panic for `dx=1` or `dy=1`. This is
+  now indicated in the documentation and is catched in a `ValueError` on the python side.
 
 ## 0.6.5
 

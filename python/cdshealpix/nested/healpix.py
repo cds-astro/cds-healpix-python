@@ -190,11 +190,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
 
 
 def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
-    r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
-
-    This method does the opposite transformation of `lonlat_to_healpix`.
-    It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
-    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+    r"""Get the longitudes and latitudes of the center of some HEALPix cells.
 
     Parameters
     ----------
@@ -203,9 +199,11 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     depth : `numpy.ndarray`
         The HEALPix cell depth given as a `np.uint8` numpy array.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
+        Set to 0.5 to get the center.
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
+        Set to 0.5 to get the center.
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
         it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
@@ -236,11 +234,11 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     if (depth < 0).any() or (depth > 29).any():
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    if dx < 0 or dx > 1:
-        raise ValueError("dx must be between [0, 1]")
+    if dx < 0 or dx >= 1:
+        raise ValueError("dx must be between [0, 1[")
 
-    if dy < 0 or dy > 1:
-        raise ValueError("dy must be between [0, 1]")
+    if dy < 0 or dy >= 1:
+        raise ValueError("dy must be between [0, 1[")
 
     _check_ipixels(ipix, depth)
 
@@ -278,9 +276,9 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     depth : `numpy.ndarray`
         The depth of the HEALPix cells.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
         it will choose the number of threads based on the RAYON_NUM_THREADS environment

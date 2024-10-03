@@ -180,9 +180,9 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     nside : `numpy.ndarray`
         The nside of the HEALPix cells.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
         it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
@@ -213,11 +213,11 @@ def healpix_to_lonlat(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     if (nside < 1).any() or (nside > (1 << 29)).any():
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
 
-    if dx < 0 or dx > 1:
-        raise ValueError("dx must be between [0, 1]")
+    if dx < 0 or dx >= 1:
+        raise ValueError("dx must be between [0, 1[")
 
-    if dy < 0 or dy > 1:
-        raise ValueError("dy must be between [0, 1]")
+    if dy < 0 or dy >= 1:
+        raise ValueError("dy must be between [0, 1[")
 
     _check_ipixels(data=ipix, nside=nside)
 
@@ -254,9 +254,9 @@ def healpix_to_skycoord(ipix, nside, dx=0.5, dy=0.5, num_threads=0):
     nside : `numpy.ndarray`
         The nside of the HEALPix cells.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
         it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
@@ -399,8 +399,8 @@ def vertices(ipix, nside, step=1, num_threads=0):
     ipix = ipix.astype(np.uint64)
 
     # Allocation of the array containing the resulting coordinates
-    lon = np.zeros(ipix.shape + (4 * step,))
-    lat = np.zeros(ipix.shape + (4 * step,))
+    lon = np.zeros((*ipix.shape, 4 * step))
+    lat = np.zeros((*ipix.shape, 4 * step))
     num_threads = np.uint16(num_threads)
 
     cdshealpix.vertices_ring(nside, ipix, step, lon, lat, num_threads)
