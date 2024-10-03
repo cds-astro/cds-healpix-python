@@ -506,18 +506,18 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
   #[pyfn(m)]
   unsafe fn vertices(
     _py: Python,
-    depth: u8,
+    depth: &PyArrayDyn<u8>,
     ipix: &PyArrayDyn<u64>,
     step: usize,
     lon: &PyArrayDyn<f64>,
     lat: &PyArrayDyn<f64>,
     nthreads: u16,
   ) -> PyResult<()> {
+    let depth = depth.as_array();
     let ipix = ipix.as_array();
     let mut lon = lon.as_array_mut();
     let mut lat = lat.as_array_mut();
 
-    let layer = healpix::nested::get(depth);
     #[cfg(not(target_arch = "wasm32"))]
     {
       let pool = rayon::ThreadPoolBuilder::new()
@@ -529,9 +529,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
           Zip::from(lon.rows_mut())
             .and(lat.rows_mut())
             .and(&ipix)
-            .par_for_each(|mut lon, mut lat, &p| {
+            .and(&depth)
+            .par_for_each(|mut lon, mut lat, &p, &d| {
               let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-                healpix::nested::vertices(depth, p);
+                healpix::nested::vertices(d, p);
               lon[0] = s_lon;
               lat[0] = s_lat;
 
@@ -548,8 +549,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
           Zip::from(lon.rows_mut())
             .and(lat.rows_mut())
             .and(&ipix)
-            .par_for_each(|mut lon, mut lat, &p| {
-              let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
+            .and(&depth)
+            .par_for_each(|mut lon, mut lat, &p, &d| {
+              let r = healpix::nested::path_along_cell_edge(d, p, &Cardinal::S, false, step as u32);
 
               for i in 0..(4 * step) {
                 let (l, b) = r[i];
@@ -566,9 +568,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Zip::from(lon.rows_mut())
           .and(lat.rows_mut())
           .and(&ipix)
-          .for_each(|mut lon, mut lat, &p| {
+          .and(&depth)
+          .for_each(|mut lon, mut lat, &p, &d| {
             let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-              healpix::nested::vertices(depth, p);
+              healpix::nested::vertices(d, p);
             lon[0] = s_lon;
             lat[0] = s_lat;
 
@@ -585,8 +588,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Zip::from(lon.rows_mut())
           .and(lat.rows_mut())
           .and(&ipix)
-          .for_each(|mut lon, mut lat, &p| {
-            let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
+          .and(&depth)
+          .for_each(|mut lon, mut lat, &p, &d| {
+            let r = healpix::nested::path_along_cell_edge(d, p, &Cardinal::S, false, step as u32);
 
             for i in 0..(4 * step) {
               let (l, b) = r[i];

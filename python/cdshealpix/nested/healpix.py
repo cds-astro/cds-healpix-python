@@ -322,8 +322,8 @@ def vertices(ipix, depth, step=1, num_threads=0):
     ----------
     ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
-        The depth of the HEALPix cells.
+    depth : int, or `numpy.ndarray`
+        The depth of the HEALPix cells. If given as an array, should have the same shape than ipix
     step : int, optional
         The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
@@ -336,7 +336,7 @@ def vertices(ipix, depth, step=1, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
+    (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
         The sky coordinates of the 4 vertices of the HEALPix cells.
         `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively,
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
@@ -354,15 +354,19 @@ def vertices(ipix, depth, step=1, num_threads=0):
     >>> depth = 12
     >>> lon, lat = vertices(ipix, depth)
     """
-    if depth < 0 or depth > 29:
+    ipix = np.atleast_1d(ipix)
+
+    if isinstance(depth, int) or np.isscalar(depth):
+        depth = np.full(len(ipix), depth)
+    if any(depth < 0) or any(depth > 29):
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if step < 1:
         raise ValueError("The number of step must be >= 1")
 
-    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
+    depth = depth.astype(np.uint8)
 
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros((*ipix.shape, 4 * step))
@@ -385,8 +389,8 @@ def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     ----------
     ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
-        The depth of the HEALPix cells.
+    depth : int, or `numpy.ndarray`
+        The depth of the HEALPix cells. If given as an array, should have the same shape than ipix
     step : int, optional
         The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
         it will only return the vertices of the cell. 2 means that it will returns the vertices of

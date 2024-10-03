@@ -5,6 +5,8 @@
 ### Added
 
 * new feature `box_search`
+* `cdshaelpix.nested.vertices` can now take depth as a `numpy.ndarray` instead of only
+  accepting a single depth
 
 ### Fixed
 
