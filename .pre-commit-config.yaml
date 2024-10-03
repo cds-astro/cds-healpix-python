@@ -35,3 +35,11 @@ repos:
     hooks:
      - id: ruff
        fail_fast: true
+  - repo: local
+    hooks:
+      - id: cargofmt
+        name: cargofmt
+        entry: rustfmt
+        files: \.rs$
+        language: system
+

@@ -20,6 +20,8 @@ __all__ = [
     "neighbours",
     "external_neighbours",
     "cone_search",
+    "box_search",
+    "zone_search",
     "polygon_search",
     "elliptical_cone_search",
     "healpix_to_xy",
@@ -189,11 +191,7 @@ def skycoord_to_healpix(skycoord, depth, return_offsets=False, num_threads=0):
 
 
 def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
-    r"""Get the longitudes and latitudes of the center of some HEALPix cells at a given depth.
-
-    This method does the opposite transformation of `lonlat_to_healpix`.
-    It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
-    method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
+    r"""Get the longitudes and latitudes of the center of some HEALPix cells.
 
     Parameters
     ----------
@@ -202,9 +200,11 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     depth : `numpy.ndarray`
         The HEALPix cell depth given as a `np.uint8` numpy array.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
+        Set to 0.5 to get the center.
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
+        Set to 0.5 to get the center.
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
         it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
@@ -235,11 +235,11 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     if (depth < 0).any() or (depth > 29).any():
         raise ValueError("Depth must be in the [0, 29] closed range")
 
-    if dx < 0 or dx > 1:
-        raise ValueError("dx must be between [0, 1]")
+    if dx < 0 or dx >= 1:
+        raise ValueError("dx must be between [0, 1[")
 
-    if dy < 0 or dy > 1:
-        raise ValueError("dy must be between [0, 1]")
+    if dy < 0 or dy >= 1:
+        raise ValueError("dy must be between [0, 1[")
 
     _check_ipixels(ipix, depth)
 
@@ -261,12 +261,13 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
 
 
 def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
-    r"""Get the sky coordinates of the center of some HEALPix cells in a nested configuration at a given depth.
+    r"""Get the coordinates of the center of a healpix cell.
 
     This method does the opposite transformation of `lonlat_to_healpix`.
-    It is the equivalent of `healpix_to_lonlat` except that it returns `astropy.coordinates.SkyCoord` instead
-    of `astropy.coordinates`.
-    It's wrapped around the `center <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
+    It is the equivalent of `healpix_to_lonlat` except that it returns
+    `astropy.coordinates.SkyCoord` instead of `astropy.coordinates`.
+    It's wrapped around the `center
+    <https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center>`__
     method from the `cdshealpix Rust crate <https://crates.io/crates/cdshealpix>`__.
 
     Parameters
@@ -276,18 +277,19 @@ def healpix_to_skycoord(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     depth : `numpy.ndarray`
         The depth of the HEALPix cells.
     dx : float, optional
-        The offset position :math:`\in [0, 1]` along the X axis. By default, `dx=0.5`
+        The offset position :math:`\in [0, 1[` along the X axis. By default, `dx=0.5`
     dy : float, optional
-        The offset position :math:`\in [0, 1]` along the Y axis. By default, `dy=0.5`
+        The offset position :math:`\in [0, 1[` along the Y axis. By default, `dy=0.5`
     num_threads : int, optional
         Specifies the number of threads to use for the computation. Default to 0 means
-        it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
-        or the number of logical CPUs (otherwise)
+        it will choose the number of threads based on the RAYON_NUM_THREADS environment
+        variable (if set), or the number of logical CPUs (otherwise)
 
     Returns
     -------
     skycoord : `astropy.coordinates.SkyCoord`
-        The sky coordinates of the center of the HEALPix cells given as a `~astropy.coordinates.SkyCoord` object.
+        The sky coordinates of the center of the HEALPix cells given as a
+        `~astropy.coordinates.SkyCoord` object.
 
     Raises
     ------
@@ -321,8 +323,8 @@ def vertices(ipix, depth, step=1, num_threads=0):
     ----------
     ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
-        The depth of the HEALPix cells.
+    depth : int, or `numpy.ndarray`
+        The depth of the HEALPix cells. If given as an array, should have the same shape than ipix
     step : int, optional
         The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
@@ -335,7 +337,7 @@ def vertices(ipix, depth, step=1, num_threads=0):
 
     Returns
     -------
-    lon, lat : (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
+    (`astropy.coordinates.Longitude`, `astropy.coordinates.Latitude`)
         The sky coordinates of the 4 vertices of the HEALPix cells.
         `lon` and `lat` are `~astropy.coordinates.Longitude` and `~astropy.coordinates.Latitude` instances respectively,
         containing a :math:`N` x :math:`4` numpy array where N is the number of HEALPix cell given in `ipix`.
@@ -353,15 +355,19 @@ def vertices(ipix, depth, step=1, num_threads=0):
     >>> depth = 12
     >>> lon, lat = vertices(ipix, depth)
     """
-    if depth < 0 or depth > 29:
+    ipix = np.atleast_1d(ipix)
+
+    if isinstance(depth, int) or np.isscalar(depth):
+        depth = np.full(len(ipix), depth)
+    if any(depth < 0) or any(depth > 29):
         raise ValueError("Depth must be in the [0, 29] closed range")
 
     if step < 1:
         raise ValueError("The number of step must be >= 1")
 
-    ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
+    depth = depth.astype(np.uint8)
 
     # Allocation of the array containing the resulting coordinates
     lon = np.zeros((*ipix.shape, 4 * step))
@@ -384,8 +390,8 @@ def vertices_skycoord(ipix, depth, step=1, num_threads=0):
     ----------
     ipix : `numpy.ndarray`
         The HEALPix cell indexes given as a `np.uint64` numpy array.
-    depth : int
-        The depth of the HEALPix cells.
+    depth : int, or `numpy.ndarray`
+        The depth of the HEALPix cells. If given as an array, should have the same shape than ipix
     step : int, optional
         The number of vertices returned per HEALPix side. By default it is set to 1 meaning that
         it will only return the vertices of the cell. 2 means that it will returns the vertices of
@@ -596,6 +602,146 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
         bool(flat),
     )
     return ipix, depth, full
+
+
+def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
+    """Get the HEALPix cells contained in a box at a given depth.
+
+    The box's sides follow great circles.
+
+    Parameters
+    ----------
+    lon : `~astropy.coordinates.Longitude`
+        Longitude of the center of the cone.
+    lat : `~astropy.coordinates.Latitude`
+        Latitude of the center of the cone.
+    a : `~astropy.coordinates.Angle`
+        Extension along longitudinal axis
+    b : `~astropy.coordinates.Angle`
+        Extension along latitudinal axis
+    angle : `~astropy.coordinates.Angle`
+        Rotation angle between the north and the semi-major axis, east of north
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+    flat : boolean, optional
+        False by default (i.e. returns a consistent MOC). If True, the HEALPix cells
+        returned will all be at depth indicated by `depth`.
+
+    Returns
+    -------
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
+        A tuple containing 3 numpy arrays of identical size:
+
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully covered by the cone.
+
+    Examples
+    --------
+    >>> from cdshealpix import box_search
+    >>> from astropy.coordinates import Longitude, Latitude, Angle
+    >>> import astropy.units as u
+    >>> ipix, depth, fully_covered = box_search(
+    ...     lon=Longitude(0 * u.deg), lat=Latitude(0 * u.deg),
+    ...     a=10 * u.deg, b=5 * u.deg, angle=0*u.deg, depth=10
+    ... )
+    """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    if (
+        not lon.isscalar
+        or not lat.isscalar
+        or not a.isscalar
+        or not b.isscalar
+        or not angle.isscalar
+    ):
+        raise ValueError("The longitude, latitude, and Angles must be scalar objects")
+
+    if not (isinstance(lon, Longitude)):
+        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
+
+    if not (isinstance(lat, Latitude)):
+        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
+
+    return cdshealpix.box_search(
+        np.uint8(depth),
+        np.float64(lon.rad),
+        np.float64(lat.rad),
+        np.float64(a.to_value(u.rad)),
+        np.float64(b.to_value(u.rad)),
+        np.float64(angle.to_value(u.rad)),
+        bool(flat),
+    )
+
+
+def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
+    """Get the HEALPix cells contained in a zone at a given depth.
+
+    A zone is defined by its corners. All points inside will have lon_min < lon < lon_max
+    and lat_min < lat < lat_max.
+
+    Parameters
+    ----------
+    lon_min : `~astropy.coordinates.Longitude`
+        Longitude of bottom left corner.
+    lat_min : `~astropy.coordinates.Latitude`
+        Latitude of the bottom left corner
+    lon_max : `~astropy.coordinates.Longitude`
+        Longitude of the upper right corner.
+    lat_max : `~astropy.coordinates.Latitude`
+        Latitude of the upper right corner
+    depth : int
+        Maximum depth of the HEALPix cells that will be returned.
+    flat : boolean, optional
+        False by default (i.e. returns a consistent MOC). If True, the HEALPix cells
+        returned will all be at depth indicated by `depth`.
+
+    Returns
+    -------
+    ipix, depth, fully_covered : (`numpy.ndarray`, `numpy.ndarray`, `numpy.ndarray`)
+        A tuple containing 3 numpy arrays of identical size:
+
+        * `ipix` stores HEALPix cell indices.
+        * `depth` stores HEALPix cell depths.
+        * `fully_covered` stores flags on whether the HEALPix cells are fully
+           covered by the cone.
+
+    Examples
+    --------
+    >>> from cdshealpix import zone_search
+    >>> from astropy.coordinates import Longitude, Latitude, Angle
+    >>> import astropy.units as u
+    >>> ipix, depth, fully_covered = zone_search(
+    ...     lon_min=Longitude(0 * u.deg), lat_min=Latitude(0 * u.deg),
+    ...     lon_max=Longitude(10 * u.deg), lat_max=Latitude(10 * u.deg), depth=10
+    ... )
+    """
+    if depth < 0 or depth > 29:
+        raise ValueError("Depth must be in the [0, 29] closed range")
+
+    if (
+        not lon_min.isscalar
+        or not lat_min.isscalar
+        or not lon_max.isscalar
+        or not lat_max.isscalar
+    ):
+        raise ValueError("The longitudes and latitudes must be scalar objects")
+
+    if not isinstance(lon_min, Longitude) or not isinstance(lon_max, Longitude):
+        raise ValueError("longitudes must be of type `astropy.coordinates.Longitude`")
+
+    if not isinstance(lat_min, Latitude) or not isinstance(lat_max, Latitude):
+        raise ValueError("latitudes must be of type `astropy.coordinates.Latitude`")
+
+    return cdshealpix.zone_search(
+        np.uint8(depth),
+        np.float64(lon_min.rad),
+        np.float64(lat_min.rad),
+        np.float64(lon_max.rad),
+        np.float64(lat_max.rad),
+        bool(flat),
+    )
 
 
 def polygon_search(lon, lat, depth, flat=False):

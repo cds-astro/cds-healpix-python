@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 
 # Moc and HEALPix tools
-from cdshealpix import cone_search
+from cdshealpix.nested import cone_search
 from mocpy import MOC, WCS
 
 max_depth = 10

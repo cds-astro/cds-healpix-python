@@ -65,3 +65,8 @@ max-string-length = 20
 
 [tool.ruff.pydocstyle]
 convention = "numpy"  # Accepts: "google", "numpy", or "pep257"
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+doctest_optionflags = "NORMALIZE_WHITESPACE"
+testpaths = "python"

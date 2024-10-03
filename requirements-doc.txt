@@ -5,7 +5,7 @@ mocpy
 nbsphinx
 numpydoc
 sphinx
-sphinx-collections
 sphinx-copybutton
 sphinx-gallery
 sphinxcontrib-bibtex
+sphinx-collections

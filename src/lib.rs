@@ -506,18 +506,18 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
   #[pyfn(m)]
   unsafe fn vertices(
     _py: Python,
-    depth: u8,
+    depth: &PyArrayDyn<u8>,
     ipix: &PyArrayDyn<u64>,
     step: usize,
     lon: &PyArrayDyn<f64>,
     lat: &PyArrayDyn<f64>,
     nthreads: u16,
   ) -> PyResult<()> {
+    let depth = depth.as_array();
     let ipix = ipix.as_array();
     let mut lon = lon.as_array_mut();
     let mut lat = lat.as_array_mut();
 
-    let layer = healpix::nested::get(depth);
     #[cfg(not(target_arch = "wasm32"))]
     {
       let pool = rayon::ThreadPoolBuilder::new()
@@ -529,9 +529,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
           Zip::from(lon.rows_mut())
             .and(lat.rows_mut())
             .and(&ipix)
-            .par_for_each(|mut lon, mut lat, &p| {
+            .and(&depth)
+            .par_for_each(|mut lon, mut lat, &p, &d| {
               let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-                healpix::nested::vertices(depth, p);
+                healpix::nested::vertices(d, p);
               lon[0] = s_lon;
               lat[0] = s_lat;
 
@@ -548,8 +549,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
           Zip::from(lon.rows_mut())
             .and(lat.rows_mut())
             .and(&ipix)
-            .par_for_each(|mut lon, mut lat, &p| {
-              let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
+            .and(&depth)
+            .par_for_each(|mut lon, mut lat, &p, &d| {
+              let r = healpix::nested::path_along_cell_edge(d, p, &Cardinal::S, false, step as u32);
 
               for i in 0..(4 * step) {
                 let (l, b) = r[i];
@@ -566,9 +568,10 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Zip::from(lon.rows_mut())
           .and(lat.rows_mut())
           .and(&ipix)
-          .for_each(|mut lon, mut lat, &p| {
+          .and(&depth)
+          .for_each(|mut lon, mut lat, &p, &d| {
             let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-              healpix::nested::vertices(depth, p);
+              healpix::nested::vertices(d, p);
             lon[0] = s_lon;
             lat[0] = s_lat;
 
@@ -585,8 +588,9 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
         Zip::from(lon.rows_mut())
           .and(lat.rows_mut())
           .and(&ipix)
-          .for_each(|mut lon, mut lat, &p| {
-            let r = layer.path_along_cell_edge(p, &Cardinal::S, false, step as u32);
+          .and(&depth)
+          .for_each(|mut lon, mut lat, &p, &d| {
+            let r = healpix::nested::path_along_cell_edge(d, p, &Cardinal::S, false, step as u32);
 
             for i in 0..(4 * step) {
               let (l, b) = r[i];
@@ -764,7 +768,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     lat: f64,
     radius: f64,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let bmoc = healpix::nested::cone_coverage_approx_custom(depth, delta_depth, lon, lat, radius);
 
     let (ipix, depth, fully_covered) = if flat {
@@ -792,7 +796,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     b: f64,
     pa: f64,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let bmoc =
       healpix::nested::elliptical_cone_coverage_custom(depth, delta_depth, lon, lat, a, b, pa);
 
@@ -817,7 +821,7 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
     lon: &PyArrayDyn<f64>,
     lat: &PyArrayDyn<f64>,
     flat: bool,
-  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<u8>>) {
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
     let lon = lon.as_array();
     let lat = lat.as_array();
 
@@ -830,6 +834,78 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
       .collect::<Vec<(f64, f64)>>();
 
     let bmoc = healpix::nested::polygon_coverage(depth, &vertices.into_boxed_slice(), true);
+
+    let (ipix, depth, fully_covered) = if flat {
+      get_flat_cells(bmoc)
+    } else {
+      get_cells(bmoc)
+    };
+
+    (
+      ipix.into_pyarray(py).to_owned(),
+      depth.into_pyarray(py).to_owned(),
+      fully_covered.into_pyarray(py).to_owned(),
+    )
+  }
+
+  /// A box is defined by a center, two angles on the sides
+  /// and one rotation angle. Its sides follow great circles.
+  ///
+  /// # Arguments
+  ///
+  /// * ``depth``
+  /// * ``lon`` - center longitude, in degrees
+  /// * ``lat`` - center latitude in degrees
+  /// * ``a`` - size in degrees
+  /// * ``b`` - size in degrees
+  /// * ``pa`` -rotation angle in degrees
+  #[pyfn(m)]
+  fn box_search(
+    py: Python,
+    depth: u8,
+    lon: f64,
+    lat: f64,
+    a: f64,
+    b: f64,
+    pa: f64,
+    flat: bool,
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
+    let bmoc = healpix::nested::box_coverage(depth, lon, lat, a, b, pa);
+
+    let (ipix, depth, fully_covered) = if flat {
+      get_flat_cells(bmoc)
+    } else {
+      get_cells(bmoc)
+    };
+
+    (
+      ipix.into_pyarray(py).to_owned(),
+      depth.into_pyarray(py).to_owned(),
+      fully_covered.into_pyarray(py).to_owned(),
+    )
+  }
+
+  /// A zone is defined by its corners. Its sides follow great circles along the
+  /// north/south axis and small circles along the east/west axis.
+  ///
+  /// # Arguments
+  ///
+  /// * ``depth``
+  /// * ``lon_min`` - west south corner longitude
+  /// * ``lat_min`` - west south corner latitude
+  /// * ``lon_max`` - east north corner longitude
+  /// * ``lat_max`` - east north corner latitude
+  #[pyfn(m)]
+  fn zone_search(
+    py: Python,
+    depth: u8,
+    lon_min: f64,
+    lat_min: f64,
+    lon_max: f64,
+    lat_max: f64,
+    flat: bool,
+  ) -> (Py<PyArray1<u64>>, Py<PyArray1<u8>>, Py<PyArray1<bool>>) {
+    let bmoc = healpix::nested::zone_coverage(depth, lon_min, lat_min, lon_max, lat_max);
 
     let (ipix, depth, fully_covered) = if flat {
       get_flat_cells(bmoc)
@@ -1037,16 +1113,16 @@ fn cdshealpix(_py: Python, m: &PyModule) -> PyResult<()> {
   Ok(())
 }
 
-fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<u8>) {
+fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
   let len = bmoc.entries.len();
   let mut ipix = Vec::<u64>::with_capacity(len);
   let mut depth = Vec::<u8>::with_capacity(len);
-  let mut fully_covered = Vec::<u8>::with_capacity(len);
+  let mut fully_covered = Vec::<bool>::with_capacity(len);
 
   for c in bmoc.into_iter() {
     ipix.push(c.hash);
     depth.push(c.depth);
-    fully_covered.push(c.is_full as u8);
+    fully_covered.push(c.is_full);
   }
 
   depth.shrink_to_fit();
@@ -1056,16 +1132,16 @@ fn get_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Arr
   (ipix.into(), depth.into(), fully_covered.into())
 }
 
-fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<u8>) {
+fn get_flat_cells(bmoc: healpix::nested::bmoc::BMOC) -> (Array1<u64>, Array1<u8>, Array1<bool>) {
   let len = bmoc.deep_size();
   let mut ipix = Vec::<u64>::with_capacity(len);
   let mut depth = Vec::<u8>::with_capacity(len);
-  let mut fully_covered = Vec::<u8>::with_capacity(len);
+  let mut fully_covered = Vec::<bool>::with_capacity(len);
 
   for c in bmoc.flat_iter_cell() {
     ipix.push(c.hash);
     depth.push(c.depth);
-    fully_covered.push(c.is_full as u8);
+    fully_covered.push(c.is_full);
   }
 
   depth.shrink_to_fit();
