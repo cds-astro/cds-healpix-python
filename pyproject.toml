@@ -2,18 +2,28 @@
 [project]
 name = "cdshealpix"
 requires-python = ">=3.8"
-# https://numpy.org/neps/nep-0029-deprecation_policy.html
-# https://docs.astropy.org/en/stable/changelog.html
 dependencies = [
     "astropy<5.3; python_version == '3.8'",
     "astropy; python_version > '3.8'"
 ]
 classifiers = [
     "Programming Language :: Rust",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
+description = "A healpix manipulation library."
+readme = "README.md"
+keywords = ["astronomy", "healpix"]
 
 [project.urls]
 repository = "https://github.com/cds-astro/cds-healpix-python"
+documentation = "https://cds-astro.github.io/cds-healpix-python/"
+issues = "https://github.com/cds-astro/cds-healpix-python/issues"
+changelog = "https://github.com/cds-astro/cds-healpix-python/blob/master/CHANGELOG.md"
+
 
 # Build a cdshealpix-x.x.x.tar.gz containing sources (from maturin).
 [build-system]

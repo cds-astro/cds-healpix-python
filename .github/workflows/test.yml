@@ -36,7 +36,7 @@ jobs:
        shell: bash
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3{8,9,10,11,12,13}-*/bin; do
+         for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
            "${PYBIN}/pip" install virtualenv
            "${PYBIN}/virtualenv" cdshealpixenv
            source cdshealpixenv/bin/activate
@@ -92,7 +92,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
      # Checkout the project
      - name: "Checkout branch ${{ github.head_ref }}"
@@ -137,7 +137,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
