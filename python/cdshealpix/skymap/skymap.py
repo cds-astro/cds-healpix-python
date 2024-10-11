@@ -1,8 +1,9 @@
 """Manipulation of skymaps.
 
-SkyMaps are described in <Data formats for gamma-ray astronomy https://gamma-astro-data-formats.readthedocs.io/en/latest/skymaps/healpix/index.html>_
-This sub-module supports skymaps in the nested scheme, and in the implicit format where the first pixels.
-The coordsystem should be 'CEL'.
+SkyMaps are described in <Data formats for gamma-ray astronomy
+ https://gamma-astro-data-formats.readthedocs.io/en/latest/skymaps/healpix/index.html>_
+This sub-module supports skymaps in the nested scheme, and in the implicit format.
+The coordinates system should be 'CEL'.
 """
 from .. import cdshealpix
 
@@ -28,7 +29,7 @@ class Skymap:
 
         Parameters
         ----------
-        path : Union[str | Path]
+        path : str, `pathlib.Path`
             The file's path.
 
         Returns
@@ -37,3 +38,13 @@ class Skymap:
             The map in a numpy array. Its dtype is inferred from the fits header.
         """
         return cls(cdshealpix.read_skymap(str(path)))
+
+    def to_fits(self, path):
+        """Write a Skymap in a fits file.
+
+        Parameters
+        ----------
+        path : str, pathlib.Path
+            The file's path.
+        """
+        cdshealpix.write_skymap(self.values, str(path))
