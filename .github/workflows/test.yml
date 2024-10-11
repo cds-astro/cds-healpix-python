@@ -36,7 +36,7 @@ jobs:
        shell: bash
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
+         for PYBIN in /opt/python/cp3{8,9,10,11,12,13}-*/bin; do
            "${PYBIN}/pip" install virtualenv
            "${PYBIN}/virtualenv" cdshealpixenv
            source cdshealpixenv/bin/activate
@@ -45,8 +45,7 @@ jobs:
            maturin build --release --compatibility manylinux2014
            maturin develop --release
            pip install -r requirements-dev.txt
-           python -m pytest python/cdshealpix/tests/test_nested_healpix.py
-           python -m pytest python/cdshealpix/tests/test_ring_healpix.py
+           python -m pytest -v
            deactivate
            rm -r cdshealpixenv
          done
@@ -93,7 +92,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
      # Checkout the project
      - name: "Checkout branch ${{ github.head_ref }}"
@@ -126,8 +125,7 @@ jobs:
          pip install -r requirements-dev.txt
          # Run tests
          cd python
-         python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-         python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
+         python -m pytest -v
          cd ..
          # Clean
          #pip freeze > requirements-uninstall.txt
@@ -139,7 +137,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       # Checkout the project
       - name: "Checkout branch ${{ github.head_ref }}"
@@ -171,12 +169,11 @@ jobs:
           pip install -r requirements-dev.txt
           # Run tests
           cd python
-          python -m pytest -v "cdshealpix\tests\test_nested_healpix.py"
-          python -m pytest -v "cdshealpix\tests\test_ring_healpix.py"
+          python -m pytest -v
           cd ..
           deactivate
 
-  # Build the doc and run the tests in the doc (only for python 3.9 on ubuntu)
+  # Build the doc and run the tests in the doc (only for python 3.11 on ubuntu)
   test-doc:
     runs-on: ubuntu-latest
     steps:

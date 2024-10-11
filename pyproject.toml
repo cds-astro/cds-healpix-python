@@ -67,6 +67,6 @@ max-string-length = 20
 convention = "numpy"  # Accepts: "google", "numpy", or "pep257"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules"
+addopts = "--doctest-modules --ignore-glob=python/cdshealpix/tests/test_bench*"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
 testpaths = "python"
