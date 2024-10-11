@@ -95,10 +95,8 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
      # Checkout the project
-     - name: "Checkout branch ${{ github.head_ref }}"
+     - name: "Checkout branch"
        uses: actions/checkout@v4
-       with:
-         ref: ${{ github.head_ref }}
      # Test Rust code
      #- name: Run rust wrapper tests
      #  run: cargo test --verbose -- --nocapture
@@ -124,9 +122,7 @@ jobs:
          # Install dependencies
          pip install -r requirements-dev.txt
          # Run tests
-         cd python
          python -m pytest -v
-         cd ..
          # Clean
          #pip freeze > requirements-uninstall.txt
          #pip uninstall -r requirements-uninstall.txt -y
@@ -140,10 +136,8 @@ jobs:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
       # Checkout the project
-      - name: "Checkout branch ${{ github.head_ref }}"
+      - name: "Checkout branch"
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       # Test Rust code
       #- name: Run rust wrapper tests
       #  run: cargo test --verbose -- --nocapture
@@ -168,19 +162,15 @@ jobs:
           # Install dependencies
           pip install -r requirements-dev.txt
           # Run tests
-          cd python
           python -m pytest -v
-          cd ..
           deactivate
 
   # Build the doc and run the tests in the doc (only for python 3.11 on ubuntu)
   test-doc:
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout branch ${{ github.head_ref }}"
+      - name: "Checkout branch"
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: "Set up Python 3.11 on Ubuntu"
         uses: actions/setup-python@v4
         with:
