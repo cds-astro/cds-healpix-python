@@ -7,6 +7,8 @@
 * new features `box_search` and `zone_search` in `cdshealpix.nested`
 * `cdshaelpix.nested.vertices` can now take depth as a `numpy.ndarray` instead of only
   accepting a single depth
+* new module `skymap` added.
+* read nested all-sky skymaps in the implicit scheme from fits files with `Skymap.from_fits`
 
 ### Fixed
 

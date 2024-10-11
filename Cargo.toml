@@ -20,14 +20,14 @@ name = "cdshealpix"
 crate-type = ["cdylib"]
 
 [dependencies]
-healpix = { package = "cdshealpix", version = "0.6" }
+healpix = { rev="9d74a9a71057440b035ae1e84d49b99c969d739a", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
 rayon = "1.10"
 
 [dependencies.numpy]
-version = "0.20"
+version = "0.21"
 
 [dependencies.pyo3]
-version = "0.20"
+version = "0.21"
 features = ["extension-module"]
 
 [dependencies.ndarray]

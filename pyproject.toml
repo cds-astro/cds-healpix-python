@@ -44,7 +44,7 @@ output-format = "grouped"
 show-source = true
 ignore-init-module-imports = true
 target-version = "py37"
-extend-select = ["SIM", "D", "UP", "N", "S", "B", "A", "C4", "ICN", "RET", "ARG", "PD", "PGH", "RUF"]
+extend-select = ["SIM", "D", "UP", "N", "S", "B", "A", "C4", "ICN", "RET", "ARG", "PGH", "RUF"]
 extend-ignore = ["E501"]
 # E501: line length (done by black in our case)
 exclude = ["conf.py"]
