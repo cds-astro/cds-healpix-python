@@ -16,14 +16,10 @@ use healpix::{
   depth_from_n_hash_unsafe,
   nested::map::{
     fits::write::write_implicit_skymap_fits,
-    img::{to_skymap_img_default, Val},
+    img::{to_skymap_img_default, PosConversion, Val},
     skymap::{ImplicitSkyMapArrayRef, SkyMap, SkyMapEnum},
-    HHash,
   },
 };
-use mapproj::pseudocyl::mol::Mol;
-
-use crate::cdshealpix;
 
 #[pyfunction]
 #[pyo3(pass_module)]
@@ -121,6 +117,7 @@ pub fn pixels_skymap<'py>(
   module: &Bound<'py, PyModule>,
   values: SupportedArray<'py>,
   image_size: u16,
+  convert_to_gal: bool,
 ) -> PyResult<Bound<'py, PyArray3<u8>>> {
   let n_hash: u64 = match &values {
     SupportedArray::F64(values) => values.as_array().shape()[0] as u64,
@@ -135,42 +132,109 @@ pub fn pixels_skymap<'py>(
   match values {
     SupportedArray::F64(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
       skymap_ref_to_img(
-        &ImplicitSkyMapArrayRef::<'_,u64,f64>::new(depth, v),
+        &ImplicitSkyMapArrayRef::<'_, u64, f64>::new(depth, v),
         image_size,
+        convert_to_gal,
         module.py(),
       )
     }),
-    /*SupportedArray::I64(values) => ImplicitSkyMapArrayRef::new(depth, values.as_array()),
-    SupportedArray::F32(values) => ImplicitSkyMapArrayRef::new(depth, values.as_slice()),
-    SupportedArray::I32(values) => ImplicitSkyMapArrayRef::new(depth, values.as_slice()),
-    SupportedArray::I16(values) => ImplicitSkyMapArrayRef::new(depth, values.as_slice()),
-    SupportedArray::U8(values) => ImplicitSkyMapArrayRef::new(depth, values.as_slice()),*/
-    _ => todo!(),
+    SupportedArray::I64(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
+      skymap_ref_to_img(
+        &ImplicitSkyMapArrayRef::<'_, u64, i64>::new(depth, v),
+        image_size,
+        convert_to_gal,
+        module.py(),
+      )
+    }),
+    SupportedArray::F32(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
+      skymap_ref_to_img(
+        &ImplicitSkyMapArrayRef::<'_, u64, f32>::new(depth, v),
+        image_size,
+        convert_to_gal,
+        module.py(),
+      )
+    }),
+    SupportedArray::I32(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
+      skymap_ref_to_img(
+        &ImplicitSkyMapArrayRef::<'_, u64, i32>::new(depth, v),
+        image_size,
+        convert_to_gal,
+        module.py(),
+      )
+    }),
+    SupportedArray::I16(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
+      skymap_ref_to_img(
+        &ImplicitSkyMapArrayRef::<'_, u64, i16>::new(depth, v),
+        image_size,
+        convert_to_gal,
+        module.py(),
+      )
+    }),
+    SupportedArray::U8(values) => values.as_slice().map_err(|e| e.into()).and_then(|v| {
+      skymap_ref_to_img(
+        &ImplicitSkyMapArrayRef::<'_, u64, u8>::new(depth, v),
+        image_size,
+        convert_to_gal,
+        module.py(),
+      )
+    }),
   }
 }
 
 fn skymap_ref_to_img<'py, 'a, S>(
   skymap: &'a S,
   image_size: u16,
+  convert_to_gal: bool,
   py: Python<'py>,
 ) -> PyResult<Bound<'py, PyArray3<u8>>>
 where
   S: SkyMap<'a> + 'a,
   S::ValueType: Val,
 {
-  let vec = to_skymap_img_default(
-    skymap,
-    (image_size << 1, image_size),
-    None,
-    None,
-    None,
-    None,
-    None,
-  )
-  .map_err(|e| PyValueError::new_err(e.to_string()))?;
-  PyArray1::from_slice_bound(py, vec.as_slice()).reshape(Ix3(
-    image_size as usize,
-    (image_size << 1) as usize,
-    4_usize,
-  ))
+  if convert_to_gal {
+    let vec = to_skymap_img_default(
+      skymap,
+      (image_size << 1, image_size),
+      None,
+      None,
+      Some(PosConversion::EqMap2GalImg),
+      None,
+      None,
+    )
+    .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    PyArray1::from_slice_bound(py, vec.as_slice()).reshape(Ix3(
+      image_size as usize,
+      (image_size << 1) as usize,
+      4_usize,
+    ))
+  } else {
+    let vec = to_skymap_img_default(
+      skymap,
+      (image_size << 1, image_size),
+      None,
+      None,
+      None,
+      None,
+      None,
+    )
+    .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    PyArray1::from_slice_bound(py, vec.as_slice()).reshape(Ix3(
+      image_size as usize,
+      (image_size << 1) as usize,
+      4_usize,
+    ))
+  }
+}
+
+#[pyfunction]
+pub fn depth_skymap(values: SupportedArray) -> u8 {
+  let n_hash: u64 = match &values {
+    SupportedArray::F64(values) => values.as_array().shape()[0] as u64,
+    SupportedArray::I64(values) => values.as_array().shape()[0] as u64,
+    SupportedArray::F32(values) => values.as_array().shape()[0] as u64,
+    SupportedArray::I32(values) => values.as_array().shape()[0] as u64,
+    SupportedArray::I16(values) => values.as_array().shape()[0] as u64,
+    SupportedArray::U8(values) => values.as_array().shape()[0] as u64,
+  };
+  depth_from_n_hash_unsafe(n_hash)
 }

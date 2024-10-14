@@ -34,6 +34,10 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     .unwrap();
   m.add_function(wrap_pyfunction!(skymap_functions::write_skymap, m)?)
     .unwrap();
+  m.add_function(wrap_pyfunction!(skymap_functions::pixels_skymap, m)?)
+    .unwrap();
+  m.add_function(wrap_pyfunction!(skymap_functions::depth_skymap, m)?)
+    .unwrap();
 
   // wrapper of to_ring and from_ring
   #[pyfn(m)]

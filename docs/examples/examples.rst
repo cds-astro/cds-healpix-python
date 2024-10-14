@@ -42,9 +42,21 @@ Zone search
 -----------
 
 In this example, we get the ``ipix`` and ``depth`` in a zone and plot them by combining
-:external:ref:`~cdshealpix.nested.vertices`_ with :external:ref:`~matplotlib.path.Polygon`_
+`cdshealpix.nested.vertices` with `matplotlib.path.Polygon`
 
 .. plot:: examples/search_methods/zone_search.py
+    :include-source:
+
+Skymaps
+=======
+
+The skymap sub-module allows to manipulate easily all-sky skymaps in the nested ordering
+and implicit schema.
+The class can be instantiated either from a fits file, with `Skymap.from_fits`, or
+directly with a numpy `numpy.array` containing the values associated to each HEALPix
+pixel.
+
+.. plot:: examples/skymaps/skymaps.py
     :include-source:
 
 Notebook examples

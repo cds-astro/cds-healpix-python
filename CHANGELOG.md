@@ -8,7 +8,8 @@
 * `cdshaelpix.nested.vertices` can now take depth as a `numpy.ndarray` instead of only
   accepting a single depth
 * new module `skymap` added.
-* read nested all-sky skymaps in the implicit scheme from fits files with `Skymap.from_fits`
+* read/write, and plot nested all-sky skymaps in the implicit scheme from fits files with
+  `Skymap.from_fits`, `Skymap.from_array`, `Skymap.quick_plot`, and `Skymap.to_fits`
 
 ### Fixed
 
