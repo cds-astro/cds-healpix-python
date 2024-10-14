@@ -20,7 +20,8 @@ name = "cdshealpix"
 crate-type = ["cdylib"]
 
 [dependencies]
-healpix = { rev="9d74a9a71057440b035ae1e84d49b99c969d739a", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
+healpix = { rev="c4f57bb4dcc2aa888617d0c4da3c1501f05892b3", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
+mapproj = "0.3.0"
 rayon = "1.10"
 
 [dependencies.numpy]
