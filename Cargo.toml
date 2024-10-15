@@ -32,7 +32,7 @@ version = "0.22"
 features = ["extension-module"]
 
 [dependencies.ndarray]
-version = "0.15.6"
+version = "0.16"
 default-features = false # do not include the default features, and optionally
                          # cherry-pick individual features
 features = ["rayon"]

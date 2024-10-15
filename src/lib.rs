@@ -1,12 +1,3 @@
-extern crate healpix;
-
-extern crate rayon;
-
-extern crate ndarray;
-
-extern crate numpy;
-extern crate pyo3;
-
 use ndarray::{Array1, Zip};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArrayDyn};
 use pyo3::{
