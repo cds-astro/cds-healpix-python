@@ -21,6 +21,10 @@
 * `nested.healpix_to_lonlat`, failed into rust panic for `dx=1` or `dy=1`. This is
   now indicated in the documentation and is catched in a `ValueError` on the python side.
 
+### Changed
+
+* `matplotlib` is now an optional dependency, to plot previews of skymaps.
+
 ## 0.6.5
 
 Released 2023-11-28

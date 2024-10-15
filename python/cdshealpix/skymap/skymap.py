@@ -10,7 +10,10 @@ from .. import cdshealpix
 from pathlib import Path
 from typing import Union
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    _matplotlib_missing = True
 import numpy as np
 
 
@@ -140,6 +143,12 @@ class Skymap:
             If different from none, the image will not only be displayed, but also saved
             at the given location. By default None
         """
+        if _matplotlib_missing:
+            raise ModuleNotFoundError(
+                "matplotlib is mandatory to use 'quick_plot'. "
+                "See https://matplotlib.org/ for installation "
+                "instructions."
+            )
         img = cdshealpix.pixels_skymap(self.values, size, convert_to_gal)
         fig = plt.imshow(img)
         plt.axis("off")

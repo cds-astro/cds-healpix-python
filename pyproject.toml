@@ -18,6 +18,9 @@ description = "A healpix manipulation library."
 readme = "README.md"
 keywords = ["astronomy", "healpix"]
 
+[project.optional-dependencies]
+plot = ["matplotlib"]
+
 [project.urls]
 repository = "https://github.com/cds-astro/cds-healpix-python"
 documentation = "https://cds-astro.github.io/cds-healpix-python/"
