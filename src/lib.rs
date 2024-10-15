@@ -11,6 +11,7 @@ use ndarray::{Array1, Zip};
 use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArrayDyn};
 use pyo3::{
   prelude::{pymodule, Bound, PyModule, PyResult, Python},
+  types::PyModuleMethods,
   wrap_pyfunction,
 };
 
