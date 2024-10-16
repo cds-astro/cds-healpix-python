@@ -98,7 +98,7 @@ impl<'py> SupportedArray<'py> {
 
 #[pyfunction]
 pub fn write_skymap(values: SupportedArray<'_>, path: String) -> Result<(), PyErr> {
-  let writer: BufWriter<File> =
+  let writer =
     BufWriter::new(File::create(path).map_err(|err| PyIOError::new_err(err.to_string()))?);
   match values {
     SupportedArray::F64(values) => write_skymap_gen(writer, values.as_slice()),
