@@ -7,6 +7,9 @@
 * new features `box_search` and `zone_search` in `cdshealpix.nested`
 * `cdshaelpix.nested.vertices` can now take depth as a `numpy.ndarray` instead of only
   accepting a single depth
+* new module `skymap` added.
+* read/write, and plot nested all-sky skymaps in the implicit scheme from fits files with
+  `Skymap.from_fits`, `Skymap.from_array`, `Skymap.quick_plot`, and `Skymap.to_fits`
 
 ### Fixed
 
@@ -17,6 +20,10 @@
   (will be a masked value in the output) [#22]
 * `nested.healpix_to_lonlat`, failed into rust panic for `dx=1` or `dy=1`. This is
   now indicated in the documentation and is catched in a `ValueError` on the python side.
+
+### Changed
+
+* `matplotlib` is now an optional dependency, to plot previews of skymaps.
 
 ## 0.6.5
 

@@ -87,4 +87,14 @@ While in the nested scheme, ``nside`` is a power of two
         vertices
         vertices_skycoord
 
+cdshealpix.skymap
+~~~~~~~~~~~~~~~~~
+
+This module provides a minimal interface to interact with Skymaps, as defined in the
+`data format for gamma ray astronomy specification
+<https://gamma-astro-data-formats.readthedocs.io/en/latest/skymaps/healpix/index.html#skymap-hdu>`_.
+
+.. autoclass:: cdshealpix.skymap.Skymap
+    :members:
+
 .. _cdshealpix: https://github.com/cds-astro/cds-healpix-python

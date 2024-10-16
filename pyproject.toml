@@ -2,18 +2,31 @@
 [project]
 name = "cdshealpix"
 requires-python = ">=3.8"
-# https://numpy.org/neps/nep-0029-deprecation_policy.html
-# https://docs.astropy.org/en/stable/changelog.html
 dependencies = [
     "astropy<5.3; python_version == '3.8'",
     "astropy; python_version > '3.8'"
 ]
 classifiers = [
     "Programming Language :: Rust",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
+description = "A healpix manipulation library."
+readme = "README.md"
+keywords = ["astronomy", "healpix"]
+
+[project.optional-dependencies]
+plot = ["matplotlib"]
 
 [project.urls]
 repository = "https://github.com/cds-astro/cds-healpix-python"
+documentation = "https://cds-astro.github.io/cds-healpix-python/"
+issues = "https://github.com/cds-astro/cds-healpix-python/issues"
+changelog = "https://github.com/cds-astro/cds-healpix-python/blob/master/CHANGELOG.md"
+
 
 # Build a cdshealpix-x.x.x.tar.gz containing sources (from maturin).
 [build-system]
@@ -44,7 +57,7 @@ output-format = "grouped"
 show-source = true
 ignore-init-module-imports = true
 target-version = "py37"
-extend-select = ["SIM", "D", "UP", "N", "S", "B", "A", "C4", "ICN", "RET", "ARG", "PD", "PGH", "RUF"]
+extend-select = ["SIM", "D", "UP", "N", "S", "B", "A", "C4", "ICN", "RET", "ARG", "PGH", "RUF"]
 extend-ignore = ["E501"]
 # E501: line length (done by black in our case)
 exclude = ["conf.py"]
@@ -67,6 +80,6 @@ max-string-length = 20
 convention = "numpy"  # Accepts: "google", "numpy", or "pep257"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules"
+addopts = "--doctest-modules --ignore-glob=python/cdshealpix/tests/test_bench*"
 doctest_optionflags = "NORMALIZE_WHITESPACE"
 testpaths = "python"
