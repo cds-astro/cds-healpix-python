@@ -766,8 +766,8 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
   /// Cone search
   #[pyfn(m)]
-  fn cone_search<'a>(
-    py: Python<'a>,
+  fn cone_search(
+    py: Python<'_>,
     depth: u8,
     delta_depth: u8,
     lon: f64,
@@ -775,9 +775,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     radius: f64,
     flat: bool,
   ) -> (
-    Bound<'a, PyArray1<u64>>,
-    Bound<'a, PyArray1<u8>>,
-    Bound<'a, PyArray1<bool>>,
+    Bound<'_, PyArray1<u64>>,
+    Bound<'_, PyArray1<u8>>,
+    Bound<'_, PyArray1<bool>>,
   ) {
     let bmoc = healpix::nested::cone_coverage_approx_custom(depth, delta_depth, lon, lat, radius);
 
@@ -796,8 +796,8 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
   /// Elliptical cone search
   #[pyfn(m)]
-  fn elliptical_cone_search<'a>(
-    py: Python<'a>,
+  fn elliptical_cone_search(
+    py: Python<'_>,
     depth: u8,
     delta_depth: u8,
     lon: f64,
@@ -807,9 +807,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     pa: f64,
     flat: bool,
   ) -> (
-    Bound<'a, PyArray1<u64>>,
-    Bound<'a, PyArray1<u8>>,
-    Bound<'a, PyArray1<bool>>,
+    Bound<'_, PyArray1<u64>>,
+    Bound<'_, PyArray1<u8>>,
+    Bound<'_, PyArray1<bool>>,
   ) {
     let bmoc =
       healpix::nested::elliptical_cone_coverage_custom(depth, delta_depth, lon, lat, a, b, pa);
@@ -878,8 +878,8 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
   /// * ``b`` - size in degrees
   /// * ``pa`` -rotation angle in degrees
   #[pyfn(m)]
-  fn box_search<'a>(
-    py: Python<'a>,
+  fn box_search(
+    py: Python<'_>,
     depth: u8,
     lon: f64,
     lat: f64,
@@ -888,9 +888,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     pa: f64,
     flat: bool,
   ) -> (
-    Bound<'a, PyArray1<u64>>,
-    Bound<'a, PyArray1<u8>>,
-    Bound<'a, PyArray1<bool>>,
+    Bound<'_, PyArray1<u64>>,
+    Bound<'_, PyArray1<u8>>,
+    Bound<'_, PyArray1<bool>>,
   ) {
     let bmoc = healpix::nested::box_coverage(depth, lon, lat, a, b, pa);
 
@@ -918,8 +918,8 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
   /// * ``lon_max`` - east north corner longitude
   /// * ``lat_max`` - east north corner latitude
   #[pyfn(m)]
-  fn zone_search<'a>(
-    py: Python<'a>,
+  fn zone_search(
+    py: Python<'_>,
     depth: u8,
     lon_min: f64,
     lat_min: f64,
@@ -927,9 +927,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     lat_max: f64,
     flat: bool,
   ) -> (
-    Bound<'a, PyArray1<u64>>,
-    Bound<'a, PyArray1<u8>>,
-    Bound<'a, PyArray1<bool>>,
+    Bound<'_, PyArray1<u64>>,
+    Bound<'_, PyArray1<u8>>,
+    Bound<'_, PyArray1<bool>>,
   ) {
     let bmoc = healpix::nested::zone_coverage(depth, lon_min, lat_min, lon_max, lat_max);
 
