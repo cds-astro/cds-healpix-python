@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0
+
 ### Added
 
 * new features `box_search` and `zone_search` in `cdshealpix.nested`
