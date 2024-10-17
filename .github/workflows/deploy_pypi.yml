@@ -21,20 +21,18 @@ jobs:
   build-linux32-wheels:
     runs-on: ubuntu-latest
     env:
-      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
-      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
       img: quay.io/pypa/manylinux2014_i686
     steps:
      - name: Checkout
        uses: actions/checkout@v4
      - name: "Set up QEMU"
        id: qemu
-       uses: docker/setup-qemu-action@v1
+       uses: docker/setup-qemu-action@v3
      - name: Install dependencies
        run: |
          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-         -e MATURIN_USERNAME=${{ env.MATURIN_USERNAME }} \
-         -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
+         -e MATURIN_PYPI_TOKEN=${{ secrets.PYPI_API_TOKEN_FXP }} \
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
@@ -45,27 +43,25 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility manylinux2014
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --no-sdist --skip-existing --compatibility musllinux_1_2
            done'
 
   build-aarch64-wheels:
     runs-on: ubuntu-latest
     env:
-      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
-      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
       img: quay.io/pypa/manylinux2014_aarch64
     steps:
      - name: Checkout
        uses: actions/checkout@v4
      - name: "Set up QEMU"
        id: qemu
-       uses: docker/setup-qemu-action@v1
+       uses: docker/setup-qemu-action@v3
      - name: Install dependencies
        run: |
          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-         -e MATURIN_USERNAME=${{ env.MATURIN_USERNAME }} \
-         -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
+         -e MATURIN_PYPI_TOKEN=${{ secrets.PYPI_API_TOKEN_FXP }} \
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
            source $HOME/.cargo/env && \
@@ -76,28 +72,26 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME" --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility musllinux_1_2 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
            done'
 
   # Comming in large parts from @odidev in MOCPy pull request
   build-linux_x86_64-wheels:
     runs-on: ubuntu-latest
     env:
-      MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
-      MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+      MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
       img: quay.io/pypa/manylinux2014_x86_64
     steps:
      - name: Checkout
        uses: actions/checkout@v4
      - name: "Set up QEMU"
        id: qemu
-       uses: docker/setup-qemu-action@v1
+       uses: docker/setup-qemu-action@v3
      - name: Install dependencies
        run: |
          docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-         -e MATURIN_USERNAME=${{ env.MATURIN_USERNAME }} \
-         -e MATURIN_PASSWORD=${{ env.MATURIN_PASSWORD}} \
+         -e MATURIN_PYPI_TOKEN=${{ secrets.PYPI_API_TOKEN_FXP }} \
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
@@ -108,8 +102,8 @@ jobs:
              "${PYBIN}/maturin" -V
              rustc -vV
              echo "${PYBIN}/python"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014 --username "$MATURIN_USERNAME"
-             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility musllinux_1_2 --username "$MATURIN_USERNAME"
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility manylinux2014
+             "${PYBIN}/maturin" publish -i "${PYBIN}/python" -v --skip-existing --compatibility musllinux_1_2
            done'
 
 
@@ -117,7 +111,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstrategyfail-fast
-      # run all matrix jobs even if on is failling (default behaviour is to stop all jobs)
+      # run all matrix jobs even if one is failing (default behavior is to stop all jobs)
       fail-fast: false
       matrix:
         os: [windows-latest]
@@ -132,21 +126,20 @@ jobs:
          python-version: ${{ matrix.python-version }}
      # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
      - name: Build and publish wheel for Python ${{ matrix.python-version }} on ${{ matrix.os }}
-       # We do not use environement variable for user, because it seems that the way of providing it in the command
+       # We do not use environment variable for user, because it seems that the way of providing it in the command
        # line is not the same for macos and for windows. We should create 2 different actions (see
        # https://docs.github.com/en/actions/reference/encrypted-secrets )
        env:
-        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
-        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+        MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
        run: |
          #python3 -m pip install maturin
          pip install --upgrade pip
          pip install maturin
          #maturin build --release --no-sdist
-         #maturin publish --no-sdist --skip-existing --username fxpineau
+         #maturin publish --no-sdist --skip-existing
          maturin -V
          rustc -vV
-         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing --username fxpineau
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing
 
   build-macos-wheels:
     runs-on: ${{ matrix.os }}
@@ -171,8 +164,7 @@ jobs:
        # line is not the same for macos and for windows. We should create 2 different actions (see
        # https://docs.github.com/en/actions/reference/encrypted-secrets )
        env:
-        MATURIN_USERNAME: ${{ secrets.PYPI_USERNAME_FXP }}
-        MATURIN_PASSWORD: ${{ secrets.PYPI_PASSWORD_FXP }}
+        MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
        run: |
          #python3 -m pip install maturin
          rustup target add aarch64-apple-darwin
@@ -182,5 +174,5 @@ jobs:
          maturin -V
          rustc -vV
          echo "${PYBIN}/python"
-         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --target universal2-apple-darwin --skip-existing  --username "$MATURIN_USERNAME"
-         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist              --skip-existing  --username "$MATURIN_USERNAME"
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --target universal2-apple-darwin --skip-existing
+         maturin publish --interpreter python${{matrix.python_version}}  --no-sdist --skip-existing
