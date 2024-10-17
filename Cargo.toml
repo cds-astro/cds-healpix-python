@@ -1,6 +1,6 @@
 [package]
 name = "cdshealpix"
-version = "0.6.5"
+version = "0.7.0"
 authors = ["Matthieu Baumann <matthieu.baumann@astro.unistra.fr>", "F.-X. Pineau <francois-xavier.pineau@astro.unistra.fr>"]
 description = "Python cdshealpix package wrapping code of the cdshealpix crate"
 license = "BSD-3-Clause"
@@ -20,7 +20,8 @@ name = "cdshealpix"
 crate-type = ["cdylib"]
 
 [dependencies]
-healpix = { rev="5ab172b4d1d206c973f9f170b14509f4982e0090", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
+healpix = {version="0.7.0", package="cdshealpix"}
+#healpix = { rev="5ab172b4d1d206c973f9f170b14509f4982e0090", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
 mapproj = "0.3.0"
 rayon = "1.10"
 
