@@ -5,15 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>cdshealpix.nested.healpix_to_skycoord &#8212; cdshealpix 0.6.5 documentation</title>
+    <title>cdshealpix.nested.healpix_to_skycoord &#8212; cdshealpix 0.7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=9d21690f" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     
-    <script src="../_static/documentation_options.js?v=d7a12d57"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
@@ -64,7 +64,7 @@
 	 |
       </li>
       <li>
-	<a href="../index.html">cdshealpix 0.6.5 documentation</a>
+	<a href="../index.html">cdshealpix 0.7.0 documentation</a>
 	 &#187;
       </li>
       <li><a href="../api.html" accesskey="U">API</a> &#187;</li>
@@ -84,32 +84,33 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="cdshealpix.nested.healpix_to_skycoord">
 <span class="sig-prename descclassname"><span class="pre">cdshealpix.nested.</span></span><span class="sig-name descname"><span class="pre">healpix_to_skycoord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.nested.healpix_to_skycoord" title="Link to this definition">¶</a></dt>
-<dd><p>Get the sky coordinates of the center of some HEALPix cells in a nested configuration at a given depth.</p>
+<dd><p>Get the coordinates of the center of a healpix cell.</p>
 <p>This method does the opposite transformation of <a class="reference internal" href="cdshealpix.nested.lonlat_to_healpix.html#cdshealpix.nested.lonlat_to_healpix" title="cdshealpix.nested.lonlat_to_healpix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lonlat_to_healpix</span></code></a>.
-It is the equivalent of <a class="reference internal" href="cdshealpix.nested.healpix_to_lonlat.html#cdshealpix.nested.healpix_to_lonlat" title="cdshealpix.nested.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a> except that it returns <a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v6.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a> instead
-of <a class="reference external" href="https://docs.astropy.org/en/latest/coordinates/ref_api.html#module-astropy.coordinates" title="(in Astropy v6.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates</span></code></a>.
+It is the equivalent of <a class="reference internal" href="cdshealpix.nested.healpix_to_lonlat.html#cdshealpix.nested.healpix_to_lonlat" title="cdshealpix.nested.healpix_to_lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">healpix_to_lonlat</span></code></a> except that it returns
+<a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a> instead of <a class="reference external" href="https://docs.astropy.org/en/latest/coordinates/ref_api.html#module-astropy.coordinates" title="(in Astropy v7.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates</span></code></a>.
 It’s wrapped around the <a class="reference external" href="https://docs.rs/cdshealpix/0.1.5/cdshealpix/nested/struct.Layer.html#method.center">center</a>
 method from the <a class="reference external" href="https://crates.io/crates/cdshealpix">cdshealpix Rust crate</a>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes in a nested configuration given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
+<dt><strong>ipix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The HEALPix cell indexes in a nested configuration given as a <code class="xref py py-obj docutils literal notranslate"><span class="pre">np.uint64</span></code> numpy array.</p>
 </dd>
-<dt><strong>depth</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The depth of the HEALPix cells.</p>
+<dt><strong>depth</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></span></dt><dd><p>The depth of the HEALPix cells.</p>
 </dd>
-<dt><strong>dx</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1]\)</span> along the X axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dx=0.5</span></code></p>
+<dt><strong>dx</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1[\)</span> along the X axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dx=0.5</span></code></p>
 </dd>
-<dt><strong>dy</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1]\)</span> along the Y axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dy=0.5</span></code></p>
+<dt><strong>dy</strong><span class="classifier">float, optional</span></dt><dd><p>The offset position <span class="math notranslate nohighlight">\(\in [0, 1[\)</span> along the Y axis. By default, <code class="xref py py-obj docutils literal notranslate"><span class="pre">dy=0.5</span></code></p>
 </dd>
 <dt><strong>num_threads</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of threads to use for the computation. Default to 0 means
-it will choose the number of threads based on the RAYON_NUM_THREADS environment variable (if set),
-or the number of logical CPUs (otherwise)</p>
+it will choose the number of threads based on the RAYON_NUM_THREADS environment
+variable (if set), or the number of logical CPUs (otherwise)</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
-<dt><strong>skycoord</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v6.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt><dd><p>The sky coordinates of the center of the HEALPix cells given as a <a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v6.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object.</p>
+<dt><strong>skycoord</strong><span class="classifier"><a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">astropy.coordinates.SkyCoord</span></code></a></span></dt><dd><p>The sky coordinates of the center of the HEALPix cells given as a
+<a class="reference external" href="https://docs.astropy.org/en/latest/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord" title="(in Astropy v7.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkyCoord</span></code></a> object.</p>
 </dd>
 </dl>
 </dd>
@@ -141,7 +142,7 @@ or the number of logical CPUs (otherwise)</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
 <li><a class="reference internal" href="#">cdshealpix.nested.healpix_to_skycoord</a><ul>
@@ -183,8 +184,8 @@ or the number of logical CPUs (otherwise)</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
+    &copy; Copyright 2024, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
   </p>
 </footer>
   </body>

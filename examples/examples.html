@@ -5,20 +5,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Examples &#8212; cdshealpix 0.6.5 documentation</title>
+    <title>Examples &#8212; cdshealpix 0.7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=9d21690f" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
-    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
-    <script src="../_static/documentation_options.js?v=d7a12d57"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -63,7 +65,7 @@
 	 |
       </li>
       <li>
-	<a href="../index.html">cdshealpix 0.6.5 documentation</a>
+	<a href="../index.html">cdshealpix 0.7.0 documentation</a>
 	 &#187;
       </li>
       
@@ -79,8 +81,48 @@
             
   <section id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
+<section id="getting-coordinates-in-a-healpix-cell">
+<h2>Getting coordinates in a HEALPix cell<a class="headerlink" href="#getting-coordinates-in-a-healpix-cell" title="Link to this heading">¶</a></h2>
+<p>In this example, we chose a HEALPix cell, and we plot its center</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Plot a cell and its center.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">healpix_to_lonlat</span><span class="p">,</span> <span class="n">vertices</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># choose a cell</span>
+<span class="n">ipix</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;aitoff&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># plot the center of the cell</span>
+<span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">healpix_to_lonlat</span><span class="p">(</span><span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;purple&quot;</span><span class="p">)</span>
+<span class="c1"># plot the cell</span>
+<span class="n">border_lon</span><span class="p">,</span> <span class="n">border_lat</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">(</span><span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">border_lon</span> <span class="o">=</span> <span class="n">border_lon</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="mi">180</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">radian</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">border_lat</span> <span class="o">=</span> <span class="n">border_lat</span><span class="o">.</span><span class="n">radian</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">polygon</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">border_lon</span><span class="p">,</span> <span class="n">border_lat</span><span class="p">)),</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">hatch</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/6df17e2cad2d73c0eeb18d25b463dae3/healpix_to_lonlat.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/13a9389d14d35f27ee905aecad97e03b/healpix_to_lonlat.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/88cb3b5fe111b8b8d6e4530f082255ab/healpix_to_lonlat.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/88ace1de401ef578a24934807005db73/healpix_to_lonlat.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/healpix_to_lonlat.png" class="plot-directive" src="../_images/healpix_to_lonlat.png" />
+</figure>
+</section>
+<section id="getting-the-healpix-cells-contained-in-a-region-of-the-sky">
+<h2>Getting the healpix cells contained in a region of the sky<a class="headerlink" href="#getting-the-healpix-cells-contained-in-a-region-of-the-sky" title="Link to this heading">¶</a></h2>
 <section id="cone-search">
-<h2>Cone search<a class="headerlink" href="#cone-search" title="Link to this heading">¶</a></h2>
+<h3>Cone search<a class="headerlink" href="#cone-search" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Demonstration of the cone_search function.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
@@ -91,7 +133,7 @@
 <span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
 
 <span class="c1"># Moc and HEALPix tools</span>
-<span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">cone_search</span>
+<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">cone_search</span>
 <span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
 
 <span class="n">max_depth</span> <span class="o">=</span> <span class="mi">10</span>
@@ -127,13 +169,13 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/5ee95480f01ac72d4678baf91649007a/cone_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/39b3af9f4ee1495db4b09e7afaba97d9/cone_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/cd41ca449091a9f6031834b8baee196e/cone_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d4dfe07011288b4cb33a28eeab641c25/cone_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/5e982da485d99a1c90d0dbce5cb9883d/cone_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/fc4b7836d30ea1859100ce74e828746b/cone_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/72d8e5becaf69bbc539460f0fe4601c2/cone_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/75bcd4796e4ee6651a655cbfa0abeb7a/cone_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <img alt="../_images/cone_search.png" class="plot-directive" src="../_images/cone_search.png" />
 </figure>
 </section>
 <section id="elliptical-cone-search">
-<h2>Elliptical cone search<a class="headerlink" href="#elliptical-cone-search" title="Link to this heading">¶</a></h2>
+<h3>Elliptical cone search<a class="headerlink" href="#elliptical-cone-search" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Illustration of the elliptical cone search functionnality.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
@@ -184,13 +226,13 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/373884eb5f2a69ef0e1a398469905a51/elliptic_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/c881ed5ce2829d8df608287b5b4e471e/elliptic_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/4b271b00e05dc030fa97d58b5366d28d/elliptic_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/4d432ba58fd65c55157b30a7f4568529/elliptic_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/42f9c57fb7642d8db07e200d7e112e56/elliptic_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d955f7b65ac989f5d2a5b663ac48c171/elliptic_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/5d9db7286c7ca9fadd340d3fde71df03/elliptic_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d24095df471f4de53e4d92a6ac0269d7/elliptic_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <img alt="../_images/elliptic_search.png" class="plot-directive" src="../_images/elliptic_search.png" />
 </figure>
 </section>
 <section id="polygon-search">
-<h2>Polygon search<a class="headerlink" href="#polygon-search" title="Link to this heading">¶</a></h2>
+<h3>Polygon search<a class="headerlink" href="#polygon-search" title="Link to this heading">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Example for polygon HEALPix.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
@@ -237,10 +279,144 @@
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/abb2b71b53bdd6f1f37c7d3a7719a224/polygon_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/e4e096a4996f660425152a983d812744/polygon_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/4bea62aca8fcc97a02f121832e4bfd33/polygon_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/94f64f5c1afdf49a78466aa6d8824f6d/polygon_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/b32313aa4cb5d054d1753333119df75d/polygon_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/d1b45c92801ebc0ace22024dd1e131c2/polygon_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/37011bb07224a3c29416343bbe05834a/polygon_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0006982c06b955327198703066b22d99/polygon_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-default">
 <img alt="../_images/polygon_search.png" class="plot-directive" src="../_images/polygon_search.png" />
 </figure>
+</section>
+<section id="box-search">
+<h3>Box search<a class="headerlink" href="#box-search" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Demonstration of the cone_search function.&quot;&quot;&quot;</span>
+
+<span class="c1"># Astropy tools</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+
+<span class="c1"># For plots</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+
+<span class="c1"># Moc and HEALPix tools</span>
+<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">box_search</span>
+<span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span> <span class="k">as</span> <span class="n">mocpy_WCS</span>  <span class="c1"># noqa: N811</span>
+
+<span class="n">max_depth</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">fully_covered</span> <span class="o">=</span> <span class="n">box_search</span><span class="p">(</span>
+    <span class="n">lon</span><span class="o">=</span><span class="n">Longitude</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span>
+    <span class="n">lat</span><span class="o">=</span><span class="n">Latitude</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">),</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+    <span class="n">b</span><span class="o">=</span><span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mi">0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+    <span class="n">depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="n">moc_fully_covered</span> <span class="o">=</span> <span class="n">MOC</span><span class="o">.</span><span class="n">from_healpix_cells</span><span class="p">(</span>
+    <span class="n">ipix</span><span class="p">[</span><span class="n">fully_covered</span><span class="p">],</span> <span class="n">depth</span><span class="p">[</span><span class="n">fully_covered</span><span class="p">],</span> <span class="n">max_depth</span>
+<span class="p">)</span>
+<span class="n">moc_partially_covered</span> <span class="o">=</span> <span class="n">MOC</span><span class="o">.</span><span class="n">from_healpix_cells</span><span class="p">(</span>
+    <span class="n">ipix</span><span class="p">[</span><span class="o">~</span><span class="n">fully_covered</span><span class="p">],</span> <span class="n">depth</span><span class="p">[</span><span class="o">~</span><span class="n">fully_covered</span><span class="p">],</span> <span class="n">max_depth</span>
+<span class="p">)</span>
+
+<span class="c1"># plot</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="c1"># Define a astropy WCS from the mocpy.WCS class</span>
+<span class="k">with</span> <span class="n">mocpy_WCS</span><span class="p">(</span>
+    <span class="n">fig</span><span class="p">,</span>
+    <span class="n">fov</span><span class="o">=</span><span class="mi">5</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span>
+    <span class="n">center</span><span class="o">=</span><span class="n">SkyCoord</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">),</span>
+    <span class="n">coordsys</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="o">=</span><span class="n">Angle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">degree</span><span class="p">),</span>
+    <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;AIT&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">as</span> <span class="n">wcs</span><span class="p">:</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">wcs</span><span class="p">)</span>
+    <span class="c1"># Call fill with a matplotlib axe and the `~astropy.wcs.WCS` wcs object.</span>
+    <span class="n">moc_fully_covered</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fully inside&quot;</span>
+    <span class="p">)</span>
+    <span class="n">moc_partially_covered</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">wcs</span><span class="o">=</span><span class="n">wcs</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;crosses the border&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;ra&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;dec&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span>
+    <span class="s2">&quot;Box search, accessing the cells that are partially covered by the sky region&quot;</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;dotted&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/3a22ee0a74a29cb33bebc41c6c7344e1/box_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/f10894087f9a5b92b9e3c08bf209c7ab/box_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/3f32914ab9cce59e842a00f8fec1b5c6/box_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/a3f35a2b98adc96cb7bf3aa271408457/box_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/box_search.png" class="plot-directive" src="../_images/box_search.png" />
+</figure>
+</section>
+<section id="zone-search">
+<h3>Zone search<a class="headerlink" href="#zone-search" title="Link to this heading">¶</a></h3>
+<p>In this example, we get the <code class="docutils literal notranslate"><span class="pre">ipix</span></code> and <code class="docutils literal notranslate"><span class="pre">depth</span></code> in a zone and plot them by combining
+<a class="reference internal" href="../stubs/cdshealpix.nested.vertices.html#cdshealpix.nested.vertices" title="cdshealpix.nested.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix.nested.vertices</span></code></a> with <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.path.Polygon</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Get the HEALPix cells in a zone, and plot all of them as matplotlib polygons.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">zone_search</span><span class="p">,</span> <span class="n">vertices</span>
+
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PolyCollection</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">lon_min</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="n">lat_min</span> <span class="o">=</span> <span class="n">Latitude</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="n">lon_max</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+<span class="n">lat_max</span> <span class="o">=</span> <span class="n">Latitude</span><span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+
+<span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">zone_search</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">n_cells</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ipix</span><span class="p">)</span>
+
+<span class="n">lons</span><span class="p">,</span> <span class="n">lats</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">(</span><span class="n">ipix</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">lons</span> <span class="o">=</span> <span class="n">lons</span><span class="o">.</span><span class="n">wrap_at</span><span class="p">(</span><span class="mi">180</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">radian</span>
+<span class="n">lats</span> <span class="o">=</span> <span class="n">lats</span><span class="o">.</span><span class="n">radian</span>
+
+<span class="n">path_polygons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">))</span> <span class="k">for</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="n">lats</span><span class="p">)])</span>
+
+<span class="n">polygons</span> <span class="o">=</span> <span class="n">PolyCollection</span><span class="p">(</span><span class="n">path_polygons</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s2">&quot;aitoff&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/6d1880abc27102e205d51cb8151dec54/zone_search.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/b35082374dff9371e48d1f0f312d1ee8/zone_search.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/cf1285fe1bfed638aa9fb252f0fc71df/zone_search.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/fb812a70d0b5ab77d64556a4439cb0ef/zone_search.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/zone_search.png" class="plot-directive" src="../_images/zone_search.png" />
+</figure>
+</section>
+</section>
+<section id="skymaps">
+<h2>Skymaps<a class="headerlink" href="#skymaps" title="Link to this heading">¶</a></h2>
+<p>The skymap sub-module allows to manipulate easily all-sky skymaps in the nested ordering
+and implicit schema.
+The class can be instantiated either from a fits file, with <code class="xref py py-obj docutils literal notranslate"><span class="pre">Skymap.from_fits</span></code>, or
+directly with a numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a> containing the values associated to each HEALPix
+pixel.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Read and plots a quick preview of a skymap in a FITS file.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">cdshealpix.skymap</span> <span class="kn">import</span> <span class="n">Skymap</span>
+
+<span class="n">skymap</span> <span class="o">=</span> <span class="n">Skymap</span><span class="o">.</span><span class="n">from_fits</span><span class="p">(</span><span class="s2">&quot;skymap.fits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
+<span class="n">skymap</span><span class="o">.</span><span class="n">quick_plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference download internal" download="" href="../_downloads/7f9decc76a13251abac29ece2c688845/skymaps.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>)</p>
 </section>
 <section id="notebook-examples">
 <h2>Notebook examples<a class="headerlink" href="#notebook-examples" title="Link to this heading">¶</a></h2>
@@ -264,13 +440,20 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
 <li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#getting-coordinates-in-a-healpix-cell">Getting coordinates in a HEALPix cell</a></li>
+<li><a class="reference internal" href="#getting-the-healpix-cells-contained-in-a-region-of-the-sky">Getting the healpix cells contained in a region of the sky</a><ul>
 <li><a class="reference internal" href="#cone-search">Cone search</a></li>
 <li><a class="reference internal" href="#elliptical-cone-search">Elliptical cone search</a></li>
 <li><a class="reference internal" href="#polygon-search">Polygon search</a></li>
+<li><a class="reference internal" href="#box-search">Box search</a></li>
+<li><a class="reference internal" href="#zone-search">Zone search</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#skymaps">Skymaps</a></li>
 <li><a class="reference internal" href="#notebook-examples">Notebook examples</a></li>
 </ul>
 </li>
@@ -309,8 +492,8 @@
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
+    &copy; Copyright 2024, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
   </p>
 </footer>
   </body>

@@ -5,15 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to cdshealpix’s documentation! &#8212; cdshealpix 0.6.5 documentation</title>
+    <title>Welcome to cdshealpix’s documentation! &#8212; cdshealpix 0.7.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=9d21690f" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
     
-    <script src="_static/documentation_options.js?v=d7a12d57"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
@@ -57,7 +57,7 @@
 	</a>
       </li>
       <li>
-	<a href="#">cdshealpix 0.6.5 documentation</a>
+	<a href="#">cdshealpix 0.7.0 documentation</a>
 	 &#187;
       </li>
       
@@ -78,20 +78,69 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/examples.html">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#cone-search">Cone search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#elliptical-cone-search">Elliptical cone search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#polygon-search">Polygon search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#notebook-examples">Notebook examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#getting-coordinates-in-a-healpix-cell">Getting coordinates in a HEALPix cell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#getting-the-healpix-cells-contained-in-a-region-of-the-sky">Getting the healpix cells contained in a region of the sky</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#cone-search">Cone search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#elliptical-cone-search">Elliptical cone search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#polygon-search">Polygon search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#box-search">Box search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#zone-search">Zone search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#skymaps">Skymaps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html#notebook-examples">Notebook examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_collections/notebooks/coordinate_conversion.html">Coordinate conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_collections/notebooks/external_neighbours.html">External Neighbours</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#cdshealpix">cdshealpix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-cdshealpix.nested">cdshealpix.nested</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#cdshealpix-ring">cdshealpix.ring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#cdshealpix">cdshealpix</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.to_ring.html">cdshealpix.to_ring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.from_ring.html">cdshealpix.from_ring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-cdshealpix.nested">cdshealpix.nested</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.lonlat_to_healpix.html">cdshealpix.nested.lonlat_to_healpix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.skycoord_to_healpix.html">cdshealpix.nested.skycoord_to_healpix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_lonlat.html">cdshealpix.nested.healpix_to_lonlat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_skycoord.html">cdshealpix.nested.healpix_to_skycoord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.healpix_to_xy.html">cdshealpix.nested.healpix_to_xy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.lonlat_to_xy.html">cdshealpix.nested.lonlat_to_xy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.xy_to_lonlat.html">cdshealpix.nested.xy_to_lonlat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.vertices.html">cdshealpix.nested.vertices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.vertices_skycoord.html">cdshealpix.nested.vertices_skycoord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.neighbours.html">cdshealpix.nested.neighbours</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.external_neighbours.html">cdshealpix.nested.external_neighbours</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.cone_search.html">cdshealpix.nested.cone_search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.polygon_search.html">cdshealpix.nested.polygon_search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.elliptical_cone_search.html">cdshealpix.nested.elliptical_cone_search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.nested.bilinear_interpolation.html">cdshealpix.nested.bilinear_interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#cdshealpix-ring">cdshealpix.ring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.lonlat_to_healpix.html">cdshealpix.ring.lonlat_to_healpix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.skycoord_to_healpix.html">cdshealpix.ring.skycoord_to_healpix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_lonlat.html">cdshealpix.ring.healpix_to_lonlat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_skycoord.html">cdshealpix.ring.healpix_to_skycoord</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.healpix_to_xy.html">cdshealpix.ring.healpix_to_xy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.vertices.html">cdshealpix.ring.vertices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/cdshealpix.ring.vertices_skycoord.html">cdshealpix.ring.vertices_skycoord</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#cdshealpix-skymap">cdshealpix.skymap</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#cdshealpix.skymap.Skymap"><code class="docutils literal notranslate"><span class="pre">Skymap</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contribute.html#compiling-the-cdshealpix-rust-dynamic-library">Compiling the cdshealpix Rust dynamic library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribute.html#compiling-the-cdshealpix-rust-dynamic-library">Compiling the cdshealpix Rust dynamic library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#setting-up-your-development-environment">Setting up your development environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contribute.html#dynamic-library-compilation">Dynamic library compilation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#running-the-tests">Running the tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contribute.html#working-on-the-documentation">Working on the documentation</a></li>
 </ul>
@@ -171,7 +220,7 @@ more about HEALPix:</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
 <ul>
 <li><a class="reference internal" href="#">Welcome to cdshealpix’s documentation!</a><ul>
@@ -210,8 +259,8 @@ more about HEALPix:</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2023, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 7.2.6. &nbsp;
+    &copy; Copyright 2024, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
   </p>
 </footer>
   </body>
