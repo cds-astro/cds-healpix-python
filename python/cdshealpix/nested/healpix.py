@@ -1,4 +1,5 @@
 """Manipulation of HEALPix in the nested configuration."""
+from math import pi
 
 # Astropy tools
 import astropy.units as u
@@ -678,8 +679,8 @@ def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
 def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
     """Get the HEALPix cells contained in a zone at a given depth.
 
-    A zone is defined by its corners. All points inside will have lon_min < lon < lon_max
-    and lat_min < lat < lat_max.
+    A zone is defined by its corners. All points inside have lon_min =< lon < lon_max
+    and lat_min =< lat < lat_max.
 
     Parameters
     ----------
@@ -733,6 +734,10 @@ def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
 
     if not isinstance(lat_min, Latitude) or not isinstance(lat_max, Latitude):
         raise ValueError("latitudes must be of type `astropy.coordinates.Latitude`")
+
+    # this is because astropy wraps the angle when we actually want 2 * Pi here
+    if lon_max.rad == 0:
+        lon_max.rad = 2 * pi
 
     return cdshealpix.zone_search(
         np.uint8(depth),
