@@ -5,6 +5,9 @@
 ### Added
 
 * support for python 3.13
+### Fixed
+
+* fix ``zone_search`` that would fail on lon_max == 180° due to astropy angle wrapping
 
 ## 0.7.0
 
