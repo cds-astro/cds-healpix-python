@@ -72,6 +72,7 @@ extend-include = ["*.ipynb"]
 "version.py" = ["D100"]
 "test_*.py" = ["D103", "D100", "S101"]
 "notebooks*" = ["D100"]
+"conftest.py" = ["D100"]
 
 [tool.ruff.flake8-errmsg]
 max-string-length = 20
