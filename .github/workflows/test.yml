@@ -36,7 +36,7 @@ jobs:
        shell: bash
        run: |
          source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp3{8,9,10,11,12}-*/bin; do
+         for PYBIN in /opt/python/cp*-cp3{8,9,10,11,12,13}/bin; do
            "${PYBIN}/pip" install virtualenv
            "${PYBIN}/virtualenv" cdshealpixenv
            source cdshealpixenv/bin/activate
@@ -92,7 +92,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
      # Checkout the project
      - name: "Checkout branch"
@@ -133,7 +133,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
       # Checkout the project
       - name: "Checkout branch"
@@ -165,16 +165,16 @@ jobs:
           python -m pytest -v
           deactivate
 
-  # Build the doc and run the tests in the doc (only for python 3.11 on ubuntu)
+  # Build the doc and run the tests in the doc (only for python 3.12 on ubuntu)
   test-doc:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch"
         uses: actions/checkout@v4
-      - name: "Set up Python 3.11 on Ubuntu"
+      - name: "Set up Python 3.12 on Ubuntu"
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: "Build and test doc"
         run: |
           # Install virtualenv
