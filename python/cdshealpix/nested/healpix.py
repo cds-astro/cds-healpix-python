@@ -8,6 +8,7 @@ from astropy.coordinates import Angle, Latitude, Longitude, SkyCoord
 import numpy as np
 
 from .. import cdshealpix
+from ..utils import _validate_lonlat, _check_depth
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
@@ -32,23 +33,7 @@ __all__ = [
 ]
 
 
-# Raise a ValueError exception if the input
-# HEALPix cells array contains invalid values
-# data and depth must have the same shape
-def _check_ipixels(data, depth):
-    if isinstance(depth, int):
-        npix = 12 * 4 ** (depth)
-        valid_ipix = [0, npix]
-    else:
-        npix = np.array(12 * 4 ** depth.astype(np.uint64))
-        valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
-
-    if (data >= npix).any() or (data < 0).any():
-        raise ValueError(
-            f"The input HEALPix array contains values out of {valid_ipix}."
-        )
-
-
+@_validate_lonlat
 def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates.
 
@@ -96,29 +81,10 @@ def lonlat_to_healpix(lon, lat, depth, return_offsets=False, num_threads=0):
     >>> depth = np.array([5, 6])
     >>> ipix = lonlat_to_healpix(lon[:, np.newaxis], lat[:, np.newaxis], depth[np.newaxis, :])
     """
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
-
-    # Handle the case of an uniq lon, lat tuple given by creating a
-    # 1d numpy array from the 0d astropy quantities.
-    #
-    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
-    # Although `to_value` is more generical (method of Quantity),
-    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
     lon = np.atleast_1d(lon.rad)
     lat = np.atleast_1d(lat.rad)
     depth = np.atleast_1d(depth)
-
-    if (depth < 0).any() or (depth > 29).any():
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
-    if lon.shape != lat.shape:
-        raise ValueError(
-            "The number of longitudes does not match with the number of latitudes given"
-        )
+    _check_depth(depth)
 
     # Broadcasting arrays
     lon, lat, depth = np.broadcast_arrays(lon, lat, depth)
@@ -232,17 +198,14 @@ def healpix_to_lonlat(ipix, depth, dx=0.5, dy=0.5, num_threads=0):
     # Check arrays
     ipix = np.atleast_1d(ipix)
     depth = np.atleast_1d(depth)
-
-    if (depth < 0).any() or (depth > 29).any():
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
+    _check_ipixels(data=ipix, depth=depth)
 
     if dx < 0 or dx >= 1:
         raise ValueError("dx must be between [0, 1[")
 
     if dy < 0 or dy >= 1:
         raise ValueError("dy must be between [0, 1[")
-
-    _check_ipixels(ipix, depth)
 
     # Broadcasting
     ipix, depth = np.broadcast_arrays(ipix, depth)
@@ -357,16 +320,14 @@ def vertices(ipix, depth, step=1, num_threads=0):
     >>> lon, lat = vertices(ipix, depth)
     """
     ipix = np.atleast_1d(ipix)
+    _check_depth(depth)
+    _check_ipixels(data=ipix, depth=depth)
 
     if isinstance(depth, int) or np.isscalar(depth):
         depth = np.full(len(ipix), depth)
-    if any(depth < 0) or any(depth > 29):
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
     if step < 1:
         raise ValueError("The number of step must be >= 1")
 
-    _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
     depth = depth.astype(np.uint8)
 
@@ -464,9 +425,7 @@ def neighbours(ipix, depth, num_threads=0):
     >>> depth = 12
     >>> neighbours = neighbours(ipix, depth)
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
+    _check_depth(depth)
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
@@ -509,9 +468,7 @@ def external_neighbours(ipix, depth, delta_depth, num_threads=0):
         external_corner_cells will store the pixels located at the external corners of `ipix`
         It will be of shape: (N, 4) for N input pixels. -1 values will be put in the array when the pixels have no corners for specific directions.
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
+    _check_depth(depth)
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
     ipix = ipix.astype(np.uint64)
@@ -529,6 +486,7 @@ def external_neighbours(ipix, depth, delta_depth, num_threads=0):
     return edge_cells, corner_cells
 
 
+@_validate_lonlat
 def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     """Get the HEALPix cells contained in a cone at a given depth.
 
@@ -560,11 +518,6 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
         * `depth` stores HEALPix cell depths.
         * `fully_covered` stores flags on whether the HEALPix cells are fully covered by the cone.
 
-    Raises
-    ------
-    ValueError
-        When one of `lat`, `lon` and `radius` contains more that one value.
-
     Examples
     --------
     >>> from cdshealpix import cone_search
@@ -572,17 +525,10 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     >>> import astropy.units as u
     >>> ipix, depth, fully_covered = cone_search(lon=Longitude(0 * u.deg), lat=Latitude(0 * u.deg), radius=10 * u.deg, depth=10)
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     if not lon.isscalar or not lat.isscalar or not radius.isscalar:
         raise ValueError("The longitude, latitude and radius must be scalar objects")
-
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     if not (isinstance(radius, u.Quantity)):
         raise ValueError("`radius` must be of type `astropy.units.Quantity`")
@@ -605,6 +551,7 @@ def cone_search(lon, lat, radius, depth, depth_delta=2, flat=False):
     return ipix, depth, full
 
 
+@_validate_lonlat
 def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
     """Get the HEALPix cells contained in a box at a given depth.
 
@@ -647,8 +594,7 @@ def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
     ...     a=10 * u.deg, b=5 * u.deg, angle=0*u.deg, depth=10
     ... )
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     if (
         not lon.isscalar
@@ -658,12 +604,6 @@ def box_search(lon, lat, a, b, angle=0 * u.deg, depth=14, *, flat=False):
         or not angle.isscalar
     ):
         raise ValueError("The longitude, latitude, and Angles must be scalar objects")
-
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
 
     return cdshealpix.box_search(
         np.uint8(depth),
@@ -718,8 +658,7 @@ def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
     ...     lon_max=Longitude(10 * u.deg), lat_max=Latitude(10 * u.deg), depth=10
     ... )
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     if (
         not lon_min.isscalar
@@ -749,6 +688,7 @@ def zone_search(lon_min, lat_min, lon_max, lat_max, depth=14, *, flat=False):
     )
 
 
+@_validate_lonlat
 def polygon_search(lon, lat, depth, flat=False):
     """Get the HEALPix cells contained in a polygon at a given depth.
 
@@ -793,25 +733,10 @@ def polygon_search(lon, lat, depth, flat=False):
     >>> max_depth = 12
     >>> ipix, depth, fully_covered = polygon_search(lon, lat, max_depth)
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
-
-    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
-    # Although `to_value` is more generical (method of Quantity),
-    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
     lon = np.atleast_1d(lon.rad).ravel()
     lat = np.atleast_1d(lat.rad).ravel()
-
-    if lon.shape != lat.shape:
-        raise ValueError(
-            "The number of longitudes does not match with the number of latitudes given"
-        )
 
     num_vertices = lon.shape[0]
 
@@ -831,6 +756,7 @@ def polygon_search(lon, lat, depth, flat=False):
     return ipix, depth, full
 
 
+@_validate_lonlat
 def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False):
     """Get the HEALPix cells contained in an elliptical cone at a given depth.
 
@@ -889,14 +815,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
     >>> max_depth = 12
     >>> ipix, depth, fully_covered = elliptical_cone_search(lon, lat, a, b, pa, max_depth)
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
+    _check_depth(depth)
 
     if (
         not lon.isscalar
@@ -906,7 +825,7 @@ def elliptical_cone_search(lon, lat, a, b, pa, depth, delta_depth=2, flat=False)
         or not pa.isscalar
     ):
         raise ValueError(
-            "The longitude, latitude, semi-minor axe, semi-major axe and angle must be "
+            "The longitude, latitude, semi-minor axis, semi-major axis and angle must be "
             "scalar objects"
         )
 
@@ -966,9 +885,7 @@ def healpix_to_xy(ipix, depth, num_threads=0):
     ipix = np.atleast_1d(ipix)
     depth = np.atleast_1d(depth)
 
-    if (depth < 0).any() or (depth > 29).any():
-        raise ValueError("Depth must be in the [0, 29] closed range")
-
+    _check_depth(depth)
     _check_ipixels(ipix, depth)
 
     # Broadcasting
@@ -988,6 +905,7 @@ def healpix_to_xy(ipix, depth, num_threads=0):
     return x, y
 
 
+@_validate_lonlat
 def lonlat_to_xy(lon, lat, num_threads=0):
     r"""Project sky coordinates to the HEALPix space.
 
@@ -1018,23 +936,8 @@ def lonlat_to_xy(lon, lat, num_threads=0):
     >>> lat = Latitude([5, 10], u.deg)
     >>> x, y = lonlat_to_xy(lon, lat)
     """
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
-
-    # We could have continued to use `.to_value(u.rad)` instead of `.rad`.
-    # Although `to_value` is more generical (method of Quantity),
-    # Longitude/Latitude ensure that the values the contain are in the correct ranges.
     lon = np.atleast_1d(lon.rad)
     lat = np.atleast_1d(lat.rad)
-
-    if lon.shape != lat.shape:
-        raise ValueError(
-            "The number of longitudes does not match with the number of latitudes given"
-        )
-
     num_coords = lon.shape
     # Allocation of the array containing the resulting ipixels
     x = np.empty(num_coords, dtype=np.float64)
@@ -1097,6 +1000,7 @@ def xy_to_lonlat(x, y, num_threads=0):
     return Longitude(lon, u.rad), Latitude(lat, u.rad)
 
 
+@_validate_lonlat
 def bilinear_interpolation(lon, lat, depth, num_threads=0):
     r"""Compute the HEALPix bilinear interpolation from sky coordinates.
 
@@ -1149,23 +1053,10 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     >>> depth = 5
     >>> ipix, weights = bilinear_interpolation(lon, lat, depth)
     """
-    if not (isinstance(lon, Longitude)):
-        raise ValueError("`lon` must be of type `astropy.coordinates.Longitude`")
-
-    if not (isinstance(lat, Latitude)):
-        raise ValueError("`lat` must be of type `astropy.coordinates.Latitude`")
-
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     lon = np.atleast_1d(lon.rad)
     lat = np.atleast_1d(lat.rad)
-
-    if lon.shape != lat.shape:
-        raise ValueError(
-            "The number of longitudes does not match with the number of latitudes given"
-        )
-
     num_coords = lon.shape
 
     # Retrieve nan and infinite values
@@ -1191,3 +1082,20 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
 
     return ipix_masked_array, weights_masked_array
+
+
+# Raise a ValueError exception if the input
+# HEALPix cells array contains invalid values
+# data and depth must have the same shape
+def _check_ipixels(data, depth):
+    if isinstance(depth, int):
+        npix = 12 * 4 ** (depth)
+        valid_ipix = [0, npix]
+    else:
+        npix = np.array(12 * 4 ** depth.astype(np.uint64))
+        valid_ipix = np.stack((np.zeros(npix.shape), npix)).T
+
+    if (data >= npix).any() or (data < 0).any():
+        raise ValueError(
+            f"The input HEALPix array contains values out of {valid_ipix}."
+        )

@@ -105,7 +105,9 @@ def test_lonlat_shape_exception():
     lat = Latitude([5], u.deg)
     with pytest.raises(
         ValueError,
-        match="The number of longitudes does not match with the number of latitudes given",
+        match=re.escape(
+            "'lon' and 'lat' should have the same shape but are of shapes (2,) and (1,)"
+        ),
     ):
         lonlat_to_healpix(lon, lat, 12)
 
