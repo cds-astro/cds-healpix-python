@@ -7,6 +7,7 @@ from astropy.coordinates import Latitude, Longitude, SkyCoord
 import numpy as np
 
 from .. import cdshealpix
+from ..utils import _validate_lonlat
 
 # Do not fill by hand :)
 # > egrep "^ *def" healpix.py | cut -c 5- | egrep -v '^_'| cut -d '(' -f 1 | sed -r "s/^(.*)$/ '\1'/" | tr '\n' ','
@@ -20,7 +21,6 @@ __all__ = [
     "vertices_skycoord",
 ]
 
-
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, nside):
@@ -32,6 +32,7 @@ def _check_ipixels(data, nside):
         )
 
 
+@_validate_lonlat
 def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
     r"""Get the HEALPix indexes that contains specific sky coordinates.
 
@@ -89,11 +90,6 @@ def lonlat_to_healpix(lon, lat, nside, return_offsets=False, num_threads=0):
 
     if (nside < 1).any() or (nside > (1 << 29)).any():
         raise ValueError("nside must be in the [1, (1 << 29)[ closed range")
-
-    if lon.shape != lat.shape:
-        raise ValueError(
-            "The number of longitudes does not match with the number of latitudes given"
-        )
 
     # Broadcasting
     lon, lat, nside = np.broadcast_arrays(lon, lat, nside)

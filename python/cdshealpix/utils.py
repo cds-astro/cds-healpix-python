@@ -1,5 +1,7 @@
 """Conversions between NESTED and RING scheme."""
+import functools
 
+from astropy.coordinates import Latitude, Longitude
 import numpy as np
 
 from . import cdshealpix
@@ -16,6 +18,41 @@ def _check_ipixels(data, depth):
         raise ValueError(
             f"The input HEALPix cells contains value out of [0, {npix - 1}]"
         )
+
+
+def _validate_lonlat(function):
+    """Validate the longitude and latitudes entries of methods of the MOC class.
+
+    Parameters
+    ----------
+    function : <class 'function'>
+        must have the signature function(lon, lat, *args, **kwargs)
+
+    Returns
+    -------
+        applies desired transformations for the `lon` and `lat` arguments and calls
+        `function` with these modified arguments
+    """
+
+    @functools.wraps(function)
+    def _validate_lonlat_wrap(lon, lat, *args, **kwargs):
+        # be sure that lon and lat are of the same shape
+        if lon.shape != lat.shape:
+            raise ValueError(
+                f"'lon' and 'lat' should have the same shape but are of shapes {lon.shape} and {lat.shape}",
+            )
+        # convert into astropy objects
+        lon = lon if isinstance(lon, Longitude) else Longitude(lon)
+        lat = lat if isinstance(lat, Latitude) else Latitude(lat)
+        return function(lon, lat, *args, **kwargs)
+
+    return _validate_lonlat_wrap
+
+
+def _check_depth(depth):
+    ravel_depth = np.ravel(np.atleast_1d(depth))
+    if any(ravel_depth < 0) or any(ravel_depth > 29):
+        raise ValueError("Depth must be in the [0, 29] closed range")
 
 
 def to_ring(ipix, depth, num_threads=0):
@@ -51,8 +88,7 @@ def to_ring(ipix, depth, num_threads=0):
     >>> print(to_ring(ipix, depth))
     [100526076 100591616 100591614]
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
@@ -100,8 +136,7 @@ def from_ring(ipix, depth, num_threads=0):
     >>> print(from_ring(ipix, depth))
     [16777203 33554430 67108862]
     """
-    if depth < 0 or depth > 29:
-        raise ValueError("Depth must be in the [0, 29] closed range")
+    _check_depth(depth)
 
     ipix = np.atleast_1d(ipix)
     _check_ipixels(data=ipix, depth=depth)
