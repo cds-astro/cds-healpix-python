@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.1
+
 ### Added
 
 * support for python 3.13
