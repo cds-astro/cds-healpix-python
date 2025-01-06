@@ -1,6 +1,7 @@
 # Enrich using https://www.maturin.rs/metadata.html
 [project]
 name = "cdshealpix"
+dynamic = ["version"]
 requires-python = ">=3.8"
 dependencies = [
     "astropy<5.3; python_version == '3.8'",
