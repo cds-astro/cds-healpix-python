@@ -26,10 +26,10 @@ mapproj = "0.3.0"
 rayon = "1.10"
 
 [dependencies.numpy]
-version = "0.22"
+version = "0.23"
 
 [dependencies.pyo3]
-version = "0.22"
+version = "0.23"
 features = ["extension-module"]
 
 [dependencies.ndarray]

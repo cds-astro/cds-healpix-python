@@ -37,37 +37,37 @@ pub fn read_skymap<'py>(
         .values()
         .copied()
         .collect::<Vec<u8>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
       SkyMapEnum::ImplicitU64I16(s) => s
         .values()
         .copied()
         .collect::<Vec<i16>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
       SkyMapEnum::ImplicitU64I32(s) => s
         .values()
         .copied()
         .collect::<Vec<i32>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
       SkyMapEnum::ImplicitU64I64(s) => s
         .values()
         .copied()
         .collect::<Vec<i64>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
       SkyMapEnum::ImplicitU64F32(s) => s
         .values()
         .copied()
         .collect::<Vec<f32>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
       SkyMapEnum::ImplicitU64F64(s) => s
         .values()
         .copied()
         .collect::<Vec<f64>>()
-        .into_pyarray_bound(module.py())
+        .into_pyarray(module.py())
         .into_any(),
     })
 }
@@ -202,7 +202,7 @@ where
       None,
     )
     .map_err(|e| PyValueError::new_err(e.to_string()))?;
-    PyArray1::from_slice_bound(py, vec.as_slice()).reshape(Ix3(
+    PyArray1::from_slice(py, vec.as_slice()).reshape(Ix3(
       image_size as usize,
       (image_size << 1) as usize,
       4_usize,
@@ -218,7 +218,7 @@ where
       None,
     )
     .map_err(|e| PyValueError::new_err(e.to_string()))?;
-    PyArray1::from_slice_bound(py, vec.as_slice()).reshape(Ix3(
+    PyArray1::from_slice(py, vec.as_slice()).reshape(Ix3(
       image_size as usize,
       (image_size << 1) as usize,
       4_usize,

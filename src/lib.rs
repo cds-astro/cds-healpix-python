@@ -788,9 +788,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     };
 
     (
-      ipix.into_pyarray_bound(py),
-      depth.into_pyarray_bound(py),
-      fully_covered.into_pyarray_bound(py),
+      ipix.into_pyarray(py),
+      depth.into_pyarray(py),
+      fully_covered.into_pyarray(py),
     )
   }
 
@@ -821,9 +821,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     };
 
     (
-      ipix.into_pyarray_bound(py),
-      depth.into_pyarray_bound(py),
-      fully_covered.into_pyarray_bound(py),
+      ipix.into_pyarray(py),
+      depth.into_pyarray(py),
+      fully_covered.into_pyarray(py),
     )
   }
 
@@ -860,9 +860,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     };
 
     (
-      ipix.into_pyarray_bound(py),
-      depth.into_pyarray_bound(py),
-      fully_covered.into_pyarray_bound(py),
+      ipix.into_pyarray(py),
+      depth.into_pyarray(py),
+      fully_covered.into_pyarray(py),
     )
   }
 
@@ -901,9 +901,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     };
 
     (
-      ipix.into_pyarray_bound(py),
-      depth.into_pyarray_bound(py),
-      fully_covered.into_pyarray_bound(py),
+      ipix.into_pyarray(py),
+      depth.into_pyarray(py),
+      fully_covered.into_pyarray(py),
     )
   }
 
@@ -940,9 +940,9 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     };
 
     (
-      ipix.into_pyarray_bound(py),
-      depth.into_pyarray_bound(py),
-      fully_covered.into_pyarray_bound(py),
+      ipix.into_pyarray(py),
+      depth.into_pyarray(py),
+      fully_covered.into_pyarray(py),
     )
   }
 
