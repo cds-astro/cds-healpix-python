@@ -4,3 +4,4 @@ astropy_healpix
 matplotlib
 pre-commit==2.21.*
 pytest
+ruff==0.8.*
