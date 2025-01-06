@@ -6,7 +6,7 @@ import numpy as np
 
 from . import cdshealpix
 
-__all__ = ["to_ring", "from_ring"]
+__all__ = ["from_ring", "to_ring"]
 
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
@@ -42,8 +42,16 @@ def _validate_lonlat(function):
                 f"'lon' and 'lat' should have the same shape but are of shapes {lon.shape} and {lat.shape}",
             )
         # convert into astropy objects
-        lon = lon if isinstance(lon, Longitude) else Longitude(lon)
-        lat = lat if isinstance(lat, Latitude) else Latitude(lat)
+        lon = (
+            lon
+            if (isinstance(lon, Longitude) and lon.dtype == np.float64)
+            else Longitude(lon, dtype=np.float64)
+        )
+        lat = (
+            lat
+            if (isinstance(lat, Latitude) and lat.dtype == np.float64)
+            else Latitude(lat, dtype=np.float64)
+        )
         return function(lon, lat, *args, **kwargs)
 
     return _validate_lonlat_wrap

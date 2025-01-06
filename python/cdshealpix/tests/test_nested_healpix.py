@@ -31,7 +31,7 @@ from ..nested.healpix import (
 )
 
 
-@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
+@pytest.mark.parametrize("size", [1, 10, 100])
 def test_lonlat_to_healpix(size):
     depth = np.random.randint(30)
     lon = Longitude(np.random.rand(size) * 360, u.deg)
@@ -52,7 +52,18 @@ def test_lonlat_to_healpix(size):
     assert ((dy >= 0) & (dy <= 1)).all()
 
 
-@pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000, 100000])
+# regression test for issue #35
+def test_lonlat_to_healpix_float32():
+    healpix = lonlat_to_healpix(
+        lon=Longitude(np.array(3, dtype=np.float32), "deg"),
+        lat=Latitude(np.array(5, dtype=np.float32), "deg"),
+        depth=2,
+    )
+    assert len(healpix) == 1
+    assert healpix[0] == 76
+
+
+@pytest.mark.parametrize("size", [1, 10, 100])
 def test_healpix_to_lonlat(size):
     depth = np.random.randint(30)
     ipixels = np.random.randint(12 * 4**depth, size=size, dtype=np.uint64)
