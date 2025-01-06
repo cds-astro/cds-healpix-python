@@ -13,80 +13,39 @@ on: [push, workflow_dispatch]
 # Jobs run in parallel, see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobs
 # Github hosted runner are: see https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
 jobs:
-  test-linux64-wheels:
-    # Containers run in Linux
+  test-ubuntu-wheels:
     runs-on: ubuntu-latest
-    # Docker Hub image that 'build-linux-wheels' executes in.
-    # See https://github.com/pypa/manylinux for this particular container:
-    # * CPython 3.8, 3.9, ... installed in /opt/python/<python tag>-<abi tag>
-    container: quay.io/pypa/manylinux2014_x86_64
-    env: {ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true} # Allow using Node16 actions required for CentOS7
-    # We are now in CentOS 7 64 bits
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
-     - name: "Checkout the full project"
-       uses: actions/checkout@v3
-     # We need to install rust in the docker image (else, cargo is already available in github action)
-     - name: "Install Rust"
+     # Checkout the project
+     - name: "Checkout branch"
+       uses: actions/checkout@v4
+     # Test Rust code
+     #- name: Run rust wrapper tests
+     #  run: cargo test --verbose -- --nocapture
+     # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
+     - name: "Set up Python ${{ matrix.python-version }} on ubuntu"
+       uses: actions/setup-python@v4
+       with:
+         python-version: ${{ matrix.python-version }}
+     # Test python code
+     - name: "Build and test wheel for Python ${{ matrix.python-version }} on ubuntu"
        run: |
-         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-     # Build wheels for all pre-installed python version (in /opt/python/, see docker image comment)
-     # installing first maturin and using maturin: https://github.com/PyO3/maturin#pypy
-     # For secrets, see https://docs.github.com/en/actions/reference/encrypted-secrets
-     - name: "Build and run tests"
-       shell: bash
-       run: |
-         source $HOME/.cargo/env
-         for PYBIN in /opt/python/cp*-cp3{8,9,10,11,12,13}/bin; do
-           "${PYBIN}/pip" install virtualenv
-           "${PYBIN}/virtualenv" cdshealpixenv
-           source cdshealpixenv/bin/activate
-           pip install --upgrade pip
-           pip install maturin
-           maturin build --release --compatibility manylinux2014
-           maturin develop --release
-           pip install -r requirements-dev.txt
-           python -m pytest -v
-           deactivate
-           rm -r cdshealpixenv
-         done
-
-  ## So far desactivated because too long to build astropy wheels
-  #test-aarch64-wheels:
-  #  runs-on: ubuntu-latest
-  #  env:
-  #    img: quay.io/pypa/manylinux2014_aarch64
-  #  steps:
-  #    - name: Checkout
-  #      uses: actions/checkout@v4
-  #    - name: "Set up QEMU"
-  #      id: qemu
-  #      uses: docker/setup-qemu-action@v1
-  #    - name: Install dependencies
-  #      run: |
-  #        docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-  #        ${{ env.img }} \
-  #        bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-host aarch64-unknown-linux-gnu -y && \
-  #          source $HOME/.cargo/env && \
-  #          for PYBIN in /opt/python/cp3[78910]*/bin; do
-  #            echo "Loop on PYBIN: $PYBIN"
-  #            "${PYBIN}/pip" install virtualenv
-  #            "${PYBIN}/virtualenv" cdshealpixenv
-  #            source cdshealpixenv/bin/activate
-  #            pip install --upgrade pip
-  #            pip install maturin
-  #            cargo build --release --config "net.git-fetch-with-cli = true"
-  #            maturin build --release --compatibility manylinux2014 --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-  #            maturin develop --release --target aarch64-unknown-linux-gnu --config "net.git-fetch-with-cli = true"
-  #            pip install -r requirements-dev.txt
-  #            cd python
-  #            python -m pytest -v -s cdshealpix/tests/test_nested_healpix.py
-  #            python -m pytest -v -s cdshealpix/tests/test_ring_healpix.py
-  #            cd ..
-  #            pip freeze > requirements-uninstall.txt
-  #            pip uninstall -r requirements-uninstall.txt -y
-  #            deactivate
-  #            rm -r cdshealpixenv/
-  #          done'
+         pip install virtualenv
+         virtualenv cdshealpixenv
+         source cdshealpixenv/bin/activate
+         # Install and use maturin
+         pip install --upgrade pip
+         pip install maturin
+         maturin -V
+         maturin develop --release
+         # Install dependencies
+         pip install -r requirements-dev.txt
+         # Run tests
+         python -m pytest -v
+         deactivate
 
   test-macos-wheels:
     runs-on: macos-latest
@@ -123,11 +82,7 @@ jobs:
          pip install -r requirements-dev.txt
          # Run tests
          python -m pytest -v
-         # Clean
-         #pip freeze > requirements-uninstall.txt
-         #pip uninstall -r requirements-uninstall.txt -y
          deactivate
-         #rm -r cdshealpixenv/
 
   test-windows-wheels:
     runs-on: windows-latest
