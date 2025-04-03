@@ -1,8 +1,8 @@
 extern crate healpix;
 extern crate mapproj;
 
-use std::fs::File;
-use std::io::BufWriter;
+use std::io::{BufWriter, Cursor};
+use std::{fs::File, io::BufReader};
 
 use numpy::{
   IntoPyArray, Ix3, NotContiguousError, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1,
@@ -28,9 +28,9 @@ use healpix::{
 #[pyo3(pass_module)]
 pub fn read_skymap<'py>(
   module: &Bound<'py, PyModule>,
-  path: String,
+  bytes: &[u8],
 ) -> PyResult<Bound<'py, PyAny>> {
-  SkyMapEnum::from_fits_file(&path)
+  SkyMapEnum::from_fits(BufReader::new(Cursor::new(bytes)))
     .map_err(|err| PyIOError::new_err(err.to_string()))
     .map(|sky_map_enum| match sky_map_enum {
       SkyMapEnum::ImplicitU64U8(s) => s

@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 from tempfile import NamedTemporaryFile
 
 import numpy as np
@@ -18,10 +19,13 @@ def test_read():
 
 def test_read_write_read_conservation():
     skymap = Skymap.from_fits(path_to_test_skymap)
-    with NamedTemporaryFile() as fp:
+    with NamedTemporaryFile(delete=False) as fp:
         skymap.to_fits(fp.name)
         skymap2 = Skymap.from_fits(fp.name)
         assert all(skymap.values == skymap2.values)
+        # this is needed for windows
+        fp.close()
+        os.unlink(fp.name)
 
 
 def test_plot():
