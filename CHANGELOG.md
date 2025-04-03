@@ -9,6 +9,8 @@
 * `matplotlib_missing` was not defined in `Skymap.quick_plot()`.
 * step > 1 when calling vertices on ring indexing [#39]
 
+* fix reading skymaps from fits files [#32]
+
 ## 0.7.1
 
 ### Added
