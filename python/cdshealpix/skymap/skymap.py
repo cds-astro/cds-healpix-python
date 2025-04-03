@@ -64,7 +64,8 @@ class Skymap:
             A skymap. Its values are in a numpy array which data type in inferred from
             the FITS header.
         """
-        return cls(cdshealpix.read_skymap(str(path)))
+        with open(path, "rb") as f:
+            return cls(cdshealpix.read_skymap(f.read()))
 
     @classmethod
     def from_array(cls, values):
