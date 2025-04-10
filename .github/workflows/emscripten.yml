@@ -8,32 +8,31 @@ on:
       - master
   # Allows to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 jobs:
   emscripten:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       - run: pip install pyodide-build
       - shell: bash
         run: |
          echo EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version) >> $GITHUB_ENV
+         echo "$EMSCRIPTEN_VERSION"
          echo PYTHON_VERSION=$(pyodide config get python_version | cut -d "." -f 1-2) >> $GITHUB_ENV
-      - uses: mymindstorm/setup-emsdk@v12
+         echo "$PYTHON_VERSION"
+      - uses: mymindstorm/setup-emsdk@v14
         with:
           version: ${{ env.EMSCRIPTEN_VERSION }}
           actions-cache-folder: emsdk-cache
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: wasm32-unknown-emscripten
-          args: --release --out dist -i ${{ env.PYTHON_VERSION }}
-          sccache: 'true'
-          rust-toolchain: nightly
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wasm-wheels
-          path: dist
+      - shell: bash
+        # rust version is pinned for compatibility with emscripten 3.1.58
+        run: |
+          pip install maturin
+          rustup install nightly-2025-02-01
+          rustup default nightly-2025-02-01
+          rustup target add wasm32-unknown-emscripten
+          maturin build --target wasm32-unknown-emscripten -i 3.12
