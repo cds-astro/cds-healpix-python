@@ -12,6 +12,8 @@ from typing import Union
 
 try:
     import matplotlib.pyplot as plt
+
+    _matplotlib_missing = False
 except ImportError:
     _matplotlib_missing = True
 import numpy as np
