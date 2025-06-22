@@ -8,6 +8,8 @@
   by numpy 2.0. Before that, the conversion was done silently. See [#35]
 * `matplotlib_missing` was not defined in `Skymap.quick_plot()`.
 
+* fix reading skymaps from fits files [#32]
+
 ## 0.7.1
 
 ### Added
