@@ -123,3 +123,17 @@ def test_vertices_lonlat(size):
     lon, lat = vertices(ipix=ipixels, nside=nside)
     assert lon.shape == lat.shape
     assert lon.shape == (size, 4)
+
+
+@pytest.mark.parametrize("step", [1, 3, 10])
+def test_vertices_lonlat_step(step):
+    depth = np.random.randint(30)
+    nside = 1 << depth
+
+    size = 100
+
+    ipixels = np.random.randint(12 * (nside**2), size=size, dtype=np.uint64)
+
+    lon, lat = vertices(ipix=ipixels, nside=nside, step=step)
+    assert lon.shape == lat.shape
+    assert lon.shape == (size, 4 * step)

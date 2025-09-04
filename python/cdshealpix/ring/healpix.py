@@ -21,6 +21,7 @@ __all__ = [
     "vertices_skycoord",
 ]
 
+
 # Raise a ValueError exception if the input
 # HEALPix cells array contains invalid values
 def _check_ipixels(data, nside):
@@ -369,7 +370,7 @@ def vertices(ipix, nside, step=1, num_threads=0):
 
     Warnings
     --------
-    ``step`` is currently not implemented for the ring scheme. Therefore it is set to 1 by default.
+    ``step`` is currently not implemented for the ring scheme. Nonetheless, cells are cast to the nested scheme to have access to path along edges on it.
 
     Raises
     ------

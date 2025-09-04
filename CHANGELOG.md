@@ -7,6 +7,7 @@
 * support longitudes and latitudes that are not of `dtype` `np.float64`. This was broken
   by numpy 2.0. Before that, the conversion was done silently. See [#35]
 * `matplotlib_missing` was not defined in `Skymap.quick_plot()`.
+* step > 1 when calling vertices on ring indexing [#39]
 
 ## 0.7.1
 
