@@ -615,7 +615,7 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     _py: Python,
     nside: u32,
     ipix: &Bound<'a, PyArrayDyn<u64>>,
-    _step: usize,
+    step: usize,
     lon: &Bound<'a, PyArrayDyn<f64>>,
     lat: &Bound<'a, PyArrayDyn<f64>>,
     nthreads: u16,
@@ -630,6 +630,50 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
         .build()
         .unwrap();
       pool.install(|| {
+        if step == 1 {
+          Zip::from(lon.rows_mut())
+            .and(lat.rows_mut())
+            .and(&ipix)
+            .par_for_each(|mut lon, mut lat, &p| {
+              let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
+                healpix::ring::vertices(nside, p);
+              lon[0] = s_lon;
+              lat[0] = s_lat;
+
+              lon[1] = e_lon;
+              lat[1] = e_lat;
+
+              lon[2] = n_lon;
+              lat[2] = n_lat;
+
+              lon[3] = w_lon;
+              lat[3] = w_lat;
+            });
+        } else {
+          let d = healpix::depth(nside);
+          let l = healpix::nested::get(d);
+
+          Zip::from(lon.rows_mut())
+            .and(lat.rows_mut())
+            .and(&ipix)
+            .par_for_each(|mut lon, mut lat, &p| {
+              let np = l.from_ring(p);
+
+              let r =
+                healpix::nested::path_along_cell_edge(d, np, &Cardinal::S, false, step as u32);
+
+              for i in 0..(4 * step) {
+                let (l, b) = r[i];
+                lon[i] = l;
+                lat[i] = b;
+              }
+            });
+        }
+      });
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+      if step == 1 {
         Zip::from(lon.rows_mut())
           .and(lat.rows_mut())
           .and(&ipix)
@@ -647,29 +691,25 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
             lon[3] = w_lon;
             lat[3] = w_lat;
-          })
-      });
-    }
-    #[cfg(target_arch = "wasm32")]
-    {
-      Zip::from(lon.rows_mut())
-        .and(lat.rows_mut())
-        .and(&ipix)
-        .for_each(|mut lon, mut lat, &p| {
-          let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-            healpix::ring::vertices(nside, p);
-          lon[0] = s_lon;
-          lat[0] = s_lat;
+          });
+      } else {
+        let d = healpix::depth(nside);
+        let l = healpix::nested::get(d);
+        Zip::from(lon.rows_mut())
+          .and(lat.rows_mut())
+          .and(&ipix)
+          .par_for_each(|mut lon, mut lat, &p| {
+            let np = l.from_ring(p);
 
-          lon[1] = e_lon;
-          lat[1] = e_lat;
+            let r = healpix::nested::path_along_cell_edge(d, np, &Cardinal::S, false, step as u32);
 
-          lon[2] = n_lon;
-          lat[2] = n_lat;
-
-          lon[3] = w_lon;
-          lat[3] = w_lat;
-        });
+            for i in 0..(4 * step) {
+              let (l, b) = r[i];
+              lon[i] = l;
+              lat[i] = b;
+            }
+          });
+      }
     }
     Ok(())
   }
