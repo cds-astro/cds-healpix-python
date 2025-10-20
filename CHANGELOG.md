@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.2
+
 ### Changed
 
 * Supported python version are now from 3.9 (eol) to 3.14 (just released) [#43]
@@ -20,6 +22,7 @@
 ### Added
 
 * support for python 3.13
+
 ### Fixed
 
 * fix ``zone_search`` that would fail on lon_max == 180° due to astropy angle wrapping
