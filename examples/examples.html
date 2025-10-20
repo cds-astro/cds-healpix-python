@@ -5,15 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Examples &#8212; cdshealpix 0.7.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=9d21690f" />
+    <title>Examples &#8212; cdshealpix 0.7.2 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
-    <script src="../_static/documentation_options.js?v=5a057da9"></script>
+    <script src="../_static/documentation_options.js?v=6dfdf7c3"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,7 +65,7 @@
 	 |
       </li>
       <li>
-	<a href="../index.html">cdshealpix 0.7.1 documentation</a>
+	<a href="../index.html">cdshealpix 0.7.2 documentation</a>
 	 &#187;
       </li>
       
@@ -86,12 +86,12 @@
 <p>In this example, we chose a HEALPix cell, and we plot its center</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Plot a cell and its center.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">healpix_to_lonlat</span><span class="p">,</span> <span class="n">vertices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.nested</span><span class="w"> </span><span class="kn">import</span> <span class="n">healpix_to_lonlat</span><span class="p">,</span> <span class="n">vertices</span>
 
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Polygon</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polygon</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># choose a cell</span>
 <span class="n">ipix</span> <span class="o">=</span> <span class="mi">5</span>
@@ -126,15 +126,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Demonstration of the cone_search function.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
 
 <span class="c1"># For plots</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
 
 <span class="c1"># Moc and HEALPix tools</span>
-<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">cone_search</span>
-<span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.nested</span><span class="w"> </span><span class="kn">import</span> <span class="n">cone_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mocpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
 
 <span class="n">max_depth</span> <span class="o">=</span> <span class="mi">10</span>
 
@@ -179,15 +179,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Illustration of the elliptical cone search functionnality.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
 
 <span class="c1"># For plots</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
 
 <span class="c1"># Moc and HEALPix tools</span>
-<span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">elliptical_cone_search</span>
-<span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix</span><span class="w"> </span><span class="kn">import</span> <span class="n">elliptical_cone_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mocpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
 
 <span class="n">max_depth</span> <span class="o">=</span> <span class="mi">10</span>
 
@@ -236,15 +236,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Example for polygon HEALPix.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
 
 <span class="c1"># For plots</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
 
 <span class="c1"># Moc and HEALPix tools</span>
-<span class="kn">from</span> <span class="nn">cdshealpix</span> <span class="kn">import</span> <span class="n">polygon_search</span>
-<span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix</span><span class="w"> </span><span class="kn">import</span> <span class="n">polygon_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mocpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span>
 
 <span class="n">lon</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
 <span class="n">lat</span> <span class="o">=</span> <span class="n">Latitude</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">20</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
@@ -289,15 +289,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Demonstration of the cone_search function.&quot;&quot;&quot;</span>
 
 <span class="c1"># Astropy tools</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
 
 <span class="c1"># For plots</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Angle</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">SkyCoord</span>
 
 <span class="c1"># Moc and HEALPix tools</span>
-<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">box_search</span>
-<span class="kn">from</span> <span class="nn">mocpy</span> <span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span> <span class="k">as</span> <span class="n">mocpy_WCS</span>  <span class="c1"># noqa: N811</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.nested</span><span class="w"> </span><span class="kn">import</span> <span class="n">box_search</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mocpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MOC</span><span class="p">,</span> <span class="n">WCS</span> <span class="k">as</span> <span class="n">mocpy_WCS</span>  <span class="c1"># noqa: N811</span>
 
 <span class="n">max_depth</span> <span class="o">=</span> <span class="mi">10</span>
 
@@ -359,14 +359,14 @@
 <a class="reference internal" href="../stubs/cdshealpix.nested.vertices.html#cdshealpix.nested.vertices" title="cdshealpix.nested.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cdshealpix.nested.vertices</span></code></a> with <code class="xref py py-obj docutils literal notranslate"><span class="pre">matplotlib.path.Polygon</span></code></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Get the HEALPix cells in a zone, and plot all of them as matplotlib polygons.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">cdshealpix.nested</span> <span class="kn">import</span> <span class="n">zone_search</span><span class="p">,</span> <span class="n">vertices</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.nested</span><span class="w"> </span><span class="kn">import</span> <span class="n">zone_search</span><span class="p">,</span> <span class="n">vertices</span>
 
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span>
 
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PolyCollection</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolyCollection</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="n">lon_min</span> <span class="o">=</span> <span class="n">Longitude</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
 <span class="n">lat_min</span> <span class="o">=</span> <span class="n">Latitude</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
@@ -405,18 +405,21 @@
 <p>The skymap sub-module allows to manipulate easily all-sky skymaps in the nested ordering
 and implicit schema.
 The class can be instantiated either from a fits file, with <code class="xref py py-obj docutils literal notranslate"><span class="pre">Skymap.from_fits</span></code>, or
-directly with a numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a> containing the values associated to each HEALPix
+directly with a numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a> containing the values associated to each HEALPix
 pixel.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Read and plots a quick preview of a skymap in a FITS file.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">cdshealpix.skymap</span> <span class="kn">import</span> <span class="n">Skymap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Skymap</span>
 
 <span class="n">skymap</span> <span class="o">=</span> <span class="n">Skymap</span><span class="o">.</span><span class="n">from_fits</span><span class="p">(</span><span class="s2">&quot;skymap.fits&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
 <span class="n">skymap</span><span class="o">.</span><span class="n">quick_plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>(<a class="reference download internal" download="" href="../_downloads/7f9decc76a13251abac29ece2c688845/skymaps.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>)</p>
+<p>(<a class="reference download internal" download="" href="../_downloads/7f9decc76a13251abac29ece2c688845/skymaps.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/7acc8d5c5988c6eba13d68e5965134b3/skymaps.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/15097d714df69a91c0c78fc0add3a516/skymaps.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1826d23b44b2bcadd87869b04edca010/skymaps.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/skymaps.png" class="plot-directive" src="../_images/skymaps.png" />
+</figure>
 </section>
 <section id="notebook-examples">
 <h2>Notebook examples<a class="headerlink" href="#notebook-examples" title="Link to this heading">¶</a></h2>
@@ -492,7 +495,7 @@ pixel.</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2024, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    &copy; Copyright 2025, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
     Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
   </p>
 </footer>
