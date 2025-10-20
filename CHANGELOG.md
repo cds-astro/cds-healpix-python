@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+* Supported python version are now from 3.9 (eol) to 3.14 (just released) [#43]
+
 ### Fixed
 
 * support longitudes and latitudes that are not of `dtype` `np.float64`. This was broken
