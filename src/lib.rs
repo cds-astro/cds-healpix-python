@@ -22,14 +22,31 @@ mod skymap_functions;
 #[pymodule]
 fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
   // add skymap pyfunctions here
-  m.add_function(wrap_pyfunction!(skymap_functions::read_skymap, m)?)
+  m.add_function(wrap_pyfunction!(skymap_functions::read_skymap_implicit, m)?)
     .unwrap();
-  m.add_function(wrap_pyfunction!(skymap_functions::write_skymap, m)?)
+  m.add_function(wrap_pyfunction!(
+    skymap_functions::write_skymap_implicit,
+    m
+  )?)
+  .unwrap();
+  m.add_function(wrap_pyfunction!(
+    skymap_functions::pixels_skymap_implicit,
+    m
+  )?)
+  .unwrap();
+  m.add_function(wrap_pyfunction!(
+    skymap_functions::depth_skymap_implicit,
+    m
+  )?)
+  .unwrap();
+
+  m.add_function(wrap_pyfunction!(skymap_functions::read_skymap_explicit, m)?)
     .unwrap();
-  m.add_function(wrap_pyfunction!(skymap_functions::pixels_skymap, m)?)
-    .unwrap();
-  m.add_function(wrap_pyfunction!(skymap_functions::depth_skymap, m)?)
-    .unwrap();
+  m.add_function(wrap_pyfunction!(
+    skymap_functions::write_skymap_explicit,
+    m
+  )?)
+  .unwrap();
 
   // wrapper of to_ring and from_ring
   #[pyfunction]
