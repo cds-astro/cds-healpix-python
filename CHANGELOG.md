@@ -6,6 +6,10 @@
 
 * Bilinear interpolation fixed for numpy<2
 
+### Changed
+
+* [BREAKING] Class `Skymap` renamed into `SkymapImplicit` [#45]
+
 ## 0.7.2
 
 ### Changed

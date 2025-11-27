@@ -19,15 +19,15 @@ except ImportError:
 import numpy as np
 
 
-class Skymap:
-    """A Skymap, containing values to associate to healpix cells."""
+class SkymapImplicit:
+    """An implicit Skymap, containing values to associate to healpix cells."""
 
     def __init__(self, values):
         self.values = values
 
     @property
     def depth(self):
-        """The depth of the skymap.
+        """The depth of the implicit skymap.
 
         Avoids the costly log calculation.
 
@@ -38,12 +38,12 @@ class Skymap:
 
         Examples
         --------
-        >>> from cdshealpix.skymap import Skymap
-        >>> map = Skymap.from_array([0]*12)
+        >>> from cdshealpix.skymap import SkymapImplicit
+        >>> map = SkymapImplicit.from_array([0]*12)
         >>> map.depth
         0
         """
-        return cdshealpix.depth_skymap(self.values)
+        return cdshealpix.depth_skymap_implicit(self.values)
 
     @classmethod
     def from_fits(cls, path: Union[str, Path]):
@@ -67,7 +67,7 @@ class Skymap:
             the FITS header.
         """
         with open(path, "rb") as f:
-            return cls(cdshealpix.read_skymap(f.read()))
+            return cls(cdshealpix.read_skymap_implicit(f.read()))
 
     @classmethod
     def from_array(cls, values):
@@ -87,9 +87,9 @@ class Skymap:
 
         Examples
         --------
-        >>> from cdshealpix.skymap import Skymap
+        >>> from cdshealpix.skymap import SkymapImplicit
         >>> import numpy as np
-        >>> skymap =Skymap.from_array(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], dtype=np.uint8))
+        >>> skymap =SkymapImplicit.from_array(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], dtype=np.uint8))
         """
         # only makes a copy if it was not C-contiguous in the first place
         values = np.ascontiguousarray(values)
@@ -130,7 +130,7 @@ class Skymap:
         path : `str`, `pathlib.Path`
             The file's path.
         """
-        cdshealpix.write_skymap(self.values, str(path))
+        cdshealpix.write_skymap_implicit(self.values, str(path))
 
     def quick_plot(self, *, size=256, convert_to_gal=True, path=None):
         """Preview a skymap in the Mollweide projection.
@@ -152,7 +152,7 @@ class Skymap:
                 "See https://matplotlib.org/ for installation "
                 "instructions."
             )
-        img = cdshealpix.pixels_skymap(self.values, size, convert_to_gal)
+        img = cdshealpix.pixels_skymap_implicit(self.values, size, convert_to_gal)
         fig = plt.imshow(img)
         plt.axis("off")
         fig.axes.get_xaxis().set_visible(False)
