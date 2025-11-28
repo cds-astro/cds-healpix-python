@@ -8,18 +8,18 @@ use numpy::{
   IntoPyArray, Ix3, NotContiguousError, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1,
 };
 use pyo3::{
+  Bound, PyErr, PyResult,
   exceptions::{PyIOError, PyValueError},
   prelude::*,
   types::{PyAny, PyModule, PyTuple},
-  Bound, PyErr, PyResult,
 };
 
 use healpix::{
   depth_from_n_hash_unsafe,
   nested::map::{
     fits::write::{write_explicit_skymap_fits_from_parts, write_implicit_skymap_fits},
-    img::{to_skymap_img_default, PosConversion, Val},
-    skymap::{implicit::ImplicitSkyMapArrayRef, SkyMap, SkyMapEnum, SkyMapValue},
+    img::{PosConversion, Val, to_skymap_img_default},
+    skymap::{SkyMap, SkyMapEnum, SkyMapValue, implicit::ImplicitSkyMapArrayRef},
   },
 };
 
@@ -90,61 +90,145 @@ pub fn read_skymap_explicit<'py>(
     .map_err(|err| PyIOError::new_err(err.to_string()))
     .and_then(|sky_map_enum| match sky_map_enum {
       // Explicit U32
-      SkyMapEnum::ExplicitU32U8(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, u8, Vec<u64>, Vec<u8>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU32I16(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, i16, Vec<u64>, Vec<i16>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU32I32(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, i32, Vec<u64>, Vec<i32>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU32I64(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, i64, Vec<u64>, Vec<i64>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU32F32(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, f32, Vec<u64>, Vec<f32>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU32F64(s) => s
-        .owned_entries()
-        .map(|(k, v)| (k as u64, v))
-        .unzip::<u64, f64, Vec<u64>, Vec<f64>>()
-        .into_pyobject(module.py()),
+      SkyMapEnum::ExplicitU32U8(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, u8, Vec<u64>, Vec<u8>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU32I16(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, i16, Vec<u64>, Vec<i16>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU32I32(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, i32, Vec<u64>, Vec<i32>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU32I64(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, i64, Vec<u64>, Vec<i64>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU32F32(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, f32, Vec<u64>, Vec<f32>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU32F64(s) => {
+        let depth = s.depth();
+        let (k, v) = s
+          .owned_entries()
+          .map(|(k, v)| (k as u64, v))
+          .unzip::<u64, f64, Vec<u64>, Vec<f64>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
       // Explicit U64
-      SkyMapEnum::ExplicitU64U8(s) => s
-        .owned_entries()
-        .unzip::<u64, u8, Vec<u64>, Vec<u8>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU64I16(s) => s
-        .owned_entries()
-        .unzip::<u64, i16, Vec<u64>, Vec<i16>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU64I32(s) => s
-        .owned_entries()
-        .unzip::<u64, i32, Vec<u64>, Vec<i32>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU64I64(s) => s
-        .owned_entries()
-        .unzip::<u64, i64, Vec<u64>, Vec<i64>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU64F32(s) => s
-        .owned_entries()
-        .unzip::<u64, f32, Vec<u64>, Vec<f32>>()
-        .into_pyobject(module.py()),
-      SkyMapEnum::ExplicitU64F64(s) => s
-        .owned_entries()
-        .unzip::<u64, f64, Vec<u64>, Vec<f64>>()
-        .into_pyobject(module.py()),
+      SkyMapEnum::ExplicitU64U8(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, u8, Vec<u64>, Vec<u8>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU64I16(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, i16, Vec<u64>, Vec<i16>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU64I32(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, i32, Vec<u64>, Vec<i32>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU64I64(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, i64, Vec<u64>, Vec<i64>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU64F32(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, f32, Vec<u64>, Vec<f32>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
+      SkyMapEnum::ExplicitU64F64(s) => {
+        let depth = s.depth();
+        let (k, v) = s.owned_entries().unzip::<u64, f64, Vec<u64>, Vec<f64>>();
+        (
+          depth,
+          k.into_pyarray(module.py()),
+          v.into_pyarray(module.py()),
+        )
+          .into_pyobject(module.py())
+      }
       _ => Err(PyIOError::new_err(
         "Explicit skymap not recognized, try implicit?",
       )),
