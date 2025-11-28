@@ -1,5 +1,5 @@
 use ndarray::{Array1, Zip};
-use numpy::{convert::IntoPyArray, PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArrayDyn};
+use numpy::{PyArray1, PyArrayDyn, PyArrayMethods, PyReadonlyArrayDyn, convert::IntoPyArray};
 use pyo3::{
   prelude::{pyfunction, pymodule, Bound, PyModule, PyResult, Python},
   types::PyModuleMethods,
@@ -47,6 +47,10 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m
   )?)
   .unwrap();
+  m.add_function(wrap_pyfunction!(skymap_functions::to_implicit, m)?)
+    .unwrap();
+  m.add_function(wrap_pyfunction!(skymap_functions::to_explicit, m)?)
+    .unwrap();
 
   // wrapper of to_ring and from_ring
   #[pyfunction]
@@ -563,8 +567,12 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
             .and(&ipix)
             .and(&depth)
             .par_for_each(|mut lon, mut lat, &p, &d| {
-              let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-                healpix::nested::vertices(d, p);
+              let [
+                (s_lon, s_lat),
+                (e_lon, e_lat),
+                (n_lon, n_lat),
+                (w_lon, w_lat),
+              ] = healpix::nested::vertices(d, p);
               lon[0] = s_lon;
               lat[0] = s_lat;
 
@@ -602,8 +610,12 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
           .and(&ipix)
           .and(&depth)
           .for_each(|mut lon, mut lat, &p, &d| {
-            let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-              healpix::nested::vertices(d, p);
+            let [
+              (s_lon, s_lat),
+              (e_lon, e_lat),
+              (n_lon, n_lat),
+              (w_lon, w_lat),
+            ] = healpix::nested::vertices(d, p);
             lon[0] = s_lon;
             lat[0] = s_lat;
 
@@ -662,8 +674,12 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
             .and(lat.rows_mut())
             .and(&ipix)
             .par_for_each(|mut lon, mut lat, &p| {
-              let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-                healpix::ring::vertices(nside, p);
+              let [
+                (s_lon, s_lat),
+                (e_lon, e_lat),
+                (n_lon, n_lat),
+                (w_lon, w_lat),
+              ] = healpix::ring::vertices(nside, p);
               lon[0] = s_lon;
               lat[0] = s_lat;
 
@@ -705,8 +721,12 @@ fn cdshealpix(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
           .and(lat.rows_mut())
           .and(&ipix)
           .par_for_each(|mut lon, mut lat, &p| {
-            let [(s_lon, s_lat), (e_lon, e_lat), (n_lon, n_lat), (w_lon, w_lat)] =
-              healpix::ring::vertices(nside, p);
+            let [
+              (s_lon, s_lat),
+              (e_lon, e_lat),
+              (n_lon, n_lat),
+              (w_lon, w_lat),
+            ] = healpix::ring::vertices(nside, p);
             lon[0] = s_lon;
             lat[0] = s_lat;
 

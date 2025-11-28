@@ -1,7 +1,7 @@
 use std::{
+  collections::BTreeMap,
   fs::File,
-  io::BufReader,
-  io::{BufWriter, Cursor},
+  io::{BufReader, BufWriter, Cursor},
 };
 
 use numpy::{
@@ -19,7 +19,10 @@ use healpix::{
   nested::map::{
     fits::write::{write_explicit_skymap_fits_from_parts, write_implicit_skymap_fits},
     img::{PosConversion, Val, to_skymap_img_default},
-    skymap::{SkyMap, SkyMapEnum, SkyMapValue, implicit::ImplicitSkyMapArrayRef},
+    skymap::{
+      SkyMap, SkyMapEnum, SkyMapValue, explicit::ExplicitSkyMapBTree,
+      implicit::ImplicitSkyMapArrayRef,
+    },
   },
 };
 
@@ -32,48 +35,12 @@ pub fn read_skymap_implicit<'py>(
   SkyMapEnum::from_fits(BufReader::new(Cursor::new(bytes)))
     .map_err(|err| PyIOError::new_err(err.to_string()))
     .and_then(|sky_map_enum| match sky_map_enum {
-      SkyMapEnum::ImplicitU64U8(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<u8>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
-      SkyMapEnum::ImplicitU64I16(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<i16>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
-      SkyMapEnum::ImplicitU64I32(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<i32>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
-      SkyMapEnum::ImplicitU64I64(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<i64>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
-      SkyMapEnum::ImplicitU64F32(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<f32>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
-      SkyMapEnum::ImplicitU64F64(s) => Ok(
-        s.values()
-          .copied()
-          .collect::<Vec<f64>>()
-          .into_pyarray(module.py())
-          .into_any(),
-      ),
+      SkyMapEnum::ImplicitU64U8(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
+      SkyMapEnum::ImplicitU64I16(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
+      SkyMapEnum::ImplicitU64I32(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
+      SkyMapEnum::ImplicitU64I64(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
+      SkyMapEnum::ImplicitU64F32(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
+      SkyMapEnum::ImplicitU64F64(s) => Ok(s.values.into_vec().into_pyarray(module.py()).into_any()),
       _ => Err(PyIOError::new_err(
         "Implicit skymap not recognized, try explicit?",
       )),
@@ -235,7 +202,56 @@ pub fn read_skymap_explicit<'py>(
     })
 }
 
-// we define an enum for the supported numpy dtypes
+/// Enum use to store the null value for all suuported types.
+#[derive(FromPyObject)]
+pub enum NullValue {
+  U8(u8),
+  I16(i16),
+  I32(i32),
+  I64(i64),
+  F32(f32),
+  F64(f64),
+}
+impl NullValue {
+  pub fn unwrap_u8(self) -> Result<u8, String> {
+    match self {
+      Self::U8(val) => Ok(val),
+      _ => Err("Not a u8".to_string()),
+    }
+  }
+  pub fn unwrap_i16(self) -> Result<i16, String> {
+    match self {
+      Self::I16(val) => Ok(val),
+      _ => Err("Not a i16".to_string()),
+    }
+  }
+  pub fn unwrap_i32(self) -> Result<i32, String> {
+    match self {
+      Self::I32(val) => Ok(val),
+      _ => Err("Not a i32".to_string()),
+    }
+  }
+  pub fn unwrap_i64(self) -> Result<i64, String> {
+    match self {
+      Self::I64(val) => Ok(val),
+      _ => Err("Not a i64".to_string()),
+    }
+  }
+  pub fn unwrap_f32(self) -> Result<f32, String> {
+    match self {
+      Self::F32(val) => Ok(val),
+      _ => Err("Not a f32".to_string()),
+    }
+  }
+  pub fn unwrap_f64(self) -> Result<f64, String> {
+    match self {
+      Self::F64(val) => Ok(val),
+      _ => Err("Not a f64".to_string()),
+    }
+  }
+}
+
+/// Enum defining the supported numpy arrays types.
 #[derive(FromPyObject)]
 pub enum SupportedArray<'py> {
   F64(PyReadonlyArray1<'py, f64>),
@@ -327,6 +343,124 @@ fn write_skymap_explicit_gen<T: SkyMapValue>(
       values.iter().cloned(),
     )
     .map_err(|err| PyIOError::new_err(err.to_string()))
+  })
+}
+
+#[pyfunction]
+#[pyo3(pass_module)]
+pub fn to_explicit<'py>(
+  module: &Bound<'py, PyModule>,
+  depth: u8,
+  null_value: NullValue,
+  values: SupportedArray<'_>,
+) -> PyResult<Bound<'py, PyTuple>> {
+  match values {
+    SupportedArray::F64(values) => null_value
+      .unwrap_f64()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+    SupportedArray::I64(values) => null_value
+      .unwrap_i64()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+    SupportedArray::F32(values) => null_value
+      .unwrap_f32()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+    SupportedArray::I32(values) => null_value
+      .unwrap_i32()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+    SupportedArray::I16(values) => null_value
+      .unwrap_i16()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+    SupportedArray::U8(values) => null_value
+      .unwrap_u8()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_explicit_gen(module, depth, null_value, values.as_slice())),
+  }
+}
+fn to_explicit_gen<'py, T: SkyMapValue + numpy::Element>(
+  module: &Bound<'py, PyModule>,
+  depth: u8,
+  null_value: T,
+  as_slice_res: Result<&[T], NotContiguousError>,
+) -> PyResult<Bound<'py, PyTuple>> {
+  let null_value: T = null_value.into();
+  as_slice_res.map_err(move |e| e.into()).and_then(|slice| {
+    let (k, v) = ImplicitSkyMapArrayRef::new(depth, slice)
+      .into_explicit_map(null_value)
+      .owned_entries()
+      .unzip::<u64, T, Vec<u64>, Vec<T>>();
+    (
+      depth,
+      k.into_pyarray(module.py()),
+      v.into_pyarray(module.py()),
+    )
+      .into_pyobject(module.py())
+  })
+}
+
+#[pyfunction]
+#[pyo3(pass_module)]
+pub fn to_implicit<'py>(
+  module: &Bound<'py, PyModule>,
+  depth: u8,
+  null_value: NullValue,
+  keys: PyReadonlyArray1<'py, u64>,
+  values: SupportedArray<'_>,
+) -> PyResult<Bound<'py, PyAny>> {
+  let keys = keys.as_slice()?;
+  match values {
+    SupportedArray::F64(values) => null_value
+      .unwrap_f64()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+    SupportedArray::I64(values) => null_value
+      .unwrap_i64()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+    SupportedArray::F32(values) => null_value
+      .unwrap_f32()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+    SupportedArray::I32(values) => null_value
+      .unwrap_i32()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+    SupportedArray::I16(values) => null_value
+      .unwrap_i16()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+    SupportedArray::U8(values) => null_value
+      .unwrap_u8()
+      .map_err(PyValueError::new_err)
+      .and_then(|null_value| to_implicit_gen(module, depth, null_value, keys, values.as_slice())),
+  }
+}
+
+fn to_implicit_gen<'py, T: SkyMapValue + numpy::Element>(
+  module: &Bound<'py, PyModule>,
+  depth: u8,
+  null_value: T,
+  keys: &[u64],
+  as_slice_val_res: Result<&[T], NotContiguousError>,
+) -> PyResult<Bound<'py, PyAny>> {
+  as_slice_val_res.map_err(PyErr::from).map(|values| {
+    ExplicitSkyMapBTree::new(
+      depth,
+      keys
+        .iter()
+        .cloned()
+        .zip(values.iter().cloned())
+        .collect::<BTreeMap<u64, T>>(),
+    )
+    .into_implicit_map(null_value)
+    .values
+    .into_vec()
+    .into_pyarray(module.py())
+    .into_any()
   })
 }
 

@@ -21,7 +21,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 #healpix = {version=">=0.7.3", package="cdshealpix"}
-healpix = { rev = "54e6f926fd438e82cda0c688560049e84b94319e", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
+healpix = { rev = "9d717cf", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
 mapproj = "0.4.0"
 rayon = "1.11"
 
