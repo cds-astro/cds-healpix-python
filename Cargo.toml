@@ -10,7 +10,7 @@ keywords = ["healpix", "astronomy"]
 documentation = "https://cds-astro.github.io/cds-healpix-python"
 homepage = "https://github.com/cds-astro/cds-healpix-python"
 repository = "https://github.com/cds-astro/cds-healpix-python"
-edition = "2021"
+edition = "2024"
 
 [badges]
 maintenance = { status = "actively-developed" }
@@ -22,8 +22,8 @@ crate-type = ["cdylib"]
 [dependencies]
 #healpix = {version=">=0.7.3", package="cdshealpix"}
 healpix = { rev = "54e6f926fd438e82cda0c688560049e84b94319e", package = "cdshealpix", git = 'https://github.com/cds-astro/cds-healpix-rust' }
-mapproj = "0.3.0"
-rayon = "1.10"
+mapproj = "0.4.0"
+rayon = "1.11"
 
 [dependencies.numpy]
 version = "0.27"
