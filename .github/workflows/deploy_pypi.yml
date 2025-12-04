@@ -36,7 +36,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp*-cp3{9,10,11,12,13,14}/bin; do
+           for PYBIN in /opt/python/cp*-cp3{9,10,11,12,13,14,14t}/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install --upgrade pip
              "${PYBIN}/pip" install maturin
@@ -94,7 +94,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp*-cp3{12,13,14}/bin; do
+           for PYBIN in /opt/python/cp*-cp3{12,13,14,14t}/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install --upgrade pip
              "${PYBIN}/pip" install maturin
@@ -124,7 +124,7 @@ jobs:
          ${{ env.img }} \
          bash -exc 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
            source $HOME/.cargo/env && \
-           for PYBIN in /opt/python/cp*-cp3{9,10,11,12,13,14}/bin; do
+           for PYBIN in /opt/python/cp*-cp3{9,10,11,12,13,14,14t}/bin; do
              echo "Loop on PYBIN: $PYBIN"
              "${PYBIN}/pip" install --upgrade pip
              "${PYBIN}/pip" install maturin
@@ -144,7 +144,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13','3.14']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13','3.14','3.14t']
     steps:
      # Checkout the project
      - uses: actions/checkout@v4
@@ -178,7 +178,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13','3.14']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13','3.14','3.14t']
     steps:
      # Checkout the project
      - uses: actions/checkout@v4
