@@ -8,20 +8,20 @@ use numpy::{
   IntoPyArray, Ix3, NotContiguousError, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1,
 };
 use pyo3::{
-  Bound, PyErr, PyResult,
   exceptions::{PyIOError, PyValueError},
   prelude::*,
   types::{PyAny, PyModule, PyTuple},
+  Bound, PyErr, PyResult,
 };
 
 use healpix::{
   depth_from_n_hash_unsafe,
   nested::map::{
     fits::write::{write_explicit_skymap_fits_from_parts, write_implicit_skymap_fits},
-    img::{PosConversion, Val, to_skymap_img_default},
+    img::{to_skymap_img_default, PosConversion, Val},
     skymap::{
-      SkyMap, SkyMapEnum, SkyMapValue, explicit::ExplicitSkyMapBTree,
-      implicit::ImplicitSkyMapArrayRef,
+      explicit::ExplicitSkyMapBTree, implicit::ImplicitSkyMapArrayRef, SkyMap, SkyMapEnum,
+      SkyMapValue,
     },
   },
 };
@@ -162,7 +162,7 @@ pub fn read_skymap_explicit<'py>(
     })
 }
 
-/// Enum use to store the null value for all suuported types.
+/// Enum use to store the null value for all supported types.
 #[derive(FromPyObject)]
 pub enum NullValue {
   I64(i64),
@@ -189,7 +189,7 @@ impl NullValue {
   }
   pub fn unwrap_i64(self) -> Result<i64, String> {
     match self {
-      Self::I64(val) => Ok(val),
+      Self::I64(val) => Ok(val as i64),
       _ => Err("Not a i64".to_string()),
     }
   }
@@ -201,7 +201,7 @@ impl NullValue {
   }
   pub fn unwrap_f64(self) -> Result<f64, String> {
     match self {
-      Self::F64(val) => Ok(val),
+      Self::F64(val) => Ok(val as f64),
       _ => Err("Not a f64".to_string()),
     }
   }

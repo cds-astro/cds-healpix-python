@@ -1,1 +1,1 @@
-from .skymap import SkymapImplicit  # noqa: F401
+from .skymap import SkymapImplicit, SkymapExplicit  # noqa: F401
