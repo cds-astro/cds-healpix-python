@@ -47,7 +47,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     # to allow usage of a folder not in docs
-    "sphinxcontrib.collections",
+    "sphinx_collections",
     "sphinx.ext.githubpages",
     "sphinx.ext.autosummary",
     # Extension for plotting image in the doc
