@@ -94,7 +94,14 @@ This module provides a minimal interface to interact with Skymaps, as defined in
 `data format for gamma ray astronomy specification
 <https://gamma-astro-data-formats.readthedocs.io/en/latest/skymaps/healpix/index.html#skymap-hdu>`_.
 
-.. autoclass:: cdshealpix.skymap.Skymap
-    :members:
+.. automodule:: cdshealpix.skymap
+
+    .. autosummary::
+        :toctree: stubs
+
+        SkymapExplicit
+        SkymapImplicit
+
+
 
 .. _cdshealpix: https://github.com/cds-astro/cds-healpix-python

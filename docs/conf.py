@@ -64,8 +64,8 @@ extensions = [
     "sphinx_gallery.load_style",
 ]
 default_role = "py:obj"
-numpydoc_class_members_toctree = False
-numpydoc_show_class_members = False
+numpydoc_class_members_toctree = True
+numpydoc_show_class_members = True
 autosummary_generate = False
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
