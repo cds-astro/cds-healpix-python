@@ -47,6 +47,7 @@ class SkymapImplicit:
         Examples
         --------
         >>> from cdshealpix.skymap import SkymapImplicit
+        >>> import numpy as np
         >>> map = SkymapImplicit(np.array([1.1] * 11 + [np.nan]))
         >>> map.order
         0
@@ -295,8 +296,7 @@ class SkymapExplicit:
     @keys.setter
     def keys(self, keys):
         # only makes a copy if it was not C-contiguous in the first place
-        keys = np.ascontiguousarray(keys)
-        keys.dtype = "uint64"
+        keys = np.ascontiguousarray(keys, dtype="uint64")
         if keys.ndim != 1:
             raise ValueError(
                 "Skymap keys should be one-dimensional. Got an array of "
