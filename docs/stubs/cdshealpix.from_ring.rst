@@ -1,4 +1,4 @@
-cdshealpix.from\_ring
+﻿cdshealpix.from\_ring
 =====================
 
 .. currentmodule:: cdshealpix

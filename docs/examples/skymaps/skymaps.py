@@ -3,5 +3,5 @@
 from cdshealpix.skymap import SkymapImplicit
 
 skymap = SkymapImplicit.from_fits("skymap.fits")
-print(skymap.depth)
+print(skymap.order)
 skymap.quick_plot()

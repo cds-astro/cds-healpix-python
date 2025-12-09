@@ -242,6 +242,7 @@ class SkymapExplicit:
         Examples
         --------
         >>> from cdshealpix.skymap import SkymapExplicit
+        >>> import numpy as np
         >>> map = SkymapExplicit(np.array([0, 1, 2]), np.array([2, 3, 4]), 0)
         >>> map.order
         0

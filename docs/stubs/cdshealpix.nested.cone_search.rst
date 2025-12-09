@@ -1,4 +1,4 @@
-cdshealpix.nested.cone\_search
+﻿cdshealpix.nested.cone\_search
 ==============================
 
 .. currentmodule:: cdshealpix.nested

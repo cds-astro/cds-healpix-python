@@ -1,4 +1,4 @@
-cdshealpix.ring.vertices
+﻿cdshealpix.ring.vertices
 ========================
 
 .. currentmodule:: cdshealpix.ring

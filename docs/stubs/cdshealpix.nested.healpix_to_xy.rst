@@ -1,4 +1,4 @@
-cdshealpix.nested.healpix\_to\_xy
+﻿cdshealpix.nested.healpix\_to\_xy
 =================================
 
 .. currentmodule:: cdshealpix.nested

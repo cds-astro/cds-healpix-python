@@ -1,4 +1,4 @@
-cdshealpix.ring.vertices\_skycoord
+﻿cdshealpix.ring.vertices\_skycoord
 ==================================
 
 .. currentmodule:: cdshealpix.ring
