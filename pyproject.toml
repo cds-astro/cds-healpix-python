@@ -18,6 +18,7 @@ classifiers = [
 description = "A healpix manipulation library."
 readme = "README.md"
 keywords = ["astronomy", "healpix"]
+license = "BSD-3-Clause"
 
 [project.optional-dependencies]
 plot = ["matplotlib"]

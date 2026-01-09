@@ -26,14 +26,14 @@ mapproj = "0.3.0"
 rayon = "1.10"
 
 [dependencies.numpy]
-version = "0.26"
+version = "0.27"
 
 [dependencies.pyo3]
-version = "0.26"
+version = "0.27"
 features = ["extension-module"]
 
 [dependencies.ndarray]
-version = "0.16"
+version = "0.17"
 default-features = false # do not include the default features, and optionally
                          # cherry-pick individual features
 features = ["rayon"]
