@@ -8,8 +8,9 @@
 
 ### Changed
 
-* [BREAKING] Class `Skymap` has been renamed into `SkymapImplicit`. The whole skymap
-  sub-module has been reworked to add the support of explicit skymaps. [#45]
+* [BREAKING] Class `Skymap` now has an attribute `skymap` that contains either a
+  `SkymapExplicit` or a `SkymapImplicit`. The whole skymap sub-module has been reworked
+  to add the support of explicit skymaps. [#45]
 
 ## 0.7.2
 

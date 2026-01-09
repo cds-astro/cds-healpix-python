@@ -8,8 +8,11 @@ The coordinates system should be 'CEL'.
 """
 from .. import cdshealpix
 
+from enum import Enum
 from pathlib import Path
 from typing import Union
+
+from astropy.io.fits import open as open_fits
 
 try:
     import matplotlib.pyplot as plt
@@ -365,3 +368,118 @@ class SkymapExplicit:
             ),
             null_value=null_value,
         )
+
+
+class Scheme(Enum):  # noqa: D101
+    IMPLICIT = 0
+    EXPLICIT = 1
+
+
+class Skymap:
+    """A Skymap can be either explicit or implicit."""
+
+    def __init__(self, skymap: Union[SkymapExplicit, SkymapImplicit]):
+        """Instantiate a Skymap.
+
+        Parameters
+        ----------
+        skymap : Union[SkymapExplicit, SkymapImplicit]
+            The content of the skymap.
+        """
+        self._skymap = skymap
+        self._scheme = None
+
+    @property
+    def scheme(self):
+        """The scheme of the skymap.
+
+        Returns
+        -------
+        Scheme
+            Can be either `Scheme.EXPLICIT` or `Scheme.IMPLICIT`
+        """
+        if self._scheme:
+            return self._scheme
+        if isinstance(self.skymap, SkymapExplicit):
+            self._scheme = Scheme.EXPLICIT
+            return self._scheme
+        self._scheme = Scheme.IMPLICIT
+        return self._scheme
+
+    @property
+    def skymap(self):
+        """The Skymap object.
+
+        Returns
+        -------
+        Union[SkymapImplicit, SkymapExplicit]
+        """
+        return self._skymap
+
+    @skymap.setter
+    def skymap(self, skymap):
+        if isinstance(skymap, SkymapExplicit):
+            self._scheme = Scheme.EXPLICIT
+        if isinstance(skymap, SkymapImplicit):
+            self._scheme = Scheme.IMPLICIT
+        self._skymap = skymap
+
+    @classmethod
+    def from_fits(cls, path: Union[str, Path]):
+        """Read a Skymap from a fits file.
+
+        This reader supports files which are:
+
+        - in the nested scheme
+        - and the explicit or implicit format
+
+        Parameters
+        ----------
+        path : str, `pathlib.Path`
+            The file's path.
+
+        Returns
+        -------
+        `Skymap`
+            A skymap object. It contains either a `SkymapImplicit` or a `SkymapExplicit`
+        """
+        with open(path, "rb") as f:
+            scheme = open_fits(f)[1].header["INDXSCHM"]
+        if scheme == "EXPLICIT":
+            return cls(SkymapExplicit.from_fits(path))
+        if scheme == "IMPLICIT":
+            return cls(SkymapImplicit.from_fits(path))
+        raise ValueError("Unsupported INDXSCHM.")
+
+    def to_fits(self, path):
+        """Write a `Skymap` in a FITS file.
+
+        It conserves the current scheme of the `Skymap`.
+
+        Parameters
+        ----------
+        path : `str`, `pathlib.Path`
+            The file's path.
+        """
+        self.skymap.to_fits(path)
+
+    def quick_plot(self, *, size=256, convert_to_gal=True, path=None):
+        """Preview a skymap in the Mollweide projection.
+
+        Parameters
+        ----------
+        size : `int`, optional
+            The size of the plot in the y-axis in pixels.
+            It fixes the resolution of the image. By default 256
+        convert_to_gal : `bool`, optional
+            Should the image be converted into a galactic frame? by default True
+        path : `str` or `pathlib.Path`, optional
+            If different from none, the image will not only be displayed, but also saved
+            at the given location. By default None
+        """
+        if self.scheme == Scheme.EXPLICIT:
+            self.skymap.to_implicit().quick_plot(
+                size=size, convert_to_gal=convert_to_gal, path=path
+            )
+        else:
+            self.skymap.quick_plot(size=size, convert_to_gal=convert_to_gal, path=path)
