@@ -1038,7 +1038,7 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
         :math:`N \times 4` arrays where N is the number of ``lon`` (and ``lat``) given.
         For each given sky position, 4 HEALPix cells in the nested configuration are returned.
         Each cell is associated with a specific weight. The 4 weights sum up to 1.
-        For numpy masked arrays, invalid positions are flaged with a `True` while valid
+        For numpy masked arrays, invalid positions are flagged with a `True` while valid
         coordinates are marked as `False`. See numpy docs for more information.
         https://numpy.org/doc/stable/reference/maskedarray.html
 
@@ -1047,7 +1047,6 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
     >>> from cdshealpix import bilinear_interpolation
     >>> from astropy.coordinates import Longitude, Latitude
     >>> import astropy.units as u
-    >>> import numpy as np
     >>> lon = Longitude([10, 25], u.deg)
     >>> lat = Latitude([5, 10], u.deg)
     >>> depth = 5
@@ -1065,10 +1064,10 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
 
     mask_invalid = mask_lon_invalid | mask_lat_invalid
 
-    lon = np.ma.fix_invalid(lon, mask_invalid, fill_value=0 * u.deg)
-    lat = np.ma.fix_invalid(lat, mask_invalid, fill_value=0 * u.deg)
-
-    mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
+    if mask_invalid is not np.False_:
+        lon = np.ma.fix_invalid(lon, mask_invalid, fill_value=0 * u.deg)
+        lat = np.ma.fix_invalid(lat, mask_invalid, fill_value=0 * u.deg)
+        mask_invalid = np.repeat(mask_invalid[:, np.newaxis], 4, axis=mask_invalid.ndim)
 
     ipix = np.empty(shape=(*num_coords, 4), dtype=np.uint64)
     weights = np.empty(shape=(*num_coords, 4), dtype=np.float64)
@@ -1077,6 +1076,9 @@ def bilinear_interpolation(lon, lat, depth, num_threads=0):
 
     # Call the rust bilinear interpolation code
     cdshealpix.bilinear_interpolation(depth, lon, lat, ipix, weights, num_threads)
+
+    if mask_invalid is np.False_:
+        return ipix, weights
 
     ipix_masked_array = np.ma.masked_array(ipix, mask=mask_invalid)
     weights_masked_array = np.ma.masked_array(weights, mask=mask_invalid)
