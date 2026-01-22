@@ -1,4 +1,4 @@
-cdshealpix.nested.skycoord\_to\_healpix
+﻿cdshealpix.nested.skycoord\_to\_healpix
 =======================================
 
 .. currentmodule:: cdshealpix.nested

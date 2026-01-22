@@ -5,21 +5,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API &#8212; cdshealpix 0.7.2 documentation</title>
+    <title>API &#8212; cdshealpix 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css?v=177ce38d" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
     
-    <script src="_static/documentation_options.js?v=6dfdf7c3"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=486e5634"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="_static/sidebar.js"></script>
     <script type="text/javascript" src="_static/copybutton.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -64,7 +64,7 @@
 	 |
       </li>
       <li>
-	<a href="index.html">cdshealpix 0.7.2 documentation</a>
+	<a href="index.html">cdshealpix 0.8.0 documentation</a>
 	 &#187;
       </li>
       
@@ -205,62 +205,131 @@ While in the nested scheme, <code class="docutils literal notranslate"><span cla
 <p>This module provides a minimal interface to interact with Skymaps, as defined in the
 <a class="reference external" href="https://gamma-astro-data-formats.readthedocs.io/en/latest/skymaps/healpix/index.html#skymap-hdu">data format for gamma ray astronomy specification</a>.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cdshealpix.skymap.</span></span><span class="sig-name descname"><span class="pre">Skymap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.Skymap" title="Link to this definition">¶</a></dt>
-<dd><p>A Skymap, containing values to associate to healpix cells.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap.depth">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">depth</span></span><a class="headerlink" href="#cdshealpix.skymap.Skymap.depth" title="Link to this definition">¶</a></dt>
-<dd><p>The depth of the skymap.</p>
-<p>Avoids the costly log calculation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a></dt><dd><p>The depth of the skymap.</p>
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapExplicit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cdshealpix.skymap.</span></span><span class="sig-name descname"><span class="pre">SkymapExplicit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapExplicit" title="Link to this definition">¶</a></dt>
+<dd><p>An explicit Skymap, containing values to associate to healpix cells.</p>
+<p><code class="docutils literal notranslate"><span class="pre">values</span></code> is a 2D numpy array.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapExplicit.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapExplicit.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Instantiate an explicit skymap.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>keys</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>Is a one-dimensional array-like. Contains the HEALPix number.</p>
+</dd>
+<dt><strong>values</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>Is a one dimensional array-like.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Skymap</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="n">Skymap</span><span class="o">.</span><span class="n">from_array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">12</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="o">.</span><span class="n">depth</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkymapExplicit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="n">SkymapExplicit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="o">.</span><span class="n">order</span>
 <span class="go">0</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap.from_array">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.Skymap.from_array" title="Link to this definition">¶</a></dt>
-<dd><p>Create a skymap from an array.</p>
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapExplicit.from_fits">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapExplicit.from_fits" title="Link to this definition">¶</a></dt>
+<dd><p>Read an explicit skymap in the nested schema from a FITS file.</p>
+<p>This reader supports files which are:</p>
+<ul class="simple">
+<li><p>in the nested scheme</p></li>
+<li><p>and the explicit format</p></li>
+</ul>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
-<dt><strong>values</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a></span></dt><dd><p>An array-like object. It should be one-dimensional, and its length should be
-the number of cells in a HEALPix order.
-It should be in the nested ordering (not tested).</p>
+<dt><strong>path</strong><span class="classifier">str, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a></span></dt><dd><p>The file’s path.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><a class="reference internal" href="#cdshealpix.skymap.Skymap" title="cdshealpix.skymap.Skymap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Skymap</span></code></a></dt><dd><p>A skymap object.</p>
+<dt><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit" title="cdshealpix.skymap.SkymapExplicit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkymapExplicit</span></code></a></dt><dd><p>An explicit skymap. Its values are in a 2D numpy array which data type in
+inferred from the FITS header.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapExplicit.to_fits">
+<span class="sig-name descname"><span class="pre">to_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapExplicit.to_fits" title="Link to this definition">¶</a></dt>
+<dd><p>Write an explicit Skymap in a fits file.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a></span></dt><dd><p>The file’s path.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapExplicit.to_implicit">
+<span class="sig-name descname"><span class="pre">to_implicit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">null_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapExplicit.to_implicit" title="Link to this definition">¶</a></dt>
+<dd><p>Convert this <a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit" title="cdshealpix.skymap.SkymapExplicit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkymapExplicit</span></code></a> into a <a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit" title="cdshealpix.skymap.SkymapImplicit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkymapImplicit</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>null_value: `int` or `float`</strong></dt><dd><p>Is the value to be used as a null to fill the implicit skymap where the
+explicit one has gaps. Its type should be compatible with the type of
+values. It defaults to 0.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Skymap</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkymapExplicit</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">skymap</span> <span class="o">=</span><span class="n">Skymap</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="n">SkymapExplicit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.1</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="o">.</span><span class="n">to_implicit</span><span class="p">(</span><span class="n">null_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="go">array([2.1, 3.2, 4.4, nan, nan, nan, nan, nan, nan, nan, nan, nan])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">cdshealpix.skymap.</span></span><span class="sig-name descname"><span class="pre">SkymapImplicit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">null_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit" title="Link to this definition">¶</a></dt>
+<dd><p>An implicit Skymap, containing values to associate to healpix cells.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">null_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Instantiate an implicit skymap.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>values</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.array</span></code></span></dt><dd><p>Is a one dimensional array-like. It should have</p>
+</dd>
+<dt><strong>null_value</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.number" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number</span></code></a>, optional</span></dt><dd><p>Is the value to use in case of missing data. It defaults to 0.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkymapImplicit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span> <span class="o">=</span> <span class="n">SkymapImplicit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">11</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">map</span><span class="o">.</span><span class="n">order</span>
+<span class="go">0</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap.from_fits">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.Skymap.from_fits" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit.from_fits">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit.from_fits" title="Link to this definition">¶</a></dt>
 <dd><p>Read a skymap in the nested schema from a FITS file.</p>
 <p>This reader supports files which are:</p>
 <ul class="simple">
@@ -277,7 +346,7 @@ It should be in the nested ordering (not tested).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt><a class="reference internal" href="#cdshealpix.skymap.Skymap" title="cdshealpix.skymap.Skymap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Skymap</span></code></a></dt><dd><p>A skymap. Its values are in a numpy array which data type in inferred from
+<dt><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit" title="cdshealpix.skymap.SkymapImplicit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkymapImplicit</span></code></a></dt><dd><p>A skymap. Its values are in a numpy array which data type in inferred from
 the FITS header.</p>
 </dd>
 </dl>
@@ -286,8 +355,43 @@ the FITS header.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap.quick_plot">
-<span class="sig-name descname"><span class="pre">quick_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_gal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.Skymap.quick_plot" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit.to_fits">
+<span class="sig-name descname"><span class="pre">to_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit.to_fits" title="Link to this definition">¶</a></dt>
+<dd><p>Write an implicit Skymap in a fits file.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a></span></dt><dd><p>The file’s path.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit.to_explicit">
+<span class="sig-name descname"><span class="pre">to_explicit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit.to_explicit" title="Link to this definition">¶</a></dt>
+<dd><p>Convert this implicit skymap into an explicit one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit" title="cdshealpix.skymap.SkymapExplicit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SkymapExplicit</span></code></a></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkymapImplicit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">implicit_map</span> <span class="o">=</span> <span class="n">SkymapImplicit</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">null_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">explicit_map</span> <span class="o">=</span> <span class="n">implicit_map</span><span class="o">.</span><span class="n">to_explicit</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">explicit_map</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="n">explicit_map</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="go">[ 8  9 10 11] [1 2 3 4]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cdshealpix.skymap.SkymapImplicit.quick_plot">
+<span class="sig-name descname"><span class="pre">quick_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_gal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.SkymapImplicit.quick_plot" title="Link to this definition">¶</a></dt>
 <dd><p>Preview a skymap in the Mollweide projection.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -299,20 +403,6 @@ It fixes the resolution of the image. By default 256</p>
 </dd>
 <dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a>, optional</span></dt><dd><p>If different from none, the image will not only be displayed, but also saved
 at the given location. By default None</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="cdshealpix.skymap.Skymap.to_fits">
-<span class="sig-name descname"><span class="pre">to_fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cdshealpix.skymap.Skymap.to_fits" title="Link to this definition">¶</a></dt>
-<dd><p>Write a Skymap in a fits file.</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl>
-<dt><strong>path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a></span></dt><dd><p>The file’s path.</p>
 </dd>
 </dl>
 </dd>
@@ -337,12 +427,19 @@ at the given location. By default None</p>
 <li><a class="reference internal" href="#module-cdshealpix.nested">cdshealpix.nested</a></li>
 <li><a class="reference internal" href="#cdshealpix-ring">cdshealpix.ring</a></li>
 <li><a class="reference internal" href="#cdshealpix-skymap">cdshealpix.skymap</a><ul>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap"><code class="docutils literal notranslate"><span class="pre">Skymap</span></code></a><ul>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap.depth"><code class="docutils literal notranslate"><span class="pre">Skymap.depth</span></code></a></li>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap.from_array"><code class="docutils literal notranslate"><span class="pre">Skymap.from_array()</span></code></a></li>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap.from_fits"><code class="docutils literal notranslate"><span class="pre">Skymap.from_fits()</span></code></a></li>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap.quick_plot"><code class="docutils literal notranslate"><span class="pre">Skymap.quick_plot()</span></code></a></li>
-<li><a class="reference internal" href="#cdshealpix.skymap.Skymap.to_fits"><code class="docutils literal notranslate"><span class="pre">Skymap.to_fits()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit"><code class="docutils literal notranslate"><span class="pre">SkymapExplicit</span></code></a><ul>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit.__init__"><code class="docutils literal notranslate"><span class="pre">SkymapExplicit.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit.from_fits"><code class="docutils literal notranslate"><span class="pre">SkymapExplicit.from_fits()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit.to_fits"><code class="docutils literal notranslate"><span class="pre">SkymapExplicit.to_fits()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapExplicit.to_implicit"><code class="docutils literal notranslate"><span class="pre">SkymapExplicit.to_implicit()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit</span></code></a><ul>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit.__init__"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit.from_fits"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit.from_fits()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit.to_fits"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit.to_fits()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit.to_explicit"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit.to_explicit()</span></code></a></li>
+<li><a class="reference internal" href="#cdshealpix.skymap.SkymapImplicit.quick_plot"><code class="docutils literal notranslate"><span class="pre">SkymapImplicit.quick_plot()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -384,8 +481,8 @@ at the given location. By default None</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2025, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
+    &copy; Copyright 2026, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 9.1.0. &nbsp;
   </p>
 </footer>
   </body>

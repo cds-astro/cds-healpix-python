@@ -1,4 +1,4 @@
-cdshealpix.ring.lonlat\_to\_healpix
+﻿cdshealpix.ring.lonlat\_to\_healpix
 ===================================
 
 .. currentmodule:: cdshealpix.ring

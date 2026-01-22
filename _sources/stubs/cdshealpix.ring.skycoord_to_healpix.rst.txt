@@ -1,4 +1,4 @@
-cdshealpix.ring.skycoord\_to\_healpix
+﻿cdshealpix.ring.skycoord\_to\_healpix
 =====================================
 
 .. currentmodule:: cdshealpix.ring

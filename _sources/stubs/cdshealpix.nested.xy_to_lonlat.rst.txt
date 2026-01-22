@@ -1,4 +1,4 @@
-cdshealpix.nested.xy\_to\_lonlat
+﻿cdshealpix.nested.xy\_to\_lonlat
 ================================
 
 .. currentmodule:: cdshealpix.nested

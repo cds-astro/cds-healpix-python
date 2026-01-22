@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Examples &#8212; cdshealpix 0.7.2 documentation</title>
+    <title>Examples &#8212; cdshealpix 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=177ce38d" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
@@ -13,14 +13,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-gallery.css?v=26227f6e" />
     
-    <script src="../_static/documentation_options.js?v=6dfdf7c3"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=486e5634"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="text/javascript" src="../_static/sidebar.js"></script>
     <script type="text/javascript" src="../_static/copybutton.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -65,7 +63,7 @@
 	 |
       </li>
       <li>
-	<a href="../index.html">cdshealpix 0.7.2 documentation</a>
+	<a href="../index.html">cdshealpix 0.8.0 documentation</a>
 	 &#187;
       </li>
       
@@ -403,16 +401,16 @@
 <section id="skymaps">
 <h2>Skymaps<a class="headerlink" href="#skymaps" title="Link to this heading">¶</a></h2>
 <p>The skymap sub-module allows to manipulate easily all-sky skymaps in the nested ordering
-and implicit schema.
-The class can be instantiated either from a fits file, with <code class="xref py py-obj docutils literal notranslate"><span class="pre">Skymap.from_fits</span></code>, or
-directly with a numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.3)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a> containing the values associated to each HEALPix
-pixel.</p>
+and implicit or explicit schemas.
+The class can be instantiated either from a fits file, with
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fits</span></code> / <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fits</span></code>, or directly
+with a numpy <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.array</span></code></a> containing the values associated to each HEALPix pixel.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Read and plots a quick preview of a skymap in a FITS file.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">Skymap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cdshealpix.skymap</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkymapImplicit</span>
 
-<span class="n">skymap</span> <span class="o">=</span> <span class="n">Skymap</span><span class="o">.</span><span class="n">from_fits</span><span class="p">(</span><span class="s2">&quot;skymap.fits&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
+<span class="n">skymap</span> <span class="o">=</span> <span class="n">SkymapImplicit</span><span class="o">.</span><span class="n">from_fits</span><span class="p">(</span><span class="s2">&quot;skymap.fits&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">skymap</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
 <span class="n">skymap</span><span class="o">.</span><span class="n">quick_plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -495,8 +493,8 @@ pixel.</p>
        rel="nofollow">Page Source</a> &nbsp;
     <a href="#">Back to Top</a></p>
   <p>
-    &copy; Copyright 2025, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 8.1.3. &nbsp;
+    &copy; Copyright 2026, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 9.1.0. &nbsp;
   </p>
 </footer>
   </body>

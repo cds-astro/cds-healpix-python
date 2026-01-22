@@ -1,4 +1,4 @@
-cdshealpix.nested.polygon\_search
+﻿cdshealpix.nested.polygon\_search
 =================================
 
 .. currentmodule:: cdshealpix.nested
