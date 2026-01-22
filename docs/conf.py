@@ -66,7 +66,7 @@ extensions = [
 default_role = "py:obj"
 numpydoc_class_members_toctree = False
 numpydoc_show_class_members = False
-autosummary_generate = False
+autosummary_generate = True
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 bibtex_bibfiles = ["references.bib"]

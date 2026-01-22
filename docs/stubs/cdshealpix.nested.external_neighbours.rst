@@ -1,4 +1,4 @@
-cdshealpix.nested.external\_neighbours
+﻿cdshealpix.nested.external\_neighbours
 ======================================
 
 .. currentmodule:: cdshealpix.nested

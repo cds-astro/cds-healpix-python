@@ -2,9 +2,17 @@
 
 ## Unreleased
 
+## 0.8.0
+
 ### Fixed
 
 * Bilinear interpolation fixed for numpy<2
+
+### Changed
+
+* [BREAKING] Class `Skymap` now has an attribute `skymap` that contains either a
+  `SkymapExplicit` or a `SkymapImplicit`. The whole skymap sub-module has been reworked
+  to add the support of explicit skymaps. [#45]
 
 ## 0.7.2
 

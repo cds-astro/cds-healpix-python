@@ -51,10 +51,10 @@ Skymaps
 =======
 
 The skymap sub-module allows to manipulate easily all-sky skymaps in the nested ordering
-and implicit schema.
-The class can be instantiated either from a fits file, with `Skymap.from_fits`, or
-directly with a numpy `numpy.array` containing the values associated to each HEALPix
-pixel.
+and implicit or explicit schemas.
+The class can be instantiated either from a fits file, with
+`~skymap.SkymapImplicit.from_fits` / `~skymap.SkymapExplicit.from_fits`, or directly
+with a numpy `numpy.array` containing the values associated to each HEALPix pixel.
 
 .. plot:: examples/skymaps/skymaps.py
     :include-source:

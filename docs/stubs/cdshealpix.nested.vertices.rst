@@ -1,4 +1,4 @@
-cdshealpix.nested.vertices
+﻿cdshealpix.nested.vertices
 ==========================
 
 .. currentmodule:: cdshealpix.nested

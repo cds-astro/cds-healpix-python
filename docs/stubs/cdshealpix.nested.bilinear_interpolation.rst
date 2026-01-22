@@ -1,4 +1,4 @@
-cdshealpix.nested.bilinear\_interpolation
+﻿cdshealpix.nested.bilinear\_interpolation
 =========================================
 
 .. currentmodule:: cdshealpix.nested
