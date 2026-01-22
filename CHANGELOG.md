@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.8.0
+
 ### Fixed
 
 * Bilinear interpolation fixed for numpy<2
