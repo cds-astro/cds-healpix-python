@@ -161,9 +161,9 @@ jobs:
        env:
         MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
        run: |
-         #python3 -m pip install maturin
+         #python3 -m pip install maturin==1.12.4
          pip install --upgrade pip
-         pip install maturin
+         pip install maturin==1.12.4
          #maturin build --release --no-sdist
          #maturin publish --no-sdist --skip-existing
          maturin -V
@@ -195,11 +195,10 @@ jobs:
        env:
         MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN_FXP }}
        run: |
-         #python3 -m pip install maturin
          rustup target add aarch64-apple-darwin
          rustup target add x86_64-apple-darwin
          pip install --upgrade pip
-         pip install maturin
+         pip install maturin==1.12.4
          maturin -V
          rustc -vV
          echo "${PYBIN}/python"

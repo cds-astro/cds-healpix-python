@@ -32,7 +32,7 @@ jobs:
          virtualenv cdshealpixenv
          source cdshealpixenv/bin/activate
          # Install maturin
-         pip install maturin
+         pip install maturin==1.12.4
          # Build and install cdshealpix
          maturin develop --release
          # Install dependencies needed to run benches

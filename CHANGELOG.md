@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.8.1
+
+### Fixed
+
+* bump dependency to cds-healpix-rust 0.9.1 to fix wasm build
+
 ## 0.8.0
 
 ### Fixed

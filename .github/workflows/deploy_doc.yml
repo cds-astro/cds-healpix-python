@@ -40,7 +40,7 @@ jobs:
           source cdshealpixenv/bin/activate
           pip install --upgrade pip
           # - Install maturin
-          pip install maturin
+          pip install maturin==1.12.4
           # - Build and install cdshealpix
           maturin develop --release
           # - Install dependencies needed to build docs
