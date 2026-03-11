@@ -38,7 +38,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin
+         pip install maturin==1.12.4
          maturin -V
          maturin develop --release
          # Install dependencies
@@ -74,7 +74,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin
+         pip install maturin==1.12.4
          maturin -V
          maturin build --release --target universal2-apple-darwin
          maturin develop --release
@@ -111,7 +111,7 @@ jobs:
           .\cdshealpixenv\Scripts\activate
           pip install --upgrade pip
           # Install and use maturin
-          pip install maturin
+          pip install maturin==1.12.4
           maturin -V
           maturin develop --release
           # Install dependencies
@@ -139,7 +139,7 @@ jobs:
           source cdshealpixenv/bin/activate
           # Install maturin
           pip install --upgrade pip
-          pip install maturin
+          pip install maturin==1.12.4
           sudo apt-get install pandoc
           maturin -V
           # Build and install cdshealpix

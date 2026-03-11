@@ -31,10 +31,10 @@ jobs:
       - shell: bash
         # rust version is pinned for compatibility with emscripten 3.1.58
         run: |
-          pip install maturin
+          pip install maturin==1.12.4
           # rustup install nightly-2025-02-01
           # rustup default nightly-2025-02-01
           rustup install nightly
           rustup default nightly
           rustup target add wasm32-unknown-emscripten
-          maturin build --target wasm32-unknown-emscripten -i 3.12
+          maturin build --target wasm32-unknown-emscripten -i 3.13
