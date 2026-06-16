@@ -2,6 +2,6 @@
 
 from cdshealpix.skymap import SkymapImplicit
 
-skymap = SkymapImplicit.from_fits("skymap.fits")
-print(skymap.order)
-skymap.quick_plot()
+my_skymap = SkymapImplicit.from_fits("skymap.fits")
+print(my_skymap.order)
+my_skymap.quick_plot()
