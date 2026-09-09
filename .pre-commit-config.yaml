@@ -1,7 +1,7 @@
 repos:
   # General pre-commits
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v6.0.0
     hooks:
       - id: detect-private-key
         description: "Check accidental private keys in code"
@@ -16,12 +16,12 @@ repos:
   # For python files
   - repo: https://github.com/psf/black
     # Code style
-    rev: 23.10.1
+    rev: 26.5.1
     hooks:
       - id: black
   # Same tool but for Jupyter notebooks
   - repo: https://github.com/nbQA-dev/nbQA
-    rev: 1.7.0
+    rev: 1.9.1
     hooks:
       - id: nbqa-black
         name: nbqa-black
@@ -30,7 +30,7 @@ repos:
         require_serial: true
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Fast linter to replace flake8
-    rev: 'v0.1.4'
+    rev: 'v0.16.6'
     hooks:
      - id: ruff
        fail_fast: true

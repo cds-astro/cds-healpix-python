@@ -2,18 +2,19 @@
 [project]
 name = "cdshealpix"
 dynamic = ["version"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
-    "astropy<5.3; python_version == '3.8'",
-    "astropy; python_version > '3.8'"
+    "astropy; python_version > '3.9'"
 ]
 classifiers = [
     "Programming Language :: Rust",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 description = "A healpix manipulation library."
 readme = "README.md"
@@ -52,11 +53,22 @@ frozen = false
 # Require Cargo.lock is up to date
 locked = false
 
+
+[tool.maturin.generate-ci.github.emscripten]
+
+[tool.maturin.generate-ci.github.linux]
+
+[tool.maturin.generate-ci.github.musllinux]
+
+[tool.maturin.generate-ci.github.macos]
+
+[tool.maturin.generate-ci.github.windows]
+
 [tool.ruff]
 fix = true
 force-exclude = true
 output-format = "grouped"
-target-version = "py37"
+target-version = "py39"
 
 # E501: line length (done by black in our case)
 exclude = ["conf.py"]

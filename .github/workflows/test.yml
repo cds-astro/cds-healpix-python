@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15']
     steps:
      # Checkout the project
      - name: "Checkout branch"
@@ -38,7 +38,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin==1.12.4
+         pip install maturin
          maturin -V
          maturin develop --release
          # Install dependencies
@@ -51,7 +51,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15']
     steps:
      # Checkout the project
      - name: "Checkout branch"
@@ -74,7 +74,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin==1.12.4
+         pip install maturin
          maturin -V
          maturin build --release --target universal2-apple-darwin
          maturin develop --release
@@ -88,7 +88,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15']
     steps:
       # Checkout the project
       - name: "Checkout branch"
@@ -111,7 +111,7 @@ jobs:
           .\cdshealpixenv\Scripts\activate
           pip install --upgrade pip
           # Install and use maturin
-          pip install maturin==1.12.4
+          pip install maturin
           maturin -V
           maturin develop --release
           # Install dependencies
@@ -120,7 +120,7 @@ jobs:
           python -m pytest -v
           deactivate
 
-  # Build the doc and run the tests in the doc (only for python 3.12 on ubuntu)
+  # Build the doc and run the tests in the doc (only for python 3.14 on ubuntu)
   test-doc:
     runs-on: ubuntu-latest
     steps:
@@ -129,7 +129,7 @@ jobs:
       - name: "Set up Python 3.12 on Ubuntu"
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.14'
       - name: "Build and test doc"
         run: |
           # Install virtualenv
@@ -139,7 +139,7 @@ jobs:
           source cdshealpixenv/bin/activate
           # Install maturin
           pip install --upgrade pip
-          pip install maturin==1.12.4
+          pip install maturin
           sudo apt-get install pandoc
           maturin -V
           # Build and install cdshealpix
