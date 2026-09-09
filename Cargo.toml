@@ -25,12 +25,12 @@ healpix = {version="0.9.1", package="cdshealpix"}
 mapproj = "0.4.0"
 rayon = "1.11"
 
-[dependencies.numpy]
-version = "0.27"
+[dependencies.numpy] # https://github.com/PyO3/rust-numpy
+version = "0.29"
 
-[dependencies.pyo3]
-version = "0.27"
-features = ["extension-module"]
+[dependencies.pyo3] # https://github.com/PyO3/pyo3
+version = "0.29"
+features = ["extension-module", "abi3-py310"]
 
 [dependencies.ndarray]
 version = "0.17"
