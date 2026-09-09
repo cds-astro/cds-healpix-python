@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+* support python 3.15
+
 ## 0.8.1
 
 ### Fixed

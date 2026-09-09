@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.12]
+        python-version: [3.14]
     steps:
     - name: "Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}"
       uses: actions/setup-python@v4
@@ -32,7 +32,7 @@ jobs:
          virtualenv cdshealpixenv
          source cdshealpixenv/bin/activate
          # Install maturin
-         pip install maturin==1.12.4
+         pip install maturin
          # Build and install cdshealpix
          maturin develop --release
          # Install dependencies needed to run benches
