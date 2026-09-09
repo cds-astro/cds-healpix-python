@@ -21,13 +21,13 @@ jobs:
     steps:
      # Checkout the project
      - name: "Checkout branch"
-       uses: actions/checkout@v4
+       uses: actions/checkout@v7
      # Test Rust code
      #- name: Run rust wrapper tests
      #  run: cargo test --verbose -- --nocapture
      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: "Set up Python ${{ matrix.python-version }} on ubuntu"
-       uses: actions/setup-python@v4
+       uses: actions/setup-python@v7
        with:
          python-version: ${{ matrix.python-version }}
      # Test python code
@@ -55,13 +55,13 @@ jobs:
     steps:
      # Checkout the project
      - name: "Checkout branch"
-       uses: actions/checkout@v4
+       uses: actions/checkout@v7
      # Test Rust code
      #- name: Run rust wrapper tests
      #  run: cargo test --verbose -- --nocapture
      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: "Set up Python ${{ matrix.python-version }} on MacOS"
-       uses: actions/setup-python@v4
+       uses: actions/setup-python@v7
        with:
          python-version: ${{ matrix.python-version }}
      # Test python code
@@ -92,13 +92,13 @@ jobs:
     steps:
       # Checkout the project
       - name: "Checkout branch"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       # Test Rust code
       #- name: Run rust wrapper tests
       #  run: cargo test --verbose -- --nocapture
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
       - name: "Set up Python ${{ matrix.python-version }} on Windows"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       # Test python code
@@ -125,9 +125,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: "Set up Python 3.12 on Ubuntu"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: '3.14'
       - name: "Build and test doc"

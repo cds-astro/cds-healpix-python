@@ -17,11 +17,11 @@ jobs:
         python-version: [3.14]
     steps:
     - name: "Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}"
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
     - name: "Checkout the branch ${{ github.head_ref }}"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         ref: ${{ github.head_ref }}
     - name: "Install virtual env, build project and run benches"

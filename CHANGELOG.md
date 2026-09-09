@@ -4,7 +4,7 @@
 
 ### Changed
 
-* support python 3.15
+* support python 3.15, drop python 3.9
 
 ## 0.8.1
 

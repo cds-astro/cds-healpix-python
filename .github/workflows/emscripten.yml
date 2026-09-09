@@ -13,8 +13,8 @@ jobs:
   emscripten:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.14'
       - run: pip install pyodide-build
@@ -24,7 +24,7 @@ jobs:
          echo "$EMSCRIPTEN_VERSION"
          echo PYTHON_VERSION=$(pyodide config get python_version | cut -d "." -f 1-2) >> $GITHUB_ENV
          echo "$PYTHON_VERSION"
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: mymindstorm/setup-emsdk@v16
         with:
           version: ${{ env.EMSCRIPTEN_VERSION }}
           actions-cache-folder: emsdk-cache
