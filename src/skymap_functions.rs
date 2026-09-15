@@ -4,9 +4,7 @@ use std::{
   io::{BufReader, BufWriter, Cursor},
 };
 
-use numpy::{
-  IntoPyArray, Ix3, NotContiguousError, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1,
-};
+use numpy::{AsSliceError, IntoPyArray, Ix3, PyArray1, PyArray3, PyArrayMethods, PyReadonlyArray1};
 use pyo3::{
   exceptions::{PyIOError, PyValueError},
   prelude::*,
@@ -246,7 +244,7 @@ pub fn write_skymap_implicit(values: SupportedArray<'_>, path: String) -> Result
 }
 fn write_skymap_implicit_gen<T: SkyMapValue>(
   writer: BufWriter<File>,
-  as_slice_res: Result<&[T], NotContiguousError>,
+  as_slice_res: Result<&[T], AsSliceError>,
 ) -> Result<(), PyErr> {
   as_slice_res.map_err(move |e| e.into()).and_then(|slice| {
     write_implicit_skymap_fits(writer, slice).map_err(|err| PyIOError::new_err(err.to_string()))
@@ -288,7 +286,7 @@ fn write_skymap_explicit_gen<T: SkyMapValue>(
   writer: BufWriter<File>,
   depth: u8,
   keys: &[u64],
-  values: Result<&[T], NotContiguousError>,
+  values: Result<&[T], AsSliceError>,
 ) -> Result<(), PyErr> {
   values.map_err(move |e| e.into()).and_then(|values| {
     write_explicit_skymap_fits_from_parts(
@@ -341,7 +339,7 @@ fn to_explicit_gen<'py, T: SkyMapValue + numpy::Element>(
   module: &Bound<'py, PyModule>,
   depth: u8,
   null_value: T,
-  as_slice_res: Result<&[T], NotContiguousError>,
+  as_slice_res: Result<&[T], AsSliceError>,
 ) -> PyResult<Bound<'py, PyTuple>> {
   let null_value: T = null_value.into();
   as_slice_res.map_err(move |e| e.into()).and_then(|slice| {
@@ -401,7 +399,7 @@ fn to_implicit_gen<'py, T: SkyMapValue + numpy::Element>(
   depth: u8,
   null_value: T,
   keys: &[u64],
-  as_slice_val_res: Result<&[T], NotContiguousError>,
+  as_slice_val_res: Result<&[T], AsSliceError>,
 ) -> PyResult<Bound<'py, PyAny>> {
   as_slice_val_res.map_err(PyErr::from).map(|values| {
     ExplicitSkyMapBTree::new(

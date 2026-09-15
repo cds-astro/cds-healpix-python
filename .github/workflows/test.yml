@@ -17,17 +17,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15.0-rc.2']
     steps:
      # Checkout the project
      - name: "Checkout branch"
-       uses: actions/checkout@v4
+       uses: actions/checkout@v7
      # Test Rust code
      #- name: Run rust wrapper tests
      #  run: cargo test --verbose -- --nocapture
      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: "Set up Python ${{ matrix.python-version }} on ubuntu"
-       uses: actions/setup-python@v4
+       uses: actions/setup-python@v7
        with:
          python-version: ${{ matrix.python-version }}
      # Test python code
@@ -38,7 +38,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin==1.12.4
+         pip install maturin
          maturin -V
          maturin develop --release
          # Install dependencies
@@ -51,17 +51,17 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15.0-rc.2']
     steps:
      # Checkout the project
      - name: "Checkout branch"
-       uses: actions/checkout@v4
+       uses: actions/checkout@v7
      # Test Rust code
      #- name: Run rust wrapper tests
      #  run: cargo test --verbose -- --nocapture
      # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
      - name: "Set up Python ${{ matrix.python-version }} on MacOS"
-       uses: actions/setup-python@v4
+       uses: actions/setup-python@v7
        with:
          python-version: ${{ matrix.python-version }}
      # Test python code
@@ -74,7 +74,7 @@ jobs:
          source cdshealpixenv/bin/activate
          # Install and use maturin
          pip install --upgrade pip
-         pip install maturin==1.12.4
+         pip install maturin
          maturin -V
          maturin build --release --target universal2-apple-darwin
          maturin develop --release
@@ -88,17 +88,17 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.15.0-rc.2']
     steps:
       # Checkout the project
       - name: "Checkout branch"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       # Test Rust code
       #- name: Run rust wrapper tests
       #  run: cargo test --verbose -- --nocapture
       # Set up python, see https://docs.github.com/en/actions/guides/building-and-testing-python
       - name: "Set up Python ${{ matrix.python-version }} on Windows"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       # Test python code
@@ -111,7 +111,7 @@ jobs:
           .\cdshealpixenv\Scripts\activate
           pip install --upgrade pip
           # Install and use maturin
-          pip install maturin==1.12.4
+          pip install maturin
           maturin -V
           maturin develop --release
           # Install dependencies
@@ -120,16 +120,16 @@ jobs:
           python -m pytest -v
           deactivate
 
-  # Build the doc and run the tests in the doc (only for python 3.12 on ubuntu)
+  # Build the doc and run the tests in the doc (only for python 3.14 on ubuntu)
   test-doc:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout branch"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: "Set up Python 3.12 on Ubuntu"
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v7
         with:
-          python-version: '3.12'
+          python-version: '3.14'
       - name: "Build and test doc"
         run: |
           # Install virtualenv
@@ -139,7 +139,7 @@ jobs:
           source cdshealpixenv/bin/activate
           # Install maturin
           pip install --upgrade pip
-          pip install maturin==1.12.4
+          pip install maturin
           sudo apt-get install pandoc
           maturin -V
           # Build and install cdshealpix
