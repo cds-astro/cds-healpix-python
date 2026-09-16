@@ -7,8 +7,6 @@ name: publish-cdshealpix-wheels
 
 on:
   push:
-    branches:
-      - master
     tags:
       - '*'
   workflow_dispatch:
