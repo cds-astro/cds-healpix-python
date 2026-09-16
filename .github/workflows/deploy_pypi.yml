@@ -177,7 +177,6 @@ jobs:
           target: ${{ matrix.platform.target }}
           args: --release --out dist
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
-          rust-toolchain: nightly
       - name: Upload wheels
         uses: actions/upload-artifact@v6
         with:
