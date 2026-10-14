@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.0
+
 ### Changed
 
 * support python 3.15, drop python 3.9
