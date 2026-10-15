@@ -180,7 +180,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v6
         with:
-          name: wasm-wheels
+          name: wheels-emscripten
           path: dist
 
   sdist:
