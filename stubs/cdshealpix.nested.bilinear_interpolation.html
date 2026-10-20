@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-astropy.css?v=f8405dd2" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
     
     <script src="../_static/documentation_options.js?v=ec16d22d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
@@ -129,11 +129,11 @@ or the number of logical CPUs (otherwise)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>pixels, weights: (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
+<dt>pixels, weights: (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ma.masked_array.html#numpy.ma.masked_array" title="(in NumPy v2.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ma.masked_array</span></code></a>)</dt><dd><p><span class="math notranslate nohighlight">\(N \times 4\)</span> arrays where N is the number of <code class="docutils literal notranslate"><span class="pre">lon</span></code> (and <code class="docutils literal notranslate"><span class="pre">lat</span></code>) given.
 For each given sky position, 4 HEALPix cells in the nested configuration are returned.
 Each cell is associated with a specific weight. The 4 weights sum up to 1.
-For numpy masked arrays, invalid positions are flagged with a <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> while valid
-coordinates are marked as <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>. See numpy docs for more information.
+For numpy masked arrays, invalid positions are flagged with a <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#True" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a> while valid
+coordinates are marked as <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#False" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>. See numpy docs for more information.
 <a class="reference external" href="https://numpy.org/doc/stable/reference/maskedarray.html">https://numpy.org/doc/stable/reference/maskedarray.html</a></p>
 </dd>
 </dl>
@@ -200,7 +200,7 @@ coordinates are marked as <a class="reference external" href="https://docs.pytho
     <a href="#">Back to Top</a></p>
   <p>
     &copy; Copyright 2026, Matthieu Baumann &lt;matthieu.baumann@astro.unistra.fr&gt; F.-X. Pineau &lt;francois-xavier.pineau@astro.unistra.fr&gt;.<br/>
-    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 9.1.0. &nbsp;
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 9.1.1. &nbsp;
   </p>
 </footer>
   </body>
